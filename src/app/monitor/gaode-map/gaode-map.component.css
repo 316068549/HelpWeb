@@ -1,0 +1,19 @@
+#container {
+  width: 100%;
+  min-height: 760px;
+  /*margin: 0 0 0 110px;*/
+}
+#searchBox {
+  background-color: #fff;
+  border: 1px solid silver;
+  box-shadow: 3px 4px 3px 0px silver;
+  position: absolute;
+  font-size: 12px;
+  right: 10px;
+  top: 5px;
+  border-radius: 3px;
+  line-height: 36px;
+  width: 300px;
+  z-index: 999;
+}
+

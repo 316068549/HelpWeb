@@ -1,0 +1,26 @@
+.pic{
+  width:30px;
+  height: 30px;
+  font-size: 25px;
+}
+.bordered{
+  border: 1px solid #ccc;
+}
+
+.word{
+  line-height: 30px;
+}
+a{
+  color:#333;
+}
+.control-label{
+  width:auto;
+  font-weight: normal;
+}
+input{
+  width:auto;
+  min-width: 120px;
+}
+.configbox{
+  display: none;
+}

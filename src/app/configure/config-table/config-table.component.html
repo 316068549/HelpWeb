@@ -1,0 +1,807 @@
+
+  <div class="page-t">
+    <div class="page-nav message-nav">
+      <a  href="javascript:;">设备管理</a>
+      <a  href="javascript:;">配置管理</a>
+      <a  routerLinkActive="active" routerLink="/config">配置命令</a>
+    </div>
+    <router-outlet></router-outlet>
+  </div>
+  <div class="J_mainContent" id="content-main">
+    <div class="wrapper wrapper-content">
+      <div class="xt-list">
+        <div *ngIf="sendMsg||issue2||reply">
+          <div class="mb10"><h5>返回数据:</h5><button *ngIf="sendMsg||issue2||reply" class="btn btn-blue btn-xs fn-right" type="button" (click)="reply = '';sendMsg = '';issue2 = '';">
+            清空数据
+          </button></div>
+
+        </div>
+        <h5 *ngIf="sendMsg">发送报文：{{sendMsg}}</h5>
+        <h5 *ngIf="reply">响应报文：{{reply}}</h5>
+        <!--<h4 *ngIf="issue" style="margin-top: 25px">返回信息：</h4>-->
+        <!--<h4 *ngIf="issue2&&!reply" style="margin-top: 25px">错误信息：</h4>-->
+        <!--<h5 *ngIf="issue">{{issue.isSuccess}}</h5>-->
+        <h5 *ngIf="issue2&&!reply">{{issue2}}</h5>
+        <!--<my-page *ngIf="heroes" [info]="heroes"></my-page>-->
+
+        <ul class="row itmebox mt20">
+          <!--时间配置-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：字节数（1）、数据格式说明（0x90）、举例（0x90）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">时间配置<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+              <!--<span class="glyphicon glyphicon-menu-up fn-right upbtn" aria-hidden="true"></span>-->
+              <form (ngSubmit)="timeSubmit(0)" #siteForm="ngForm" class="form-group timeconfig">
+                <div class="">
+                  <label class="control-label fn-left" style="line-height: 34px" for="imeiCode">设备号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model1.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                           placeholder="请输入16位设备号" #imeiCode="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="imeiCode.valid || imeiCode.pristine"
+                         class="alert alert-danger">
+                      设备号是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="control-label fn-left ml15" style="line-height: 34px" for="mark">标志：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model1.mark" id="mark" name="mark" class="form-control"
+                           placeholder="请输入标志（00或01）" #mark="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="mark.valid || mark.pristine"
+                         class="alert alert-danger">
+                      标志是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="ml15">
+                  <label class="control-label fn-left ml15" style="line-height: 34px" for="time">时间：</label>
+                  <div class="fn-left input-append date form_datetime">
+                    <input size="16" type="text" value="" [(ngModel)]="model1.time" id="time" name="time"
+                           #time13="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                           class="form-control laydate-icon" style="background: #fff" readonly>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    <div [hidden]="time13.valid || time13.pristine"
+                         class="alert alert-danger ding-time13">
+                      时间是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <div class="col-sm-12" style="padding-left: 0">
+                    <button class="btn btn-primary" type="submit" [disabled]="!siteForm.form.valid">时间配置</button>
+
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+            <!--配置项end-->
+          </li>
+          <!--定位配置-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">定位配置<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+            <form (ngSubmit)="timeSubmit(1)" #gpsForm="ngForm" style="display: block" class="form-group gps">
+              <div >
+                <label class=" fn-left control-label" style="line-height: 34px" for="imeiCode">设备号：</label>
+                <div class=" fn-left">
+                  <input type="text" [(ngModel)]="model2.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                         placeholder="请输入16位设备号" #imeiCode1="ngModel" required> <span class="help-block m-b-none"></span>
+                  <div [hidden]="imeiCode1.valid || imeiCode1.pristine"
+                       class="alert alert-danger">
+                    设备号是必需的
+                  </div>
+                </div>
+              </div>
+              <div >
+                <label class="fn-left control-label ml15" style="line-height: 34px" for="mark">标志：</label>
+                <div class="fn-left">
+                  <input type="text" [(ngModel)]="model2.mark" id="mark" name="mark" class="form-control"
+                         placeholder="请输入标志（00或01）" #mark1="ngModel" required> <span class="help-block m-b-none"></span>
+                  <div [hidden]="mark1.valid || mark1.pristine"
+                       class="alert alert-danger">
+                    标志是必需的
+                  </div>
+                </div>
+              </div>
+              <div >
+                <label class="fn-left control-label ml15" style="line-height: 34px" for="locationMode2">定位方式：</label>
+                <div class="fn-left">
+                  <input type="text" [(ngModel)]="model2.locationMode2" id="locationMode2" name="locationMode2"
+                         class="form-control" #locationMode2="ngModel" placeholder="（00、01、02或03）" required> <span
+                  class="help-block m-b-none"></span>
+                  <div [hidden]="locationMode2.valid || locationMode2.pristine"
+                       class="alert alert-danger">
+                    定位方式是必需的
+                  </div>
+                </div>
+              </div>
+              <div >
+                <label class="fn-left control-label ml15" style="line-height: 34px" for="timeInterval">时间间隔：</label>
+                <div class="fn-left">
+                  <input type="text" [(ngModel)]="model2.timeInterval" id="timeInterval" name="timeInterval"
+                         class="form-control" placeholder="时间间隔（4位，16进制如0000）"> <span class="help-block m-b-none"></span>
+                </div>
+              </div>
+
+              <div >
+                <label class="fn-left control-label ml15" style="line-height: 34px" for="time">时间：</label>
+                <div class="fn-left input-append date form_datetime" required>
+                  <input size="16" type="text" value="" [(ngModel)]="model2.time" id="time" name="time"
+                         #time="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                         class="form-control laydate-icon" style="background: #fff" readonly>
+                  <span class="add-on"><i class="icon-th"></i></span>
+                  <div [hidden]="time.valid || time.pristine"
+                       class="alert alert-danger ding-time">
+                    时间是必需的
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-1">
+                <div class="col-sm-12" style="padding-left: 0">
+                  <button class="btn btn-primary" type="submit" [disabled]="!gpsForm.form.valid">定位配置</button>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </form>
+            </div>
+          </li>
+          <!--电子围栏配置-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">电子围栏配置<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+              <form (ngSubmit)="timeSubmit(2)" #intelForm="ngForm" style="display: block" class="form-group intel">
+                <div >
+                  <label class="fn-left control-label" style="line-height: 34px" for="imeiCode">设备号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model3.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                           placeholder="请输入16位设备号" #imeiCode2="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="imeiCode2.valid || imeiCode2.pristine"
+                         class="alert alert-danger">
+                      设备号是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="mark">标志：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model3.mark" id="mark" name="mark" class="form-control"
+                           placeholder="请输入标志（00或01）" #mark2="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="mark2.valid || mark2.pristine"
+                         class="alert alert-danger">
+                      标志是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="fenceType">围栏类型：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model3.fenceType" id="fenceType" name="fenceType" class="form-control"
+                           #fenceType="ngModel" placeholder="（00、01或02）" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="fenceType.valid || fenceType.pristine"
+                         class="alert alert-danger">
+                      围栏类型是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="latitude">经度：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model3.latitude" id="latitude" name="latitude" class="form-control"
+                           #latitude="ngModel" placeholder="请输入经度（小数点后最多6位）" required> <span class="help-block m-b-none" required></span>
+                    <div [hidden]="latitude.valid || latitude.pristine"
+                         class="alert alert-danger">
+                      经度是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="longitude">纬度：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model3.longitude" id="longitude" name="longitude" class="form-control"
+                           #longitude="ngModel" placeholder="请输入纬度（小数点后最多6位）" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="longitude.valid || longitude.pristine"
+                         class="alert alert-danger">
+                      经度是必需的
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="fenceParams">围栏参数：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model3.fenceParams" id="fenceParams" name="fenceParams"
+                           #fenceParams="ngModel" class="form-control" placeholder="围栏参数（8位，16进制如00000005）" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="fenceParams.valid || fenceParams.pristine"
+                         class="alert alert-danger">
+                      围栏参数是必需的
+                    </div>
+                  </div>
+                </div>
+
+
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="time">时间：</label>
+                  <div class="fn-left input-append date form_datetime" required>
+                    <input size="16" type="text" value="" [(ngModel)]="model3.time" id="time" name="time"
+                           #time1="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                           class="form-control laydate-icon" style="background: #fff" readonly>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    <div [hidden]="time1.valid || time1.pristine"
+                         class="alert alert-danger ding-time2">
+                      时间是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <div class="col-sm-12" style="padding-left: 0">
+                    <button class="btn btn-primary" type="submit" [disabled]="!intelForm.form.valid">电子围栏配置</button>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </li>
+          <!--IP端口配置-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">IP端口配置<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+              <form (ngSubmit)="timeSubmit(3)" #ipForm="ngForm" style="display: block" class="form-group ip">
+                <div >
+                  <label class="fn-left control-label" style="line-height: 34px" for="imeiCode">设备号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model4.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                           placeholder="请输入16位设备号" #imeiCode3="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="imeiCode3.valid || imeiCode3.pristine"
+                         class="alert alert-danger">
+                      设备号是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="mark">标志：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model4.mark" id="mark" name="mark" class="form-control"
+                           placeholder="请输入标志（00或01）" #mark3="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="mark3.valid || mark3.pristine"
+                         class="alert alert-danger">
+                      标志是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="ip">IP和端口：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model4.ip" id="ip" name="ip" class="form-control"
+                           #ip="ngModel" placeholder="12位IP和端口（16进制如C0A848011F40）" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="ip.valid || ip.pristine"
+                         class="alert alert-danger">
+                      IP和端口是必需的
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="time">时间：</label>
+                  <div class="fn-left input-append date form_datetime" required>
+                    <input size="16" type="text" value="" [(ngModel)]="model4.time" id="time" name="time"
+                           #time2="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                           class="form-control laydate-icon" style="background: #fff" readonly>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    <div [hidden]="time2.valid || time2.pristine"
+                         class="alert alert-danger ding-time3">
+                      时间是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <div class="col-sm-12" style="padding-left: 0">
+                    <button class="btn btn-primary" type="submit" [disabled]="!ipForm.form.valid">IP端口配置</button>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </li>
+          <!--sos配置-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">sos配置<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+              <form (ngSubmit)="timeSubmit(9)" #sosForm="ngForm" style="display: block" class="form-group sos">
+                <div>
+                  <label class="fn-left control-label" style="line-height: 34px" for="imeiCode">设备号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model10.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                           placeholder="请输入16位设备号" #imeiCode9="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="imeiCode9.valid || imeiCode9.pristine"
+                         class="alert alert-danger">
+                      设备号是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="mark">标志：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model10.mark" id="mark" name="mark" class="form-control"
+                           placeholder="请输入标志（00或01）" #mark9="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="mark9.valid || mark9.pristine"
+                         class="alert alert-danger">
+                      标志是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="sosControle">sos控制：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model10.sosControle" id="sosControle" name="sosControle"
+                           class="form-control" #sosControle="ngModel" placeholder="请输入sos控制（2位，16进制如01）" required> <span
+                    class="help-block m-b-none"></span>
+                    <div [hidden]="sosControle.valid || sosControle.pristine"
+                         class="alert alert-danger">
+                      sos控制是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="responseType">回复方式：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model10.responseType" id="responseType" name="responseType"
+                           class="form-control" #responseType1="ngModel" placeholder="回复方式（2位，16进制如01）" required> <span
+                    class="help-block m-b-none"></span>
+                    <div [hidden]="responseType1.valid || responseType1.pristine"
+                         class="alert alert-danger">
+                      回复方式是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="time">时间：</label>
+                  <div class="fn-left input-append date form_datetime" required>
+                    <input size="16" type="text" value="" [(ngModel)]="model10.time" id="time" name="time"
+                           #time8="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                           class="form-control laydate-icon" style="background: #fff" readonly>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    <div [hidden]="time8.valid || time8.pristine"
+                         class="alert alert-danger ding-time9">
+                      时间是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <div class="col-sm-12" style="padding-left: 0">
+                    <button class="btn btn-primary" type="submit" [disabled]="!sosForm.form.valid">sos配置</button>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </li>
+          <!--跌倒配置-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">跌倒配置<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+              <form (ngSubmit)="timeSubmit(11)" #fallForm="ngForm" style="display: block" class="form-group fall">
+                <div >
+                  <label class="fn-left control-label" style="line-height: 34px" for="imeiCode">设备号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model12.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                           placeholder="请输入16位设备号" #imeiCode11="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="imeiCode11.valid || imeiCode11.pristine"
+                         class="alert alert-danger">
+                      设备号是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="mark">标志：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model12.mark" id="mark" name="mark" class="form-control"
+                           placeholder="请输入标志（00或01）" #mark11="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="mark11.valid || mark11.pristine"
+                         class="alert alert-danger">
+                      标志是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="fallControle">跌倒控制：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model12.fallControle" id="fallControle" name="fallControle"
+                           class="form-control" #fallControle="ngModel" placeholder="请输入跌倒控制（00或者01）" required> <span
+                    class="help-block m-b-none"></span>
+                    <div [hidden]="fallControle.valid || fallControle.pristine"
+                         class="alert alert-danger">
+                      跌倒控制是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="responseType">回复方式：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model12.responseType" id="responseType" name="responseType"
+                           class="form-control" #responseType2="ngModel" placeholder="回复方式（2位，16进制如01）" required> <span
+                    class="help-block m-b-none"></span>
+                    <div [hidden]="responseType2.valid || responseType2.pristine"
+                         class="alert alert-danger">
+                      回复方式是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="time">时间：</label>
+                  <div class="fn-left input-append date form_datetime" required>
+                    <input size="16" type="text" value="" [(ngModel)]="model12.time" id="time" name="time"
+                           #time10="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                           class="form-control laydate-icon" style="background: #fff" readonly>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    <div [hidden]="time10.valid || time10.pristine"
+                         class="alert alert-danger ding-time11">
+                      时间是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <div class="col-sm-12" style="padding-left: 0">
+                    <button class="btn btn-primary" type="submit" [disabled]="!fallForm.form.valid">跌倒配置</button>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </li>
+          <!--亲情号配置-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">亲情号配置<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+              <form (ngSubmit)="timeSubmit(10)" #familyForm="ngForm" style="display: block" class="form-group family">
+                <div>
+                  <label class="fn-left control-label" style="line-height: 34px" for="imeiCode">设备号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model11.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                           placeholder="请输入16位设备号" #imeiCode10="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="imeiCode10.valid || imeiCode10.pristine"
+                         class="alert alert-danger">
+                      设备号是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="mark">标志：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model11.mark" id="mark" name="mark" class="form-control"
+                           placeholder="请输入标志（00或01）" #mark10="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="mark10.valid || mark10.pristine"
+                         class="alert alert-danger">
+                      标志是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneQuantity">亲情号数量：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model11.phoneQuantity" id="phoneQuantity" name="phoneQuantity"
+                           class="form-control" #phoneQuantity="ngModel" placeholder="亲情号数量（2位，16进制如02）" required> <span
+                    class="help-block m-b-none"></span>
+                    <div [hidden]="phoneQuantity.valid || phoneQuantity.pristine"
+                         class="alert alert-danger">
+                      亲情号数量是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneOne">亲情号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model11.phoneOne" id="phoneOne" name="phoneOne"
+                           class="form-control" #phoneOne="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneTwo">亲情号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model11.phoneTwo" id="phoneTwo" name="phoneTwo"
+                           class="form-control" #phoneTwo="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneThree">亲情号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model11.phoneThree" id="phoneThree" name="phoneThree"
+                           class="form-control" #phoneThree="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneFour">亲情号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model11.phoneFour" id="phoneFour" name="phoneFour"
+                           class="form-control" #phoneFour="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneFive">亲情号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model11.phoneFive" id="phoneFive" name="phoneFive"
+                           class="form-control" #phoneFive="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="time">时间：</label>
+                  <div class="fn-left input-append date form_datetime" required>
+                    <input size="16" type="text" value="" [(ngModel)]="model11.time" id="time" name="time"
+                           #time9="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                           class="form-control laydate-icon" style="background: #fff" readonly>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    <div [hidden]="time9.valid || time9.pristine"
+                         class="alert alert-danger ding-time10">
+                      时间是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <div class="col-sm-12" style="padding-left: 0">
+                    <button class="btn btn-primary" type="submit" [disabled]="!familyForm.form.valid">亲情号配置</button>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </li>
+          <!--白名单配置-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">白名单配置<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+              <form (ngSubmit)="timeSubmit(12)" #whiteListForm="ngForm" style="display: block" class="form-group whiteList">
+                <div>
+                  <label class="fn-left control-label" style="line-height: 34px" for="imeiCode">设备号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model13.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                           placeholder="请输入16位设备号" #imeiCode12="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="imeiCode12.valid || imeiCode12.pristine"
+                         class="alert alert-danger">
+                      设备号是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="mark">标志：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model13.mark" id="mark" name="mark" class="form-control"
+                           placeholder="请输入标志（00或01）" #mark12="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="mark12.valid || mark12.pristine"
+                         class="alert alert-danger">
+                      标志是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="whiteListSwitch">白名单设置：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model13.whiteListSwitch" id="whiteListSwitch" name="whiteListSwitch"
+                           class="form-control" #whiteListSwitch="ngModel" placeholder="白名单设置（2位，16进制如02）" required> <span
+                    class="help-block m-b-none"></span>
+                    <div [hidden]="whiteListSwitch.valid || whiteListSwitch.pristine"
+                         class="alert alert-danger">
+                      白名单设置是必需的
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneQuantity">手机号数量：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model13.phoneQuantity" id="phoneQuantity" name="phoneQuantity"
+                           class="form-control" #phoneQuantity1="ngModel" placeholder="手机号数量（2位，16进制如02）" required> <span
+                    class="help-block m-b-none"></span>
+                    <div [hidden]="phoneQuantity1.valid || phoneQuantity1.pristine"
+                         class="alert alert-danger">
+                      手机号数量是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneOne">手机号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model13.phoneOne" id="phoneOne" name="phoneOne"
+                           class="form-control" #phoneOne1="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneTwo">手机号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model13.phoneTwo" id="phoneTwo" name="phoneTwo"
+                           class="form-control" #phoneTwo1="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneThree">手机号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model13.phoneThree" id="phoneThree" name="phoneThree"
+                           class="form-control" #phoneThree1="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneFour">手机号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model13.phoneFour" id="phoneFour" name="phoneFour"
+                           class="form-control" #phoneFour1="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div>
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="phoneFive">手机号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model13.phoneFive" id="phoneFive" name="phoneFive"
+                           class="form-control" #phoneFive1="ngModel" placeholder="000+11位手机号码" > <span
+                    class="help-block m-b-none"></span>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="time">时间：</label>
+                  <div class="fn-left input-append date form_datetime" required>
+                    <input size="16" type="text" value="" [(ngModel)]="model13.time" id="time" name="time"
+                           #time11="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                           class="form-control laydate-icon" style="background: #fff" readonly>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    <div [hidden]="time11.valid || time11.pristine"
+                         class="alert alert-danger ding-time12">
+                      时间是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <div class="col-sm-12" style="padding-left: 0">
+                    <button class="btn btn-primary" type="submit" [disabled]="!whiteListForm.form.valid">白名单配置</button>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </li>
+          <!--版本查询-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">版本查询<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+              <form (ngSubmit)="onSubmit(0)" #versionForm="ngForm" class="version">
+                <div >
+                  <label class="fn-left control-label" style="line-height: 34px" for="imeiCode">设备号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model5.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                           placeholder="请输入16位设备号" #imeiCode4="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="imeiCode4.valid || imeiCode4.pristine"
+                         class="alert alert-danger">
+                      设备号是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="time">时间：</label>
+                  <div class="fn-left input-append date form_datetime">
+                    <input size="16" type="text" value="" [(ngModel)]="model5.time" id="time" name="time"
+                           #time3="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                           class="form-control laydate-icon" style="background: #fff" readonly>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    <div [hidden]="time3.valid || time3.pristine"
+                         class="alert alert-danger ding-time4">
+                      时间是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <div class="col-sm-12" style="padding-left: 0">
+                    <button class="btn btn-primary" type="submit" [disabled]="!versionForm.form.valid">版本查询</button>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </li>
+          <!--定位信息查询-->
+          <li class="col-sm-12 padded mt15 mb15 ak">
+            <div class="col-sm-1"><span class="glyphicon glyphicon-time pic" aria-hidden="true"></span></div>
+            <p class="col-sm-9 mt5">详情：数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</p>
+            <div class="col-sm-2 "><a href="javascript:;" class="word fn-right config-btn">定位信息查询<span class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></a></div>
+            <!--配置项-->
+            <div class="col-sm-12 mt15 configbox">
+              <form (ngSubmit)="onSubmit(1)" #dropPaperForm="ngForm" class="dropPaper">
+                <div >
+                  <label class="fn-left control-label" style="line-height: 34px" for="imeiCode">设备号：</label>
+                  <div class="fn-left">
+                    <input type="text" [(ngModel)]="model6.imeiCode" id="imeiCode" name="imeiCode" class="form-control"
+                           placeholder="请输入16位设备号" #imeiCode5="ngModel" required> <span class="help-block m-b-none"></span>
+                    <div [hidden]="imeiCode5.valid || imeiCode5.pristine"
+                         class="alert alert-danger">
+                      设备号是必需的
+                    </div>
+                  </div>
+                </div>
+                <div >
+                  <label class="fn-left control-label ml15" style="line-height: 34px" for="time">时间：</label>
+                  <div class="fn-left input-append date form_datetime">
+                    <input size="16" type="text" value="" [(ngModel)]="model6.time" id="time" name="time"
+                           #time4="ngModel"  placeholder="请选择" onclick="laydate({istime: true, format: 'YYYYMMDDhhmmss'})"
+                           class="form-control laydate-icon" style="background: #fff" readonly>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    <div [hidden]="time4.valid || time4.pristine"
+                         class="alert alert-danger ding-time5">
+                      时间是必需的
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <div class="col-sm-12" style="padding-left: 0">
+                    <button class="btn btn-primary" type="submit" [disabled]="!dropPaperForm.form.valid">定位信息查询</button>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </li>
+        </ul>
+
+        <!--<table class="table config-table">-->
+          <!--<thead>-->
+          <!--<tr>-->
+            <!--<th>配置类型</th>-->
+            <!--&lt;!&ndash;<th>功能码</th>&ndash;&gt;-->
+            <!--&lt;!&ndash;<th>标志</th>&ndash;&gt;-->
+            <!--&lt;!&ndash;<th>时间</th>&ndash;&gt;-->
+            <!--<th>详情</th>-->
+          <!--</tr>-->
+          <!--</thead>-->
+          <!--<tbody>-->
+          <!--<tr>-->
+            <!--<td>时间配置</td>-->
+            <!--&lt;!&ndash;<td>字节数（1）、数据格式说明（0x90）、举例（0x90）</td>&ndash;&gt;-->
+            <!--&lt;!&ndash;<td>字节数（1）、数据格式说明（0：读时间，1：设置时间）、举例（0x10表示设置时间）</td>&ndash;&gt;-->
+            <!--&lt;!&ndash;<td>字节数（7）、数据格式说明（压缩BCD码年月日时分秒）、举例（0x20170306112256表示2017年3月6日11点22分56秒）</td>&ndash;&gt;-->
+            <!--<td>-->
+              <!--<button class="btn btn-blue" [routerLink]="['timeconfig']">配置命令</button>-->
+              <!--&lt;!&ndash;<a>配置命令</a>&ndash;&gt;-->
+              <!--&lt;!&ndash;<a (click)="onSelect(configuration)" [routerLink]="['/configuration-detail', configuration.id]" >命令响应</a>&ndash;&gt;-->
+            <!--</td>-->
+          <!--</tr>-->
+          <!--<tr>-->
+            <!--<td>定位配置</td>-->
+            <!--<td>-->
+              <!--<button class="btn btn-blue" [routerLink]="['timeconfig']">配置命令</button>-->
+
+            <!--</td>-->
+          <!--</tr>-->
+          <!--</tbody>-->
+        <!--</table>-->
+      </div>
+    </div>
+  </div>

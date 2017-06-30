@@ -1,0 +1,217 @@
+<div id="page-wrapper" class="fadeInRight animated">
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">系统管理</a>
+    <a  href="javascript:;">数据字典</a>
+    <a  routerLinkActive="active" routerLink="/data">字典列表</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box">
+    <span class="xt-search">
+               <input #searchBox type="text" id="search-box"  class="form-box" (keyup)="search(searchBox.value)"
+                      placeholder="请输入数据名称">
+           <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
+  <span>
+          <span *ngFor="let menu of menus | async"
+                (click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>
+        </span>
+   </span>
+
+    <button (click)="tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button">+添加</button>
+    <button  class="btns btn-del" type="button">-删除</button>
+  </div>
+
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+
+
+      <table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="10">
+        <thead>
+        <tr>
+          <th>
+            <input type="checkbox" class="checkall" />
+          </th>
+          <th >
+            序号
+          </th>
+          <th>
+            权限名称
+          </th>
+          <th>
+            权限Url
+          </th>
+          <!--<th>-->
+          <!--<mfDefaultSorter by="locationType">设备类型</mfDefaultSorter>-->
+          <!--</th>-->
+          <th>
+            权限资源
+          </th>
+          <th>
+            描述
+          </th>
+          <th>
+            类型
+          </th>
+          <th>
+            状态
+          </th>
+          <th>
+            操作
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let permission of mf.data; let i = index;" [class.selected]="permission === selectedDictionary" (click)="onSelect(permission)">
+          <td>
+            <input type="checkbox" class="checkit" />
+          </td>
+          <td>{{i+1}}</td>
+          <!--<td>{{electricity.locationType}}</td>-->
+          <td >{{permission.permissionName}}</td>
+          <td >{{permission.permissionUrl}}</td>
+          <td>{{permission.permissionResource}}</td>
+          <td>{{permission.permissionDescription}}</td>
+          <td>{{permission.permissionTypeId}}</td>
+          <!--<td>{{permission.status}}</td>-->
+          <td>{{permission.permissionParentId}}</td>
+          <td>&nbsp;&nbsp;
+            <a  (click)="deletemenu=true; clicked=true;permission === selectedPermission" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a (click)="delete(permission.permissionId); $event.stopPropagation()">删除</a>
+          </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+          <td colspan="9">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+
+    </div>
+  </div>
+</div>
+</div>
+<!--<div [hidden]="!clicked"  class="mask"></div>-->
+
+
+<!--<div [hidden]="!tjmenu"  class="operate menu">-->
+  <!--<form class="operate-form"  #tjmenuform="ngForm" (ngSubmit)="tjmenuform.form.valid && add(dataId.value,dataName.value,dataCode.value,dataValid.checked, dictPub.checked, dictEdit.checked, dictDel.checked-->
+        <!--);">-->
+    <!--<div class="operate-title">添加字典<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>-->
+    <!--<div class="operate-content" style="padding-bottom: 20px">-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>字典Id:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="number"  id="dataId" name="dataId" class="form-box"  [(ngModel)]="Dictionary.dataId" #dataId="ngModel">-->
+          <!--<p [hidden]="dataId.pristine || dataId.valid"  class="text-danger">字典Id不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>用户名:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="dataName" name="dataName" class="form-box"  [(ngModel)]="Dictionary.dataName" #dataName="ngModel">-->
+          <!--<p [hidden]="dataName.pristine || dataName.valid"  class="text-danger">字典名不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>编号:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="dataCode" name="dataCode" class="form-box"  [(ngModel)]="Dictionary.dataCode" #dataCode="ngModel">-->
+          <!--<p [hidden]="dataCode.pristine || dataCode.valid"  class="text-danger">字典名不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<span class="check-group">-->
+          <!--是否有效:-->
+          <!--<input #dataValid  [(ngModel)]="Dictionary.dataValid" name="dataValid"  id="dataValid" type="checkbox" class="form-box"  >-->
+        <!--</span>-->
+        <!--<span class="check-group">-->
+          <!--是否公共:-->
+          <!--<input #dictPub   [(ngModel)]="Dictionary.dateCommon" name="dataValid"  id="dictPub" type="checkbox" class="form-box" >-->
+        <!--</span>-->
+        <!--<span class="check-group">-->
+          <!--允许编辑:-->
+          <!--<input #dictEdit [(ngModel)]="Dictionary.dataEnableEditing" name="dataValid" id="dictEdit" type="checkbox" class="form-box"  >-->
+        <!--</span>-->
+        <!--<span class="check-group">-->
+          <!--允许删除:-->
+          <!--<input #dictDel [(ngModel)]="Dictionary.dateDeleteAllowed" name="dataValid" id="dictDel"  type="checkbox" class="form-box">-->
+        <!--</span>-->
+      <!--</div>-->
+      <!--&lt;!&ndash;<div class="operate-item fn-clear">&ndash;&gt;-->
+        <!--&lt;!&ndash;<label class="unmust">备注:</label>&ndash;&gt;-->
+        <!--&lt;!&ndash;<div class="operate-group">&ndash;&gt;-->
+          <!--&lt;!&ndash;<textarea #remarks  name="remarks" id="remarks" class="form-box"></textarea>&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--<div class="operate-btn mt15">-->
+        <!--<button type="submit"  class="btns btn-blue">保存</button>-->
+        <!--<button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</form>-->
+<!--</div>-->
+
+
+
+<!--<div [hidden]="!deletemenu"  class="operate menu"  *ngIf="selectedDictionary">-->
+  <!--<form class="operate-form"  #deletemenuform="ngForm" (ngSubmit)="save();">-->
+    <!--<div class="operate-title">修改字典<span (click)="clicked=false; deletemenu=false;" class="fa fa-close"></span></div>-->
+    <!--<div class="operate-content" style="padding-bottom: 20px">-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>字典Id:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="number"  id="dataId2" name="dataId2" class="form-box"  [(ngModel)]="selectedDictionary.dataId" #dataId2="ngModel">-->
+          <!--<p [hidden]="dataId2.pristine || dataId2.valid"  class="text-danger">字典Id不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>用户名:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="dataName2" name="dataName2" class="form-box"  [(ngModel)]="selectedDictionary.dataName" #dataName2="ngModel">-->
+          <!--<p [hidden]="dataName2.pristine || dataName2.valid"  class="text-danger">字典名不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label>编号:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="dataCode2" name="dataCode2" class="form-box"  [(ngModel)]="selectedDictionary.dataCode" #dataCode2="ngModel">-->
+          <!--<p [hidden]="dataCode2.pristine || dataCode2.valid"  class="text-danger">字典名不能为空</p>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div class="operate-item fn-clear">-->
+        <!--<span class="check-group">-->
+          <!--是否有效:-->
+          <!--<input #dataValid  [(ngModel)]="selectedDictionary.dataValid" [checked]="selectedDictionary.dataValid=='是'||selectedDictionary.dataValid=='true'" name="dataValid"  id="dataValid2" type="checkbox" class="form-box"  >-->
+        <!--</span>-->
+        <!--<span class="check-group">-->
+          <!--是否公共:-->
+          <!--<input #dictPub   [(ngModel)]="selectedDictionary.dateCommon" [checked]="selectedDictionary.dateCommon=='是'||selectedDictionary.dateCommon=='true'" name="dataValid"  id="dictPub2" type="checkbox" class="form-box" >-->
+        <!--</span>-->
+        <!--<span class="check-group">-->
+          <!--允许编辑:-->
+          <!--<input #dictEdit [(ngModel)]="selectedDictionary.dataEnableEditing" [checked]="selectedDictionary.dataEnableEditing=='是'||selectedDictionary.dataEnableEditing=='true'" name="dataValid" id="dictEdit2" type="checkbox" class="form-box"  >-->
+        <!--</span>-->
+        <!--<span class="check-group">-->
+          <!--允许删除:-->
+          <!--<input #dictDel [(ngModel)]="selectedDictionary.dateDeleteAllowed" [checked]="selectedDictionary.dateDeleteAllowed=='是'||selectedDictionary.dateDeleteAllowed=='true'" name="dataValid" id="dictDel2"  type="checkbox" class="form-box">-->
+        <!--</span>-->
+      <!--</div>-->
+      <!--&lt;!&ndash;<div class="operate-item fn-clear">&ndash;&gt;-->
+      <!--&lt;!&ndash;<label class="unmust">备注:</label>&ndash;&gt;-->
+      <!--&lt;!&ndash;<div class="operate-group">&ndash;&gt;-->
+      <!--&lt;!&ndash;<textarea #remarks  name="remarks" id="remarks" class="form-box"></textarea>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+      <!--<div class="operate-btn mt15">-->
+        <!--<button type="submit"  class="btns btn-blue">保存</button>-->
+        <!--<button (click)="deletemenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</form>-->
+<!--</div>-->

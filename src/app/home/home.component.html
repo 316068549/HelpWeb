@@ -1,0 +1,19 @@
+<header class="fn-clear">
+  <h1>跌倒报警信息服务平台后台管理系统</h1>
+  <div class="switch">
+    <span>模式切换：</span>
+    <a routerLink="/home"   href="javascript:;" [ngClass]="{'active':clicke}" (click)="clicke=!clicke">管理模式</a>
+    <i></i>
+    <a routerLink="monitor"  href="javascript:;" [ngClass]="{'active':!clicke}" (click)="clicke=!clicke">监控模式</a>
+  </div>
+</header>
+
+
+<div id="wrapper">
+  <app-left-nav></app-left-nav>
+  <div  class="gray-bg dashbard-1 height100">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+
