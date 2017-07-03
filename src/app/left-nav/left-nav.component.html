@@ -45,120 +45,79 @@
       <li class="item actives" [ngClass]="{'actives':!menuactive}" >
         <a>
           <i class="fa fa-envelope"></i>
-          <span class="nav-label">设备管理</span>
+          <span class="nav-label">救援管理</span>
           <span class="fa arrow" (click)="menuactive=!menuactive" ></span>
         </a>
         <ul class="nav nav-second-level" [ngClass]="{'collapse in':menuactive}">
           <!--<li routerLinkActive="active" *ngFor="let menu of (menus | parentmenu : 2)">-->
             <!--<a [routerLink]="menu.address"  class="J_menuItem"  data-index="3">{{menu.name}}</a>-->
           <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+          <!--<a routerLink="warn"  class="J_menuItem"  data-index="3">报警管理</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+          <!--<a routerLink="track"  class="J_menuItem" data-index="4">轨迹管理</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+          <!--<a routerLink="electricity" class="J_menuItem" data-index="5">电量管理</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+          <!--<a  routerLink="status" class="J_menuItem" data-index="6">状态管理</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+          <!--<a routerLink="config"  class="J_menuItem" data-index="7">配置管理</a>-->
+          <!--</li>-->
           <li routerLinkActive="active">
-          <a routerLink="warn"  class="J_menuItem"  data-index="3">报警管理</a>
+            <a routerLink="helpers"  class="J_menuItem" data-index="16">志愿者信息</a>
           </li>
           <li routerLinkActive="active">
-          <a routerLink="track"  class="J_menuItem" data-index="4">轨迹管理</a>
+            <a routerLink="device"  class="J_menuItem" data-index="17">设备信息</a>
           </li>
           <li routerLinkActive="active">
-          <a routerLink="electricity" class="J_menuItem" data-index="5">电量管理</a>
+            <a routerLink="rescuecount"  class="J_menuItem" data-index="16">救援统计</a>
           </li>
           <li routerLinkActive="active">
-          <a  routerLink="status" class="J_menuItem" data-index="6">状态管理</a>
-          </li>
-          <li routerLinkActive="active">
-          <a routerLink="config"  class="J_menuItem" data-index="7">配置管理</a>
+            <a routerLink="monitor"  class="J_menuItem" data-index="16">监控页面</a>
           </li>
         </ul>
       </li>
-      <li class="item actives" [ngClass]="{'actives':!menuactive2}">
-        <a>
-          <i class="fa fa-columns"></i>
-          <span class="nav-label">系统管理</span>
-          <span class="fa arrow" (click)="menuactive2=!menuactive2"></span>
-        </a>
-        <ul class="nav nav-second-level" [ngClass]="{'collapse in':!menuactive2}">
-          <!--<li routerLinkActive="active" *ngFor="let menu of (menus | parentmenu : 1)">-->
-            <!--<a [routerLink]="menu.address"  class="J_menuItem"  data-index="3">{{menu.name}}</a>-->
-          <!--</li>-->
-          <li routerLinkActive="active">
-          <a routerLink="users" class="J_menuItem" data-index="8">用户管理</a>
-          </li>
-          <li routerLinkActive="active">
-            <a routerLink="permission" class="J_menuItem" data-index="9">权限管理</a>
-          </li>
-          <li routerLinkActive="active">
-          <a routerLink="/login" class="J_menuItem" data-index="10">登录功能</a>
-          </li>
-          <li routerLinkActive="active">
-          <a routerLink="role" class="J_menuItem" data-index="11">角色管理</a>
-          </li>
-          <li routerLinkActive="active">
-          <a routerLink="menu" class="J_menuItem" data-index="12">菜单管理</a>
-          </li>
-          <li routerLinkActive="active">
-          <a routerLink="data" class="J_menuItem" data-index="13">字典管理</a>
-          </li>
-          <li routerLinkActive="active">
-          <a routerLink="/log" class="J_menuItem" data-index="14">日志管理</a>
-          </li>
-          <li routerLinkActive="active">
-          <a routerLink="help" class="J_menuItem" data-index="15">帮助</a>
-          </li>
-        </ul>
-      </li>
-      <!--<li>-->
-        <!--<a>-->
-          <!--<i class="fa fa-envelope"></i>-->
-          <!--<span class="nav-label">设备管理</span>-->
-          <!--<span class="fa arrow"></span>-->
-        <!--</a>-->
-        <!--<ul class="nav nav-second-level">-->
-          <!--<li routerLinkActive="active">-->
-            <!--<a [routerLink]="['/warn']"  class="J_menuItem"  data-index="3">报警管理</a>-->
-          <!--</li>-->
-          <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/track"  class="J_menuItem" data-index="4">轨迹管理</a>-->
-          <!--</li>-->
-          <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/electricity" class="J_menuItem" data-index="5">电量管理</a>-->
-          <!--</li>-->
-          <!--<li routerLinkActive="active">-->
-            <!--<a  routerLink="/status" class="J_menuItem" data-index="6">状态管理</a>-->
-          <!--</li>-->
-          <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/configuration"  class="J_menuItem" data-index="7">配置管理</a>-->
-          <!--</li>-->
-        <!--</ul>-->
-      <!--</li>-->
-      <!--<li >-->
+      <!--<li class="item actives" [ngClass]="{'actives':!menuactive2}">-->
         <!--<a>-->
           <!--<i class="fa fa-columns"></i>-->
           <!--<span class="nav-label">系统管理</span>-->
-          <!--<span class="fa arrow"></span>-->
+          <!--<span class="fa arrow" (click)="menuactive2=!menuactive2"></span>-->
         <!--</a>-->
-        <!--<ul class="nav nav-second-level">-->
+        <!--<ul class="nav nav-second-level" [ngClass]="{'collapse in':!menuactive2}">-->
+          <!--&lt;!&ndash;<li routerLinkActive="active" *ngFor="let menu of (menus | parentmenu : 1)">&ndash;&gt;-->
+            <!--&lt;!&ndash;<a [routerLink]="menu.address"  class="J_menuItem"  data-index="3">{{menu.name}}</a>&ndash;&gt;-->
+          <!--&lt;!&ndash;</li>&ndash;&gt;-->
           <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/user" class="J_menuItem" data-index="8">用户管理</a>-->
+          <!--<a routerLink="users" class="J_menuItem" data-index="8">用户管理</a>-->
           <!--</li>-->
           <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/login" class="J_menuItem" data-index="9">登录功能</a>-->
+            <!--<a routerLink="permission" class="J_menuItem" data-index="9">权限管理</a>-->
           <!--</li>-->
           <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/character" class="J_menuItem" data-index="10">角色管理</a>-->
+          <!--<a routerLink="/login" class="J_menuItem" data-index="10">登录功能</a>-->
           <!--</li>-->
           <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/menu" class="J_menuItem" data-index="11">菜单管理</a>-->
+          <!--<a routerLink="role" class="J_menuItem" data-index="11">角色管理</a>-->
           <!--</li>-->
           <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/dictionary" class="J_menuItem" data-index="12">字典管理</a>-->
+          <!--<a routerLink="menu" class="J_menuItem" data-index="12">菜单管理</a>-->
           <!--</li>-->
           <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/log" class="J_menuItem" data-index="12">日志管理</a>-->
+          <!--<a routerLink="data" class="J_menuItem" data-index="13">字典管理</a>-->
           <!--</li>-->
           <!--<li routerLinkActive="active">-->
-            <!--<a routerLink="/help" class="J_menuItem" data-index="13">帮助</a>-->
+          <!--<a routerLink="/log" class="J_menuItem" data-index="14">日志管理</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+          <!--<a routerLink="help" class="J_menuItem" data-index="15">帮助</a>-->
           <!--</li>-->
         <!--</ul>-->
       <!--</li>-->
+
     </ul>
   </div>
 </nav>

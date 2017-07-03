@@ -1,0 +1,204 @@
+<div id="page-wrapper" class="fadeInRight animated">
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">救援管理</a>
+    <!--<a  href="javascript:;">用户管理</a>-->
+    <a  routerLinkActive="active" routerLink="/users">设备信息</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box">
+    <span class="xt-search">
+               <input #searchBox type="text" id="search-box"  class="form-box" (keyup)="search(searchBox.value)"
+                      placeholder="请输入用户名">
+           <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
+  <span>
+          <span *ngFor="let menu of menus | async"
+                (click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>
+        </span>
+   </span>
+
+    <button (click)="tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button">+添加设备</button>
+  </div>
+
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+
+
+      <table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="10">
+        <thead>
+        <tr>
+          <th >
+            序号
+          </th>
+          <th>
+            <mfDefaultSorter by="deviceImeiCode">设备号</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="deviceUser">设备使用者</mfDefaultSorter>
+          </th>
+          <th>
+          <mfDefaultSorter by="deviceMobile">设备手机号</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="locationMode">定位方式</mfDefaultSorter>
+          </th>
+          <th>
+            定位间隔
+          </th>
+          <th>
+            设备创建时间
+          </th>
+          <th>
+            操作
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let device of mf.data; let i = index;" [class.selected]="device === selectedDevice" (click)="onSelect(device)">
+          <td>{{i+1}}</td>
+          <!--<td>{{electricity.locationType}}</td>-->
+          <td >{{device.deviceImeiCode}}</td>
+          <td >{{device.deviceUser}}</td>
+          <td>{{device.deviceMobile}}</td>
+          <td>{{device.locationMode}}</td>
+          <td>{{device.timeInterval}}</td>
+          <td>{{device.deviceCreateTime}}</td>
+
+          <td>&nbsp;&nbsp;
+            <a  (click)="deletemenu=true; clicked=true;device === selectedDevice" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a (click)="delete(device.deviceImeiCode); $event.stopPropagation()">删除</a>
+          </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+          <td colspan="6">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+        </tfoot>
+      </table>
+
+    </div>
+  </div>
+</div>
+</div>
+<div [hidden]="!clicked"  class="mask"></div>
+
+
+<div [hidden]="!tjmenu"  class="operate menu">
+  <form class="operate-form"  #tjmenuform="ngForm" (ngSubmit)="add(deviceImeiCode.value,deviceUser.value,deviceMobile.value,
+        locationMode.value,timeInterval.value,deviceCreateTime.value);">
+    <div class="operate-title">添加设备<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content pb15">
+      <div class="operate-item fn-clear">
+        <label>设备号:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="deviceImeiCode" name="deviceImeiCode" class="form-box"  [(ngModel)]="Device.deviceImeiCode" #deviceImeiCode="ngModel">
+          <p [hidden]="deviceImeiCode.pristine || deviceImeiCode.valid"  class="text-danger">设备号不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>设备使用者:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="deviceUser" name="deviceUser" class="form-box"  [(ngModel)]="Device.deviceUser" #deviceUser="ngModel">
+          <p [hidden]="deviceUser.pristine || deviceUser.valid"  class="text-danger">设备使用者不能为空</p>
+        </div>
+      </div>
+
+      <div class="operate-item fn-clear">
+        <label>设备手机号:</label>
+        <div class="operate-group">
+          <input required  type="number"  id="deviceMobile" name="deviceMobile" class="form-box" [rangeLength]="[8, 13]" [(ngModel)]="Device.deviceMobile" #deviceMobile="ngModel">
+          <p [hidden]="deviceMobile.pristine || deviceMobile.valid"  class="text-danger">设备手机号不能为空</p>
+          <!--<p class="text-danger sbd" *ngIf="password.errors?.rangeLength">输入字符长度在2-10之间</p>-->
+        </div>
+      </div>
+
+      <div class="operate-item fn-clear">
+        <label>定位方式:</label>
+        <div class="operate-group">
+          <input required  type="number"  id="locationMode" name="locationMode" class="form-box" [(ngModel)]="Device.locationMode" #locationMode="ngModel">
+          <p [hidden]="locationMode.pristine || locationMode.valid"  class="text-danger">定位方式不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>定位间隔:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="timeInterval" name="timeInterval" class="form-box" [(ngModel)]="Device.timeInterval" #timeInterval="ngModel">
+          <p [hidden]="timeInterval.pristine || timeInterval.valid"  class="text-danger">定位间隔不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>设备创建时间:</label>
+        <div class="operate-group">
+          <input required   type="text"  id="deviceCreateTime" name="deviceCreateTime" class="form-box"  [(ngModel)]="Device.deviceCreateTime" #deviceCreateTime="ngModel">
+          <!--<p [hidden]="coding.pristine || coding.valid"  class="text-danger sbd">编号不能为空</p>-->
+        </div>
+      </div>
+
+      <div class="operate-btn mt15">
+        <button type="submit"    [disabled]="!tjmenuform.form.valid" class="btns btn-blue">保存</button>
+        <button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div [hidden]="!deletemenu"  class="operate menu"  *ngIf="selectedDevice">
+  <form class="operate-form"  #deletemenuform="ngForm" (ngSubmit)="save();">
+    <div class="operate-title">修改设备<span (click)="clicked=false; deletemenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <div class="operate-item fn-clear">
+        <label>设备号:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="deviceImeiCode2" name="deviceImeiCode2" class="form-box"  [(ngModel)]="selectedDevice.deviceImeiCode" #deviceImeiCode2="ngModel">
+          <p [hidden]="deviceImeiCode2.pristine || deviceImeiCode2.valid"  class="text-danger">设备号不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>设备使用者:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="deviceUser2" name="deviceUser2" class="form-box"  [(ngModel)]="selectedDevice.deviceUser" #deviceUser2="ngModel">
+          <p [hidden]="deviceUser2.pristine || deviceUser2.valid"  class="text-danger">设备使用者不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>设备手机号:</label>
+        <div class="operate-group">
+          <input required  type="number"  id="deviceMobile2" name="deviceMobile2" class="form-box" [rangeLength]="[8, 13]" [(ngModel)]="selectedDevice.deviceMobile" #deviceMobile2="ngModel">
+          <p [hidden]="deviceMobile2.pristine || deviceMobile2.valid"  class="text-danger">设备手机号不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>定位方式:</label>
+        <div class="operate-group">
+          <input required  type="number"  id="locationMode2" name="locationMode2" class="form-box" [(ngModel)]="selectedDevice.locationMode" #locationMode2="ngModel">
+          <p [hidden]="locationMode2.pristine || locationMode2.valid"  class="text-danger">定位方式不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>定位间隔:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="timeInterval2" name="timeInterval2" class="form-box" [(ngModel)]="selectedDevice.timeInterval" #timeInterval2="ngModel">
+          <p [hidden]="timeInterval2.pristine || timeInterval2.valid"  class="text-danger">定位间隔不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>设备创建时间:</label>
+        <div class="operate-group">
+          <input required   type="text"  id="deviceCreateTime2" name="deviceCreateTime2" class="form-box"  [(ngModel)]="selectedDevice.deviceCreateTime" #deviceCreateTime2="ngModel">
+          <!--<p [hidden]="coding.pristine || coding.valid"  class="text-danger sbd">地址不能为空</p>-->
+        </div>
+      </div>
+
+      <div class="operate-btn">
+        <button type="submit"     class="btns btn-blue">保存</button>
+        <button (click)="deletemenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>

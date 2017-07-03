@@ -19,6 +19,7 @@ export class GaodeMapComponent implements OnInit {
     ;
     var pointList;
     var  markers,lineArr = [];
+
     var map = new BMap.Map("container");            // 创建Map实例
     //获取下拉数据
     var type = "LOCAL_SEARCH";
@@ -30,21 +31,56 @@ export class GaodeMapComponent implements OnInit {
       , type    : type  //检索类型
     });
     var point = new BMap.Point(108.924295,34.235939); // 创建点坐标
-    var myIcon = new BMap.Icon("assets/img/006f (3).gif", new BMap.Size(300,157));
-    var marker = new BMap.Marker(point,{icon:myIcon});
-    // marker.setIcon('http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png');
-    map.addOverlay(marker);
+    var myIcon = new BMap.Icon("assets/img/006f (3).gif", new BMap.Size(30,30));
     // var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
     // marker.setLabel(label); //添加百度label
     map.enableScrollWheelZoom();                 //启用滚轮放大缩小
     // map.enableInertialDragging();
     map.centerAndZoom(point,15);
+    map.addControl(new BMap.NavigationControl());
 
-     //sousuo
-    var circle = new BMap.Circle(point,1000,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.2});
-    map.addOverlay(circle);
-    var local =  new BMap.LocalSearch(map, {renderOptions: {map: map, autoViewport: false,panel: "results"}});
-    local.searchNearby('医院',point,1000);
+
+    //坐标转换完之后的回调函数
+    var  translateCallback = function (data){
+      if(data.status === 0) {
+        // var marker = new BMap.Marker(data.points[0]);
+        // map.addOverlay(marker);
+        // var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
+        // marker.setLabel(label); //添加百度label
+        // map.setCenter(data.points[0]);
+        var marker = new BMap.Marker(data.points[0],{icon:myIcon});
+        // marker.setIcon('http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png');
+        map.addOverlay(marker);
+        var label = new BMap.Label("求助点刘胡兰",{offset:new BMap.Size(20,-10)});
+        marker.setLabel(label); //添加百度label
+        //sousuo
+        var circle = new BMap.Circle(data.points[0],1000,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.2});
+        map.addOverlay(circle);
+        var local =  new BMap.LocalSearch(map, {renderOptions: {map: map, autoViewport: false,panel: "results"}});
+        local.searchNearby('饭店',data.points[0],1000);
+
+        var opts = {
+          width : 150,     // 信息窗口宽度
+          height: 190,     // 信息窗口高度
+          title : "求助点" , // 信息窗口标题
+          enableMessage:true,//设置允许信息窗发送短息
+          message:"刘胡兰，13898966666~"
+        }
+        var infoWindow = new BMap.InfoWindow("刘胡兰，13898966666~", opts);  // 创建信息窗口对象
+        marker.addEventListener("click", function(){
+          map.openInfoWindow(infoWindow,point); //开启信息窗口
+        });
+      }
+    }
+
+    setTimeout(function(){
+      var convertor = new BMap.Convertor();
+      var pointArr = [];
+      pointArr.push(point);
+      convertor.translate(pointArr, 1, 5, translateCallback)
+    }, 1000);
+
+
 
 
     $('.seracch').on('click',function () {

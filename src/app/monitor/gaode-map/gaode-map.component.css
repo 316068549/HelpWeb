@@ -1,6 +1,7 @@
 #container {
   width: 100%;
   min-height: 760px;
+  height: 100%;
   /*margin: 0 0 0 110px;*/
 }
 #searchBox {
@@ -16,4 +17,21 @@
   width: 300px;
   z-index: 999;
 }
-
+#results {
+  position: absolute;
+  background-color: white;
+  max-height: 90%;
+  overflow-y: auto;
+  top: 10px;
+  left: 10px;
+  width: 280px;
+}
+#result {
+  position: absolute;
+  background-color: white;
+  height: 100px;
+  overflow-y: auto;
+  top: 10px;
+  left: 10px;
+  width: 280px;
+}

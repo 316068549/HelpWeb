@@ -18,7 +18,7 @@ export class LeftNavComponent implements OnInit {
     private router: Router
   ) { }
   ngOnInit(): void {
-    this.getMenu();
+    // this.getMenu();
 
    // $('.item').click(function () {
    //  if($(this).hasClass("actives")){
@@ -33,11 +33,7 @@ export class LeftNavComponent implements OnInit {
 
 
   }
-  getMenu(): void {
-    this.menuService
-      .getMenuDatas()
-      .then(menus => this.menus = menus);
-  }
+
 
 
 
