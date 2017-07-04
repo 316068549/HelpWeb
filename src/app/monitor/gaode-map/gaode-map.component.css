@@ -1,7 +1,8 @@
 #container {
   width: 100%;
-  min-height: 760px;
   height: 100%;
+  overflow: hidden;
+  margin:0;
   /*margin: 0 0 0 110px;*/
 }
 #searchBox {
@@ -14,7 +15,7 @@
   top: 5px;
   border-radius: 3px;
   line-height: 36px;
-  width: 300px;
+  width: 330px;
   z-index: 999;
 }
 #results {
@@ -29,9 +30,31 @@
 #result {
   position: absolute;
   background-color: white;
-  height: 100px;
+  border: 1px solid silver;
+  height: auto;
   overflow-y: auto;
   top: 10px;
   left: 10px;
-  width: 280px;
+  width: 160px;
+  padding: 10px;
+  box-shadow: 3px 4px 3px 0px silver;
+}
+dl,dt,dd,ul,li{
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+dt{
+  font-size:14px;
+  font-family:"微软雅黑";
+  font-weight:bold;
+  border-bottom:1px dotted #000;
+  padding:5px 0 5px 5px;
+  margin:5px 0;
+}
+dd{
+  padding:5px 0 0 5px;
+}
+li{
+  line-height:28px;
 }

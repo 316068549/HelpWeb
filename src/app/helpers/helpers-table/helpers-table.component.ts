@@ -40,15 +40,18 @@ export class HelpersTableComponent implements OnInit {
     this.getElectricities();
   }
   delete(userId: number): void{
+    layer.open({
+      content: '确定删除？'
+      , btn: ['确定', '取消']
+      , yes: () => {
+        this.userService.delete(userId).then(() =>{
+          this.getMenus();
+        })
+      }
+      , btn2: () => {
 
-    this.userService.delete(userId).then(() =>{
-      layer.open({
-        title: '提示'
-        ,content: '删除成功！'
-      });
-      this.getMenus();
+      }
     })
-    // this.getMenus();
   }
 
   getElectricities(): void {

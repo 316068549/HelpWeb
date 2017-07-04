@@ -1740,10 +1740,52 @@ var BMapLib = window.BMapLib = BMapLib || {};
           for (var i = 0; i < count; i++) {
             var ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 2, strokeColor: "#ff0000",fillColor:"#F7AD9E",fillOpacity:"0.2"}); //建立多边形覆盖物
             me.map.addOverlay(ply);  //添加覆盖物
-            me.initMarker(108.924295,34.235939);
+             me.initMarker(108.924295,34.235939);
+            me.initMarker2(108.813195,34.115739);
+            me.initMarker2(108.702395,34.025839);
+            me.initMarker2(108.920595,34.235939);
+            me.initMarker2(108.821595,34.135939);
             pointArray = pointArray.concat(ply.getPath());
           }
           me.map.setViewport(pointArray);    //调整视野
+          //坐标转换完之后的回调函数
+          var  translateCallback = function (data){
+            if(data.status === 0) {
+              //sousuo
+              var marker2 = new BMap.Marker(data.points[0],{icon:myIcon});
+              map.addOverlay(marker2);
+              var local = new BMap.LocalSearch(map, {
+                renderOptions:{map: map,autoViewport: false}
+              });
+              local.search("医院");
+
+              var content = '<div style="margin:0;line-height:20px;padding:2px;">' +
+                '<img src="assets/img/profile_small.jpg" alt="" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+                '简介：需要救援人刘大虎，77岁<br/>地址：西安市雁塔区上地十街10号<br/>电话：13898966666<br/>救援状态：志愿者乙正在前往救援' +
+                '</div>';
+
+              //创建检索信息窗口对象
+              var searchInfoWindow = null;
+              searchInfoWindow = new BMapLib.SearchInfoWindow(map, content, {
+                title  : "救援信息",      //标题
+                width  : 290,             //宽度
+                height : 120,              //高度
+                panel  : "panel",         //检索结果面板
+                enableAutoPan : true,   //自动平移
+              });
+
+              marker2.addEventListener("click", function(e){
+                searchInfoWindow.open(marker2);
+              })
+            }
+          }
+
+          setTimeout(function(){
+            var convertor = new BMap.Convertor();
+            var pointArr = [];
+            pointArr.push(point);
+            convertor.translate(pointArr, 1, 5, translateCallback)
+          }, 500);
         });
         me.localSearchAction();
       });
@@ -1992,9 +2034,15 @@ var BMapLib = window.BMapLib = BMapLib || {};
             var ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 2, strokeColor: "#ff0000",fillColor:"#F7AD9E",fillOpacity:"0.2"}); //建立多边形覆盖物
             me.map.addOverlay(ply);  //添加覆盖物
             me.initMarker(108.924295,34.235939);
+            me.initMarker2(108.813195,34.115739);
+            me.initMarker2(108.702395,34.025839);
+            me.initMarker2(108.920595,34.235939);
+            me.initMarker2(108.821595,34.135939);
             pointArray = pointArray.concat(ply.getPath());
           }
           me.map.setViewport(pointArray);    //调整视野
+
+
         });
 
 
@@ -2086,8 +2134,13 @@ var BMapLib = window.BMapLib = BMapLib || {};
     }
     , initMarker: function (x,y) {
       var poin = new BMap.Point(x,y); // 创建点坐标
-      var myIcon = new BMap.Icon("assets/img/006f (3).gif", new BMap.Size(300,157));
+      var myIcon = new BMap.Icon("assets/img/006f (3).gif", new BMap.Size(30,30));
       var marker = new BMap.Marker(poin,{icon:myIcon});
+      this.map.addOverlay(marker);
+    }
+    , initMarker2: function (x,y) {
+      var poin = new BMap.Point(x,y); // 创建点坐标
+      var marker = new BMap.Marker(poin);
       // marker.setIcon('http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png');
       this.map.addOverlay(marker);
     }

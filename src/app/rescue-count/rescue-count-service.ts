@@ -44,8 +44,8 @@ export class RescueCountService {
     return Promise.reject(error.message || error);
   }
 
-  getMenuData(menuId: number): Promise<Rescue> {
-    const url = this.menusUrl+'?menuId='+menuId;
+  getMenuData(rescueId: number): Promise<Rescue> {
+    const url = this.menusUrl+'?rescueId='+rescueId;
     return this.http.get(url)
       .toPromise()
       .then(response => response.json().objectbean[0] as Rescue)

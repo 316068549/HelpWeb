@@ -32,10 +32,7 @@ export class DeviceService {
   }
 
   private handleError(error: any): Promise<any> {
-    layer.open({
-      title: '提示'
-      ,content: error
-    });
+
     console.error('An error occurred', error); // for demo purposes only
     return Promise.reject(error.message || error);
   }
@@ -69,6 +66,7 @@ export class DeviceService {
 
   delete(id: number): Promise<void> {
     const durl=this.menusdeleteUrl+'?userId='+id;
+
     return this.http.get(durl)
       .toPromise()
       .then(() => null)

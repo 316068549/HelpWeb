@@ -3,13 +3,13 @@
     <div class="page-nav">
       <a  href="javascript:;">救援管理</a>
       <!--<a  href="javascript:;">用户管理</a>-->
-      <a  routerLinkActive="active" routerLink="/users">救助统计</a>
+      <a  routerLinkActive="active" routerLink="/rescuecount">救助统计</a>
     </div>
     <router-outlet></router-outlet>
     <div class="search-box">
     <span class="xt-search">
-               <input #searchBox type="text" id="search-box"  class="form-box" (keyup)="search(searchBox.value)"
-                      placeholder="请输入设备号">
+               <input #searchBox type="text" id="search-box"  class="form-box"
+                      placeholder="请输入名字">
            <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
   <span>
           <span *ngFor="let menu of menus | async"
@@ -49,9 +49,6 @@
               志愿者电话
             </th>
             <th>
-              身份证号
-            </th>
-            <th>
               住址
             </th>
             <th>
@@ -68,7 +65,7 @@
             <td >{{rescue.rescueNumber}}</td>
             <td >{{rescue.helperName}}</td>
             <td>{{rescue.telephone}}</td>
-            <td>{{rescue.nationalId}}</td>
+
             <td>{{rescue.address}}</td>
 
             <td>&nbsp;&nbsp;
@@ -79,7 +76,7 @@
           </tbody>
           <tfoot>
           <tr>
-            <td colspan="9">
+            <td colspan="8">
               <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
             </td>
           </tr>

@@ -7,6 +7,7 @@ export const Rescues: Rescue[] = [
     rescueStatus: '已完成',
     helperName:'王二',
     telephone: '13898966666',
+
     address: '陕西省西安市光华路',
     rescueCount:'陕西省西安市光华路....'
   },

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params }   from '@angular/router';
 
 import 'rxjs/add/observable/of';
 // Observable operators
@@ -19,17 +19,21 @@ declare var layer:any;
   styleUrls: ['./rescue-detail.component.css']
 })
 export class RescueDetailComponent implements OnInit {
+  rescue: Rescue;
 
   constructor(
-    private router: Router,
+    private route: ActivatedRoute,
     private rescueCountService: RescueCountService,
     private location: Location
   ) { }
 
 
   ngOnInit() {
+    this.route.params
+      .switchMap((params: Params) => this.rescueCountService.getMenuData(params['rescueId']))
+      .subscribe(rescue => this.rescue = rescue);
   }
-  
+
   goBack(): void {
     this.location.back();
   }
