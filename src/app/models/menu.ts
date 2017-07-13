@@ -8,5 +8,7 @@ export class Menu {
   permissionTypeId: number;
   permissionUrl:string;
   status:boolean;
+  selected:boolean;
+  ak:string;
   subAdminPermission:Array<Menu>;
 }

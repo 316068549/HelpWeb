@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild,ChangeDetectorRef } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute, Params }   from '@angular/router';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
+
 // 2. 引入ng2-validation中的组件
 import {CustomValidators} from 'ng2-validation';
 import { Subject }           from 'rxjs/Subject';
@@ -57,29 +58,31 @@ export class MenuTableComponent implements OnInit {
   //  sortBy = "parentCode";
   // sortOrder = "asc";
   menus: Menu[];
-  menus2: Menu[];
-  page: any;
+  pages: any;
   btns: Menu[];
   menu: Menu;
   selectedMenu: Menu;
   Menu=new Menu();
-  parentName: string = '首页';
+  wordControl: string='展开';
+  parentName: Menu[];
   info: string = '';
+  ref;
   // 表单验证
   form:FormGroup;
   onSelect(menu: Menu): void {
     this.selectedMenu = menu;
     console.log('xxx');
   }
-  setInfo() {
-    this.info = this.parentName;
-  }
+  // setInfo() {
+  //   this.info = this.parentName;
+  // }
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private menuService: MenuService,
-
+     ref: ChangeDetectorRef,
     private location: Location) {
+    this.ref = ref;
     let vm = this;
     if (vm.params) {
       vm.params = vm.params.replace('?', '').split('&');
@@ -133,8 +136,8 @@ export class MenuTableComponent implements OnInit {
 
         }
       });
-    this.page = this.getMenus();
-    console.log(this.page)
+    this.getMenus();
+    console.log(this.pages)
     // $('input[name="address"],#parentName').change(function(){
     //   if($(this).val()){
     //     $(this).parent().find('.must3').hide();
@@ -142,19 +145,57 @@ export class MenuTableComponent implements OnInit {
     // })
 
   }
-
+  searchParMenu(): void{
+    this.menuService.getParMenus().then( menus => {
+      this.parentName = menus;
+    });
+  }
   openClose(id:number,val:string,number:number): void{
       this.menuService.getSubMenu(id).then( menus => {
-        this.menus2  = menus;
+        for(let i=0;i<menus.length;i++){
+          menus[i].ak="subTr"+id;
+          this.menus.splice(number+i,0,menus[i]);
+          if(menus[i].subAdminPermission.length>0){
+            for(let a=0;a<menus[i].subAdminPermission.length;a++){
+              menus[i].subAdminPermission[a].ak="subTr2"+id;
+              this.menus.splice(number+i+a+1,0,menus[i].subAdminPermission[a]);
+            }
+          }
+        }
       });
+  }
+   Close(id:number,val:string,number:number,id2:number): void{
+     $(".subTr"+ id).remove();
+     $(".subTr2"+ id).remove();
+    if(id==id2){
+      $(".subTr2"+ id).hide();
+    }else{
+      $(".subTr"+ id).remove();
+      $(".subTr2"+ id).remove();
+    }
+
+
+   }
+  Close2(id:number,val:string,number:number,id2:number): void{
+      $(".subTr2"+ id2).hide();
+  }
+  openClose2(id:number,val:string,number:number,id2:number): void{
+    $(".subTr2"+ id2).show();
   }
 
   getMenus() {
+    var self = this;
     this.menuService.getMenuList().subscribe( menus => {
-      this.menus  = menus['list'];
-      this.page  = menus['page'];
-      return this.page;
-      // this.data = this.menus;
+      if(menus){
+        this.menus  = menus['list'];
+        // for(let i=0;i<this.menus.length;i++){
+        //   this.menus[i].selected = true;
+        // }
+        this.pages  = menus['page'];
+        self.ref.markForCheck();
+        self.ref.detectChanges();
+        console.log(this.pages)
+      }
     });
   }
   // getMenuBtns(id:number): void{
@@ -165,7 +206,7 @@ export class MenuTableComponent implements OnInit {
   // gotoDetail(): void {
   //   this.router.navigate(['/user-detail', this.selectedMenu.id]);
   // }
-  add(ids:number,name: string, coding: string, address: string, parentName: string,parentCode: string,
+  add(name: string, coding: string, subName: string, parentName: string,parentCode: string,
       newWindow: string, details: string ): void {
     name = name.trim();
     console.log(newWindow)
@@ -174,11 +215,11 @@ export class MenuTableComponent implements OnInit {
       $('.must3').show();
       return;
     }
-    address = address.trim();
+    subName = subName.trim();
     parentName = parentName.trim();
     parentCode = parentCode.trim();
     details = details.trim();
-    if (!ids && !name && !coding && !address && !newWindow && !parentName && !parentCode ) { return; }
+    if (!name && !coding && !subName && !newWindow && !parentName && !parentCode ) { return; }
     // this.menuService.create(ids,name, coding, address, parentName, parentCode,newWindow, details)
     //   .then(menu => {
     //     if(typeof (menu)=='string'){

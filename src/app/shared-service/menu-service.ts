@@ -16,8 +16,9 @@ export class MenuService {
   private menusbtnUrl = 'adminPermission/query/adminPermissionButton';
   private menuslistUrl = 'adminPermission/query/adminPermissionList';
   private menuslistUrl2 = 'adminPermission/query/subPermission';
+  private menuslistUrl3 = 'adminPermission/query/parentPermission';
   // private menusUrl = 'api/query/findMenu';
-  private menusaddUrl = 'api/query/addMenu';
+  private menusaddUrl = 'adminPermission/add/adminPermission';
   private menusmodifyUrl = 'api/query/modifyMenu';
   private menusdeleteUrl = 'api/query/deleteMenu';
   private userId = localStorage.getItem("userId");
@@ -41,10 +42,17 @@ export class MenuService {
   //     .then(response => response.json().data as Menu[])
   //     .catch(this.handleError);
   // }
-  getMenuList(): Observable<object> {
+  getMenuList() {
     const url = this.menuslistUrl+'?tokenId='+this.tokenId;
     return this.http.get(url)
-        .map(response => response.json().data as object
+        .map(response => {
+          if(response.json().code==0){
+            let result=response.json().data;
+            return result;
+          }else {
+            alert(response.json().error);
+          }
+          }
         );
   }
   // search(term: string): Observable<Rescue []> {
@@ -52,6 +60,14 @@ export class MenuService {
   //     .map(response => response.json().objectbean as Rescue[]
   //     );
   // }
+
+  getParMenus(): Promise<Menu[]> {
+    const url = this.menuslistUrl3+'?roleId='+this.roleId+'&userId='+this.userId+'&tokenId='+this.tokenId;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json().data as Menu[])
+      .catch(this.handleError);
+  }
 
   getMenuBtns(id:number): Promise<Menu[]> {
     const url = this.menusbtnUrl+'?permissionId='+id+'&roleId='+this.roleId+'&userId='+this.userId+'&tokenId='+this.tokenId;
@@ -96,16 +112,16 @@ export class MenuService {
   //     .then(menus => menus.find(menu => menu.permissionId === id));
   // }
   //
-  // create(id:number,name: string, coding: string, address: string,  parentName: string,parentCode: string,
-  //        newWindow: string, details: string): Promise<Menu> {
-  //   return this.http
-  //     .post(this.menusaddUrl, JSON.stringify({menuId:id,menuTitle: name,menuNumber:coding,menuLink:address,menuParentNumber:parentCode,menuParentTitle:parentName,
-  //       menuNewWindow:newWindow,menuRemark:details
-  //     }), {headers: this.headers})
-  //     .toPromise()
-  //     .then(res => res.json().objectbean as Menu)
-  //     .catch(this.handleError);
-  // }
+  create(name: string, coding: string, subName: string,  parentName: string,parentCode: string,
+         newWindow: string, details: string): Promise<Menu> {
+    return this.http
+      .post(this.menusaddUrl, JSON.stringify({permissionName: name,permissionParentId:coding,permissionSubId:subName,permissionUrl:parentCode,permissionTypeId:newWindow,
+        permissionDescription:details,permissionDescription:details
+      }), {headers: this.headers})
+      .toPromise()
+      .then(res => res.json().objectbean as Menu)
+      .catch(this.handleError);
+  }
   //
   //
   // delete(id: number): Promise<void> {
