@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { PaginationModule, ModalModule } from 'ng2-bootstrap';
 import {DataTableModule} from "angular2-datatable";
-import {CustomFormsModule} from "ng2-validation";
 import { RouterModule } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {CustomFormsModule} from "ng2-validation";
 
 import { HelperService } from '../helpers/helpers-service';
 import { helperRoutes } from './helpers.routes';
@@ -15,6 +16,8 @@ import { HelpersTableComponent } from './helpers-table/helpers-table.component';
 
 @NgModule({
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     SharedModule,
     DataTableModule,
     CustomFormsModule,

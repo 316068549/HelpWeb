@@ -5,7 +5,7 @@ import { TestComponent } from './test/test.component';
 export const appRoutes = [
 	{
 		path: '',
-		redirectTo: 'home',
+		redirectTo: 'login',
 		pathMatch: 'full'
 	},
 	{

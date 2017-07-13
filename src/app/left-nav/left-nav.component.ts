@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input,Output, EventEmitter } from '@angular/core';
 import { Menu } from '../models/menu';
 import { ActivatedRoute, Router, ActivatedRouteSnapshot, RouterState, RouterStateSnapshot } from '@angular/router';
 import { MenuService} from '../shared-service/menu-service';
@@ -10,6 +10,9 @@ declare var $:any;
   styleUrls: ['./left-nav.component.css']
 })
 export class LeftNavComponent implements OnInit {
+  @Input()
+  data:  Menu[];
+
   menus: Menu[];
   menuactive:boolean = false;
   menuactive2:boolean = true;
@@ -18,7 +21,7 @@ export class LeftNavComponent implements OnInit {
     private router: Router
   ) { }
   ngOnInit(): void {
-    // this.getMenu();
+    this.getMenu();
 
    // $('.item').click(function () {
    //  if($(this).hasClass("actives")){
@@ -34,6 +37,22 @@ export class LeftNavComponent implements OnInit {
 
   }
 
+  getMenus(): void {
+    this.menuService
+      .getMenuDatas()
+      .then(menus => this.menus = menus);
+  }
+
+  getSubMenu(menu2:Menu){
+    this.data=null;
+    this.data = menu2.subAdminPermission;
+  }
+
+  getMenu(): void {
+    this.menuService
+      .getMenuDatas()
+      .then(menus => this.menus = menus);
+  }
 
 
 

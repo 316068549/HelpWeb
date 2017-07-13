@@ -42,6 +42,19 @@
         </a>
       </li>
 
+      <li class="item actives"   *ngFor="let menu of menus" >
+        <a>
+          <i class="fa fa-envelope"></i>
+          <span class="nav-label">{{menu.permissionName}}</span>
+          <span class="fa arrow" (click)="menuactive=!menuactive" ></span>
+        </a>
+        <ul class="nav nav-second-level" >
+          <li routerLinkActive="active" *ngFor="let menu2 of menu.subAdminPermission ">
+            <a [routerLink]="[menu2.permissionUrl, menu2.permissionId]"  routerLinkActive="active"  class="J_menuItem"  data-index="3" >{{menu2.permissionName}}</a>
+          </li>
+        </ul>
+      </li>
+
       <li class="item actives" [ngClass]="{'actives':!menuactive}" >
         <a>
           <i class="fa fa-envelope"></i>

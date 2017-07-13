@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
 
   }
 
+
   ngOnInit() {
     console.log("--- user-login-component ---");
     console.log(this.router);
@@ -42,11 +43,25 @@ export class LoginComponent implements OnInit {
     console.log(routerStateSnapshot);
   }
 
+
   public login():void{
     console.log(this.user);
-    this.userLoginService.login(this.user);
-    this.router.navigateByUrl("home");
+    this.userLoginService.login(this.user).subscribe(res => {
+      console.log(res)
+      if(res){
+        localStorage.setItem("userId", res.userId);
+        localStorage.setItem("roleId", res.roleId);
+        localStorage.setItem("tokenId", res.tokenId);
+        this.router.navigateByUrl("home");
+      }
+      return false;
+
+    });
+
+
   }
+
+
 
 
 

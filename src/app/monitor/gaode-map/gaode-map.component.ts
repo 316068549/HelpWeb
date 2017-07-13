@@ -1,7 +1,10 @@
 import { Component, OnInit, DoCheck } from '@angular/core';
+import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 declare var BMap: any;
 declare var $:any;
 declare var BMapLib:any;
+declare var videojs:any;
 
 @Component({
   selector: 'app-gaode-map',
@@ -10,7 +13,10 @@ declare var BMapLib:any;
 })
 export class GaodeMapComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private location: Location
+  ) { }
 
   ngOnInit() {
     var defaultIconStyle = 'red', //默认的图标样式
@@ -23,8 +29,8 @@ export class GaodeMapComponent implements OnInit {
     var map = new BMap.Map("container");            // 创建Map实例
     //获取下拉数据
     var type = "LOCAL_SEARCH";
-
-
+    var X = $('#container').width();
+    var Y = $('#container').height();
 
 //创建检索控件
     var searchControl = new BMapLib.SearchControl({
@@ -50,14 +56,19 @@ export class GaodeMapComponent implements OnInit {
       var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
       addMarker(point);
     }
+    for (var i = 0; i < 10; i ++) {
+      var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
+      var marker = new BMap.Marker(point);
+      map.addOverlay(marker);
+    }
 
     //坐标转换完之后的回调函数
     var  translateCallback = function (data){
       if(data.status === 0) {
         // var marker = new BMap.Marker(data.points[0]);
         // map.addOverlay(marker);
-        // var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
-        // marker.setLabel(label); //添加百度label
+        // marker.setLabel(label);         // var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
+//添加百度label
         // map.setCenter(data.points[0]);
 
         // var label = new BMap.Label("求助点刘胡兰",{offset:new BMap.Size(20,-10)});
@@ -87,28 +98,28 @@ export class GaodeMapComponent implements OnInit {
         //     markers.push(marker);
         //   }
         // }
-        var local = new BMap.LocalSearch(map, {
-          renderOptions:{map: map,autoViewport: false}
-        });
-        local.search("医院");
-        local.setMarkersSetCallback(function (pois) {
-            //  map.clearOverlays();
-            // for (var i = 0,marker; i < pois.length; i++) {
-            //   //在地图上创建标注点
-            //    marker = new BMap.Marker(pois[i].marker.point,{icon:myIcon2});
-            //   map.addOverlay(marker);
-            // }
-          // var marker2 = new BMap.Marker(data.points[0],{icon:myIcon});
-          // map.addOverlay(marker2);
-          // map.centerAndZoom(data.points[0],15);
-          console.log(pois)
-        })
+        // var local = new BMap.LocalSearch(map, {
+        //   renderOptions:{map: map,autoViewport: false}
+        // });
+        // local.search("医院");
+        // local.setMarkersSetCallback(function (pois) {
+        //     //  map.clearOverlays();
+        //     // for (var i = 0,marker; i < pois.length; i++) {
+        //     //   //在地图上创建标注点
+        //     //    marker = new BMap.Marker(pois[i].marker.point,{icon:myIcon2});
+        //     //   map.addOverlay(marker);
+        //     // }
+        //   // var marker2 = new BMap.Marker(data.points[0],{icon:myIcon});
+        //   // map.addOverlay(marker2);
+        //   // map.centerAndZoom(data.points[0],15);
+        //   console.log(pois)
+        // })
 
 
 
         var content = '<div style="margin:0;line-height:20px;padding:2px;">' +
           '<img src="assets/img/profile_small.jpg" alt="" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
-          '简介：需要救援人刘大虎，77岁<br/>地址：西安市雁塔区上地十街10号<br/>电话：13898966666<br/>救援状态：志愿者乙正在前往救援' +
+          '简介：需要救援人刘大虎，77岁<br/><a   videohref="ttp://vjs.zencdn.net/v/oceans.mp4" class="video_link">查看视频</a><br/>地址：西安市雁塔区上地十街10号<br/>电话：13898966666<br/>救援状态：志愿者乙正在前往救援' +
           '</div>';
 
         //创建检索信息窗口对象
@@ -116,10 +127,10 @@ export class GaodeMapComponent implements OnInit {
         searchInfoWindow = new BMapLib.SearchInfoWindow(map, content, {
           title  : "救援信息",      //标题
           width  : 290,             //宽度
-          height : 120,              //高度
+          height : 115,              //高度
           panel  : "panel",         //检索结果面板
           enableAutoPan : true,   //自动平移
-          // enableSendToPhone: false, //是否显示发送到手机按钮
+          enableSendToPhone: true, //是否显示发送到手机按钮
           // searchTypes   :[
           //   BMAPLIB_TAB_SEARCH,   //周边检索
           //   BMAPLIB_TAB_TO_HERE,  //到这里去
@@ -130,6 +141,7 @@ export class GaodeMapComponent implements OnInit {
         marker2.addEventListener("click", function(e){
           searchInfoWindow.open(marker2);
         })
+
 
         //圆形区域搜索
         // var circle = new BMap.Circle(data.points[0],1000,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.2});
@@ -158,9 +170,32 @@ export class GaodeMapComponent implements OnInit {
       convertor.translate(pointArr, 1, 5, translateCallback)
     }, 500);
 
+    //播放视频
+    var myPlayer = videojs('my-video');
+    videojs("my-video").ready(function(){
+      var myPlayer = this;
+      myPlayer.play();
+    });
+
+    videojs("my-video", {}, function(){
+      // Player (this) is initialized and ready.
+    });
+    var fullscreenchange = function(){
+      $('#page-wrapper').removeClass('marg220').addClass('fullscreen');
+    };
+
+    myPlayer.on("pause", function(){
+      console.log("pause")
+    });
 
 
 
+
+    $('.video_link').on('click',()=>{
+      alert(1);
+      this.router.navigate(['video']);
+    }
+    )
     $('.seracch').on('click',function () {
       var address = $("#address").val();
       getBoundary(address)
@@ -173,7 +208,21 @@ export class GaodeMapComponent implements OnInit {
       // searchControl.initMarker(108.924295,34.235939);
 
     })
+    $('.quanping').on('click',function () {
+      var showMap = document.getElementById("container");
+      $('#page-wrapper').removeClass('marg220').addClass('fullscreen');
 
+      showMap.style.width = screen.width + "px";
+      showMap.style.height = screen.height + "px";
+      requestFullScreen(document.documentElement);
+    })
+    $('.back').on('click',function () {
+      var showMap = document.getElementById("container");
+      $('#page-wrapper').addClass('marg220').removeClass('fullscreen');
+      showMap.style.width = X;
+      showMap.style.height = Y;
+      exitFull();
+    })
     // 编写自定义函数,创建标注
     function addMarker(point){
       var marker = new BMap.Marker(point,{icon:myIcon2});
@@ -199,7 +248,46 @@ export class GaodeMapComponent implements OnInit {
         map.setViewport(pointArray);    //调整视野
       });
     }
+    //全屏
+    function requestFullScreen(element) {
+      // 判断各种浏览器，找到正确的方法
+      var requestMethod = element.requestFullScreen || //W3C
+        element.webkitRequestFullScreen ||  //Chrome等
+        element.mozRequestFullScreen || //FireFox
+        element.msRequestFullScreen; //IE11
+      if (requestMethod) {
+        requestMethod.call(element);
+      }
+      else if (element.msRequestFullscreen) {
 
+        element.msRequestFullscreen();
+
+      }
+
+      // else if (typeof $(window).ActiveXObject !== "undefined") {//for Internet Explorer
+      //   var wscript = $(window).   ("WScript.Shell");
+      //   if (wscript !== null) {
+      //     wscript.SendKeys("{F11}");
+      //   }
+      // }
+    }
+    //退出全屏
+    function exitFull() {
+      // 判断各种浏览器，找到正确的方法
+      var exitMethod = document.exitFullscreen || //W3C
+        // document.mozCancelFullScreen ||  //Chrome等
+        document.webkitExitFullscreen || //FireFox
+        document.webkitExitFullscreen; //IE11
+      if (exitMethod) {
+        exitMethod.call(document);
+      }
+      // else if (typeof $(window).ActiveXObject !== "undefined") {//for Internet Explorer
+      //   var wscript = $(window).ActiveXObject("WScript.Shell");
+      //   if (wscript !== null) {
+      //     wscript.SendKeys("{F11}");
+      //   }
+      // }
+    }
 
 
 
@@ -418,6 +506,8 @@ export class GaodeMapComponent implements OnInit {
 
 
   }
+
+
 }
 
 

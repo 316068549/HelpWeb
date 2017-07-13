@@ -11,7 +11,7 @@ export class ParentsmenuesPipe implements PipeTransform {
     if (allHeroes==null) {
       return null;
     }
-    return allHeroes.filter(menus => {return menus.menuParentNumber == args;
+    return allHeroes.filter(menus => {return menus.permissionParentId == args;
     });
   }
 

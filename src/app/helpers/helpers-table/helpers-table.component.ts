@@ -1,4 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+// 1. 引入forms中的组件
+import {FormGroup, FormControl} from '@angular/forms';
+// 2. 引入ng2-validation中的组件
+import {CustomValidators} from 'ng2-validation';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -19,6 +23,7 @@ declare var layer:any;
   styleUrls: ['./helpers-table.component.css']
 })
 export class HelpersTableComponent implements OnInit {
+  // form:FormGroup;
   public data: any[];
   rowsOnPage = 10;
   sortOrder = "asc";
@@ -34,25 +39,62 @@ export class HelpersTableComponent implements OnInit {
     private router: Router,
     private userService: HelperService,
     private location: Location
-  ) { }
+  ) {
+    // // 4. 初始化表达组里面的内容
+    // this.form = new FormGroup({
+    //   phone: new FormControl('', CustomValidators.phone("zh-CN"))
+    // });
+  }
 
   ngOnInit(): void {
     this.getElectricities();
   }
-  delete(userId: number): void{
-    layer.open({
-      content: '确定删除？'
-      , btn: ['确定', '取消']
-      , yes: () => {
-        this.userService.delete(userId).then(() =>{
-          this.getMenus();
-        })
-      }
-      , btn2: () => {
 
-      }
-    })
+
+  delete(helper: Helpers): void {
+    console.log(helper.helperId)
+    this.userService
+      .delete(helper.helperId)
+      .then(() => {
+        this.helpers = this.helpers.filter(h => h !== helper);
+        this.data = this.helpers;
+        layer.open({
+                    title: '提示'
+                    ,content: '删除成功'
+                  });
+        if (this.selectedHelper === helper) { this.selectedHelper = null; }
+      });
+      // layer.open({
+      //   content: '确定删除？'
+      //   , btn: ['确定', '取消']
+      //   , yes: () => {
+      //     this.userService
+      //       .delete(helper.helperId)
+      //       .then(() => {
+      //         this.helpers = this.helpers.filter(h => h !== helper);
+      //         if (this.selectedHelper === helper) { this.selectedHelper = null; }
+      //       });
+      //   }
+      //   , btn2: () => {
+      //
+      //   }
+      // })
   }
+
+  // delete(userId: number): void{
+  //   layer.open({
+  //     content: '确定删除？'
+  //     , btn: ['确定', '取消']
+  //     , yes: () => {
+  //       this.userService.delete(userId).then(() =>{
+  //         this.getMenus();
+  //       })
+  //     }
+  //     , btn2: () => {
+  //
+  //     }
+  //   })
+  // }
 
   getElectricities(): void {
     this.userService.getMenuDatas().then( electricities => {
@@ -68,57 +110,70 @@ export class HelpersTableComponent implements OnInit {
 
   }
 
+  // search(term: string): void {
+  //   this.searchTerms.next(term);
+  // }
+
   search2(term: string): void{
 
     this.userService.search2(term).then( menus => {
-      if(typeof (menus)=='string'){
-        layer.open({
-          title: '提示'
-          ,content: '没有查询到数据！'
-        });
-      }else{
+      // if(typeof (menus)=='string'){
+      //   layer.open({
+      //     title: '提示'
+      //     ,content: '没有查询到数据！'
+      //   });
+      // }else{
         this.data=menus;
-      }
+      // }
       console.log(this.data);
     });
   }
-  add(userId:number,userName: string, password: string, role: string,  sex: string,phoneNumber: string,
-      address: string, remarks: string ): void {
-    userName = userName.trim();
-    if(!role){
-      $('.must3').show();
-      return;
-    }
-    address = address.trim();
-    remarks = remarks.trim();
-    phoneNumber = phoneNumber.trim();
-    if (!userId && !userName && !password && !role && !sex && !phoneNumber && !address ) { return; }
-    this.userService.create(userId,userName, password, role, sex, phoneNumber,address, remarks)
-      .subscribe(res => {
-        console.log(res["status"])
-        // console.log(typeof (res))
-        if(res["status"]==1){
-          layer.open({
-            title: '提示'
-            ,content: '添加成功'
-          });
-          // this.dictionarys.push(menu);
-          this.getMenus();
-          this.selectedHelper = null;
-          this.tjmenu = false;
-          this.clicked = false;
-        }else{
-          layer.open({
-            title: '提示'
-            ,content: res["objectbean"],
-            end:function () {
-              $('#helperId').focus();
-            }
-          });
+  add(helperId:number,helperName: string, age: number, sex: string,address: string,
+           phoneNumber: string, nationalId: string): void {
 
-        }
+    this.userService.create(helperId,helperName,age,sex,address,phoneNumber,nationalId)
+      .then(hero => {
+        this.helpers.push(hero);
+        this.selectedHelper = null;
+        this.tjmenu = false;
+        this.clicked = false;
+        this.getMenus();
       });
   }
+  // add(helperId:number,helperName: string, age: number, sex: string,address: string,
+  //     phoneNumber: string, nationalId: string ): void {
+  //   helperName = helperName.trim();
+  //
+  //   address = address.trim();
+  //   nationalId = nationalId.trim();
+  //   phoneNumber = phoneNumber.trim();
+  //   if (!helperId && !helperName && !age  && !sex && !phoneNumber && !address && nationalId ) { return; }
+  //   this.userService.create(helperId,helperName,age,sex,address,phoneNumber,nationalId)
+  //     .subscribe(res => {
+  //       console.log(res["status"])
+  //       // console.log(typeof (res))
+  //       if(res["status"]==1){
+  //         layer.open({
+  //           title: '提示'
+  //           ,content: '添加成功'
+  //         });
+  //         // this.dictionarys.push(menu);
+  //         this.getMenus();
+  //         this.selectedHelper = null;
+  //         this.tjmenu = false;
+  //         this.clicked = false;
+  //       }else{
+  //         layer.open({
+  //           title: '提示'
+  //           ,content: res["objectbean"],
+  //           end:function () {
+  //             $('#helperId').focus();
+  //           }
+  //         });
+  //
+  //       }
+  //     });
+  // }
   getMenus(): void {
     this.userService.getMenuDatas().then( menus => {
       this.helpers  = menus;
@@ -127,14 +182,25 @@ export class HelpersTableComponent implements OnInit {
   }
   save(): void {
     this.userService.update(this.selectedHelper)
-      .then(() => {this.getMenus();this.deletemenu = false;this.clicked = false;
+      .then(() => {
+        this.deletemenu = false;
+        this.clicked = false;
         layer.open({
-          title: '提示'
-          ,content: '修改成功'
-        });
-
+                  title: '提示'
+                  ,content: '修改成功'
+                });
     });
   }
+  // save(): void {
+  //   this.userService.update(this.selectedHelper)
+  //     .then(() => {this.getMenus();this.deletemenu = false;this.clicked = false;
+  //       layer.open({
+  //         title: '提示'
+  //         ,content: '修改成功'
+  //       });
+  //
+  //   });
+  // }
   // gotoDetail(): void {
   //   this.router.navigate(['/user-detail', this.selectedMenu.id]);
   // }

@@ -29,9 +29,9 @@ export class RescueDetailComponent implements OnInit {
 
 
   ngOnInit() {
-    this.route.params
-      .switchMap((params: Params) => this.rescueCountService.getMenuData(params['rescueId']))
-      .subscribe(rescue => this.rescue = rescue);
+    // this.route.params
+    //   .switchMap((params: Params) => this.rescueCountService.getMenuData(params['rescueId']))
+    //   .subscribe(rescue => this.rescue = rescue);
   }
 
   goBack(): void {

@@ -12,6 +12,7 @@ import { ParentsmenuesPipe } from '../left-nav/left-nav.pipe';
 import { MonitorComponent } from '../monitor/monitor.component';
 import { GaodeMapComponent } from '../monitor/gaode-map/gaode-map.component';
 import { HelpComponent } from '../help/help.component';
+import { VideoComponent } from '../monitor/video/video.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { HelpComponent } from '../help/help.component';
     ParentsmenuesPipe,
     MonitorComponent,
     GaodeMapComponent,
-    HelpComponent
+    HelpComponent,
+    VideoComponent
   ],
   providers: [MenuService],
 })

@@ -1,12 +1,12 @@
 export class Menu {
-  menuId: number;
-  menuTitle: string;
-  menuNumber: string;
-  menuLink: string;
-  menuNewWindow:string;
-  menuParentTitle: string;
-  menuParentNumber: string;
-  // addTime:string;
-  // selected:boolean;
-  menuRemark?:string;
+  permissionId: number;
+  permissionName: string;
+  permissionResource: string;
+  permissionDescription: string;
+  permissionParentId:number;
+  createTime: number;
+  permissionTypeId: number;
+  permissionUrl:string;
+  status:boolean;
+  subAdminPermission:Array<Menu>;
 }

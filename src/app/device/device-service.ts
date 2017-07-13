@@ -6,6 +6,7 @@ import { Http, Headers, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import { Device } from '../models/device';
+import { Devices } from '../mock-data/mock-device';
 declare var layer:any;
 
 @Injectable()
@@ -20,16 +21,20 @@ export class DeviceService {
 
   constructor(public http:Http
   ){}
-
   getMenuDatas(): Promise<Device[]> {
-    // return this.getWarns()
-    //   .then(warns => warns.find(warn => warn.id === id));
-    // const url = `${this.menusUrl}/${id}`;
-    return this.http.get(this.menusUrl)
-      .toPromise()
-      .then(response => response.json().objectbean as Device[])
-      .catch(this.handleError);
+    return Promise.resolve(Devices);
   }
+
+
+  // getMenuDatas(): Promise<Device[]> {
+  //   // return this.getWarns()
+  //   //   .then(warns => warns.find(warn => warn.id === id));
+  //   // const url = `${this.menusUrl}/${id}`;
+  //   return this.http.get(this.menusUrl)
+  //     .toPromise()
+  //     .then(response => response.json().objectbean as Device[])
+  //     .catch(this.handleError);
+  // }
 
   private handleError(error: any): Promise<any> {
 

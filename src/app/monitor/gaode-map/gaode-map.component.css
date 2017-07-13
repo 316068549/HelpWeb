@@ -3,6 +3,7 @@
   height: 100%;
   overflow: hidden;
   margin:0;
+  z-index: 2222;
   /*margin: 0 0 0 110px;*/
 }
 #searchBox {
@@ -35,7 +36,7 @@
   overflow-y: auto;
   top: 10px;
   left: 10px;
-  width: 160px;
+  width: 560px;
   padding: 10px;
   box-shadow: 3px 4px 3px 0px silver;
 }
@@ -57,4 +58,29 @@ dd{
 }
 li{
   line-height:28px;
+}
+#BMapLib_sc0 .BMapLib_sc_t_b {
+  width: 100px;
+}
+.quanping{
+  position: absolute;
+  font-size: 12px;
+  right: 310px;
+  top: 5px;
+  border-radius: 3px;
+  line-height: 36px;
+  width: 90px;
+  height: 50px;
+  z-index: 999;
+}
+.back{
+  position: absolute;
+  font-size: 12px;
+  right: 410px;
+  top: 5px;
+  border-radius: 3px;
+  line-height: 36px;
+  width: 90px;
+  height: 50px;
+  z-index: 999;
 }

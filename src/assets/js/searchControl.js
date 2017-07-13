@@ -1606,7 +1606,7 @@ var BMapLib = window.BMapLib = BMapLib || {};
         '<form id="BMapLib_formPoi" class="BMapLib_seBox"><input data-widget="quickdelete" id="BMapLib_PoiSearch" class="txtPoi" type="search"/><em id="btnPClear" class="BMapLib_xx"></em></form>',
         '</td>',
         '<td>',
-        '<div class="BMapLib_sc_t_b sc_btn" id="BMapLib_sc_b0">省市区域查询</div>',
+        '<div class="BMapLib_sc_t_b sc_btn" id="BMapLib_sc_b0" >区域查询</div>',
         '</td>',
         '</tr>',
         '</table>',

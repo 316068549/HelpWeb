@@ -1,9 +1,9 @@
-export class User {
-  id: number;
+
+  export class User {
+  userId: number;
   userName: string;
-  password: string;
-  remeberMe:boolean;
-  email: string;
-  confirmPassword: string;
-  vcode:string;
+  userPassword: string;
+  roleId:number;
+  tokenId: string;
 }
+
