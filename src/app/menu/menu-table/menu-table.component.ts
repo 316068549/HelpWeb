@@ -43,6 +43,7 @@ export class MenuTableComponent implements OnInit {
   // }
   private tjmenu:boolean;
   private clicked:boolean;
+  private deletemenu:boolean = false;
   private addbtn:boolean = false;
   private edit:boolean = false;
   private del:boolean = false;
@@ -64,18 +65,32 @@ export class MenuTableComponent implements OnInit {
   selectedMenu: Menu;
   Menu=new Menu();
   wordControl: string='展开';
-  parentName: Menu[];
+  comIdList:any = [
+  ];
+  comIdList2:any = [
+  ];
   info: string = '';
   ref;
   // 表单验证
   form:FormGroup;
   onSelect(menu: Menu): void {
     this.selectedMenu = menu;
-    console.log('xxx');
+    if(!this.selectedMenu.permissionSubId){
+      this.selectedMenu.permissionSubId=-1;
+    }
+    console.log(this.selectedMenu);
   }
-  // setInfo() {
-  //   this.info = this.parentName;
-  // }
+  setInfo(id:number) {
+    this.comIdList2 =[];
+    this.menuService.getParMenus(id).then( menus => {
+      for(let i=0;i<menus.length;i++){
+        this.comIdList2.push(menus[i])
+      }
+    });
+  }
+  setInfo2(obj){
+    console.log(obj)
+  }
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -116,6 +131,11 @@ export class MenuTableComponent implements OnInit {
   getPageData(pageNo) {
     let vm = this;
     vm.curPage = pageNo;
+    this.menuService.getMenuList(pageNo).then( menus => {
+      if(menus){
+        this.menus  = menus['list'];
+      }
+    })
     console.log('触发', pageNo);
   }
 
@@ -137,6 +157,7 @@ export class MenuTableComponent implements OnInit {
         }
       });
     this.getMenus();
+
     console.log(this.pages)
     // $('input[name="address"],#parentName').change(function(){
     //   if($(this).val()){
@@ -146,8 +167,32 @@ export class MenuTableComponent implements OnInit {
 
   }
   searchParMenu(): void{
-    this.menuService.getParMenus().then( menus => {
-      this.parentName = menus;
+    this.comIdList=[];
+    this.menuService.getParMenus(-1).then( menus => {
+      for(let i=0;i<menus.length;i++){
+        this.comIdList.push(menus[i])
+      }
+    });
+  }
+  searchParMenu2(id:number): void{
+    this.comIdList=[];
+    this.comIdList2=[];
+    this.menuService.getMenuDetail(id).then( menus => {
+
+      if(menus['parentPermissionList']){
+        for(let i=0;i<menus['parentPermissionList'].length;i++){
+          this.comIdList.push(menus['parentPermissionList'][i])
+        }
+      }
+      if(menus['subPermissionList']){
+        this.selectedMenu.subPermissionList = menus['subPermissionList'];
+        for(let i=0;i<menus['subPermissionList'].length;i++){
+          if(this.selectedMenu.permissionParentId==menus['subPermissionList'][i].permissionId){
+            this.selectedMenu.parentPermission = menus['subPermissionList'][i].permissionParentId;
+          }
+          this.comIdList2.push(menus['subPermissionList'][i])
+        }
+      }
     });
   }
   openClose(id:number,val:string,number:number): void{
@@ -185,7 +230,7 @@ export class MenuTableComponent implements OnInit {
 
   getMenus() {
     var self = this;
-    this.menuService.getMenuList().subscribe( menus => {
+    this.menuService.getMenuList().then( menus => {
       if(menus){
         this.menus  = menus['list'];
         // for(let i=0;i<this.menus.length;i++){
@@ -195,6 +240,7 @@ export class MenuTableComponent implements OnInit {
         self.ref.markForCheck();
         self.ref.detectChanges();
         console.log(this.pages)
+        return this.pages;
       }
     });
   }
@@ -206,76 +252,89 @@ export class MenuTableComponent implements OnInit {
   // gotoDetail(): void {
   //   this.router.navigate(['/user-detail', this.selectedMenu.id]);
   // }
-  add(name: string, coding: string, subName: string, parentName: string,parentCode: string,
-      newWindow: string, details: string ): void {
+  add(name: string, coding: number, subName: number,  parentName: string,parentCode: string, newWindow: number, details: string ): void {
     name = name.trim();
-    console.log(newWindow)
-    coding = coding.trim();
     if(!parentName){
       $('.must3').show();
       return;
     }
-    subName = subName.trim();
     parentName = parentName.trim();
     parentCode = parentCode.trim();
     details = details.trim();
     if (!name && !coding && !subName && !newWindow && !parentName && !parentCode ) { return; }
-    // this.menuService.create(ids,name, coding, address, parentName, parentCode,newWindow, details)
-    //   .then(menu => {
-    //     if(typeof (menu)=='string'){
-    //       layer.open({
-    //         title: '提示'
-    //         ,content: menu
-    //       });
-    //     }
-    //     this.menus.push(menu);
-    //     console.log(this.menus)
-    //     this.getMenus();
-    //     this.selectedMenu = null;
-    //     $('#details').val('');
-    //   });
+    this.menuService.create(name, coding, subName, parentName, parentCode,newWindow, details)
+      .then(menu => {
+        if(!menu) {
+          layer.open({
+            title: '提示'
+            , content: "添加失败"
+          });
+        }
+        if(typeof (menu)=='string'){
+          layer.open({
+            title: '提示'
+            ,content: menu
+          });
+        }
+        this.getMenus();
+        this.selectedMenu = null;
+        $('#details').val('');
+      });
     $('#details').val('');
     this.tjmenu = false;
     this.clicked = false;
-    layer.open({
-      title: '提示'
-      ,content: '添加成功'
-    });
+    // layer.open({
+    //   title: '提示'
+    //   ,content: '添加成功'
+    // });
   }
   delete(menu: Menu): void {
     layer.open({
       content: '确定删除？'
       , btn: ['确定', '取消']
       , yes: () => {
-        // this.menuService
-        //   .delete(menu.menuId)
-        //   .then(() => {
-        //     this.menus = this.menus.filter(h => h !== menu);
-        //     // this.data = this.data.filter(h => h !== menu);
-        //     if (this.selectedMenu === menu) { this.selectedMenu = null; }
-        //   });
-        // this.getMenus();
+        this.menuService
+          .delete(menu.permissionId)
+          .then(() => {
+            this.menus = this.menus.filter(h => h !== menu);
+            // this.data = this.data.filter(h => h !== menu);
+            if (this.selectedMenu === menu) { this.selectedMenu = null; }
+          });
+        this.getMenus();
       }
       , btn2: () => {
 
       }
     })
   }
-  // delete(menu: Menu): void {
-  //   this.menuService
-  //     .delete(menu.id)
-  //     .then(() => {
-  //       this.menus = this.menus.filter(h => h !== menu);
-  //       if (this.selectedMenu === menu) { this.selectedMenu = null; }
-  //     });
-  // }
-  save(): void {
-    // this.menuService.update(this.menu);
-    // layer.open({
-    //   title: '提示'
-    //   ,content: '修改成功'
-    // });
-    // .then(() => this.goBack());
+
+  save(id:number,oldName:string,name: string, coding: number, subName: number,  parentName: string,parentCode: string, newWindow: number, details: string): void {
+    name = name.trim();
+    parentName = parentName.trim();
+    parentCode = parentCode.trim();
+    details = details.trim();
+    if (!id&&!oldName&&!name && !coding && !subName && !newWindow && !parentName && !parentCode ) { return; }
+    this.menuService.update(id,oldName,name, coding, subName, parentName, parentCode,newWindow, details)
+      .then(menu => {
+        if(!menu) {
+          layer.open({
+            title: '提示'
+            , content: "修改失败"
+          });
+        }
+        if(typeof (menu)=='string'){
+          layer.open({
+            title: '提示'
+            ,content: menu
+          });
+        }
+        this.getMenus();
+        this.selectedMenu = null;
+        $('#details').val('');
+      });
+    $('#details').val('');
+    this.deletemenu = false;
+    this.clicked = false;
   }
   goBack(): void {
     this.location.back();

@@ -6,9 +6,12 @@ export class Menu {
   permissionParentId:number;
   createTime: number;
   permissionTypeId: number;
+  permissionSubId:number;
   permissionUrl:string;
   status:boolean;
   selected:boolean;
   ak:string;
   subAdminPermission:Array<Menu>;
+  subPermissionList:Array<Menu>;
+  parentPermission:number;
 }
