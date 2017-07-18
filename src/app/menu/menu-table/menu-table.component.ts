@@ -64,6 +64,7 @@ export class MenuTableComponent implements OnInit {
   menu: Menu;
   selectedMenu: Menu;
   Menu=new Menu();
+
   wordControl: string='展开';
   comIdList:any = [
   ];
@@ -167,6 +168,7 @@ export class MenuTableComponent implements OnInit {
 
   }
   searchParMenu(): void{
+    this.Menu.permissionTypeId = 1;
     this.comIdList=[];
     this.menuService.getParMenus(-1).then( menus => {
       for(let i=0;i<menus.length;i++){
@@ -252,7 +254,8 @@ export class MenuTableComponent implements OnInit {
   // gotoDetail(): void {
   //   this.router.navigate(['/user-detail', this.selectedMenu.id]);
   // }
-  add(name: string, coding: number, subName: number,  parentName: string,parentCode: string, newWindow: number, details: string ): void {
+  add(name: string, coding: number, subName: number,  parentName: string,parentCode: string,address3:string, newWindow: number, details: string ): void {
+    console.log(newWindow)
     name = name.trim();
     if(!parentName){
       $('.must3').show();
@@ -261,28 +264,71 @@ export class MenuTableComponent implements OnInit {
     parentName = parentName.trim();
     parentCode = parentCode.trim();
     details = details.trim();
-    if (!name && !coding && !subName && !newWindow && !parentName && !parentCode ) { return; }
-    this.menuService.create(name, coding, subName, parentName, parentCode,newWindow, details)
-      .then(menu => {
-        if(!menu) {
-          layer.open({
-            title: '提示'
-            , content: "添加失败"
-          });
-        }
-        if(typeof (menu)=='string'){
-          layer.open({
-            title: '提示'
-            ,content: menu
-          });
-        }
-        this.getMenus();
-        this.selectedMenu = null;
-        $('#details').val('');
-      });
-    $('#details').val('');
-    this.tjmenu = false;
-    this.clicked = false;
+    // if (!name && !coding && !subName  && !parentName  ) { return; }
+    if(newWindow==1){
+      this.menuService.create(name, coding, subName, parentName, parentCode,newWindow, details)
+        .then(menu => {
+          if(!menu) {
+            layer.open({
+              title: '提示'
+              , content: "添加失败"
+            });
+            return;
+          }
+          if(typeof (menu)=='string'){
+            layer.open({
+              title: '提示'
+              ,content: menu
+            });
+          }
+          this.getMenus();
+          this.selectedMenu = null;
+          $('#details').val('');
+          this.tjmenu = false;
+          this.clicked = false;
+        });
+    }else{
+      this.menuService.create(name, coding, subName, parentName, address3,newWindow, details)
+        .then(menu => {
+          if(!menu) {
+            layer.open({
+              title: '提示'
+              , content: "添加失败"
+            });
+            return;
+          }
+          if(typeof (menu)=='string'){
+            layer.open({
+              title: '提示'
+              ,content: menu
+            });
+          }
+          this.getMenus();
+          this.selectedMenu = null;
+          $('#details').val('');
+          this.tjmenu = false;
+          this.clicked = false;
+        });
+    }
+    // this.menuService.create(name, coding, subName, parentName, parentCode,newWindow, details)
+    //   .then(menu => {
+    //     if(!menu) {
+    //       layer.open({
+    //         title: '提示'
+    //         , content: "添加失败"
+    //       });
+    //     }
+    //     if(typeof (menu)=='string'){
+    //       layer.open({
+    //         title: '提示'
+    //         ,content: menu
+    //       });
+    //     }
+    //     this.getMenus();
+    //     this.selectedMenu = null;
+    //     $('#details').val('');
+    //   });
+
     // layer.open({
     //   title: '提示'
     //   ,content: '添加成功'

@@ -6,11 +6,11 @@ import {DataTableModule} from "angular2-datatable";
 import {CustomFormsModule} from "ng2-validation";
 import { RouterModule } from '@angular/router';
 
-import { PermissionService } from './permission-service';
-import { permissionRoutes } from './permission.routes';
-import { PermissionComponent } from './permission.component';
-import { PermissionTableComponent } from './permission-table/permission-table.component';
-
+import { PermissionService } from '../permissions/permissions-service';
+import { permissionRoutes } from './permissions.routes';
+import { PermissionComponent } from './permissions.component';
+import { PermissionTableComponent } from './permissions-table/permissions-table.component';
+import { FenyeComponent } from '../fenye/fenye.component';
 
 
 @NgModule({
@@ -23,7 +23,8 @@ import { PermissionTableComponent } from './permission-table/permission-table.co
   ],
   declarations: [
     PermissionTableComponent,
-    PermissionComponent
+    PermissionComponent,
+    FenyeComponent
   ],
   providers: [ PermissionService ]
 })

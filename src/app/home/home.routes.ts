@@ -47,6 +47,14 @@ export const workspaceRoutes = [
         path: 'rescuecount',
         loadChildren: '../rescue-count/rescue-count.module#RescueCountModule'
       },
+      {
+        path: 'users/:permissionId',
+        loadChildren: '../users/users.module#UsersModule'
+      },
+      {
+        path: 'permission/:permissionId',
+        loadChildren: '../permissions/permissions.module#PermissionModule'
+      },
       // {
       //   path: 'role',
       //   loadChildren: '../role/role.module#RoleModule'
@@ -55,10 +63,7 @@ export const workspaceRoutes = [
       //   path: 'data',
       //   loadChildren: '../data/data.module#DataModule'
       // },
-      // {
-      //   path: 'permission',
-      //   loadChildren: '../permission/permission.module#PermissionModule'
-      // },
+
       {
         path: 'monitor',
         component: MonitorComponent

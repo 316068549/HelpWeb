@@ -1,0 +1,192 @@
+<div id="page-wrapper" class="fadeInRight animated marg220">
+<div class="page-t">
+  <div class="page-nav">
+    <a  href="javascript:;">系统管理</a>
+    <a  href="javascript:;">用户管理</a>
+    <a  routerLinkActive="active" routerLink="/users">用户列表</a>
+  </div>
+  <router-outlet></router-outlet>
+  <div class="search-box">
+    <span class="xt-search">
+               <input #searchBox type="text" id="search-box"  class="form-box" (keyup)="search(searchBox.value)"
+                      placeholder="请输入用户名">
+           <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
+  <span>
+          <span *ngFor="let menu of menus | async"
+                (click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>
+        </span>
+   </span>
+
+    <button (click)="searchParMenu();submied = true;tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button">+添加用户</button>
+  </div>
+
+</div>
+<div class="J_mainContent" id="content-main">
+  <div class="wrapper wrapper-content">
+    <!--<track-map></track-map>-->
+    <div class="xt-list">
+
+
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th >
+            用户ID
+          </th>
+          <th>
+            用户名
+          </th>
+          <th>
+            昵称
+          </th>
+          <th>
+            用户状态
+          </th>
+          <th>
+            角色
+          </th>
+          <th>
+            创建时间
+          </th>
+          <th>
+            操作
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of users; let i = index;"  (click)="onSelect(user)">
+          <td>{{user.userId}}</td>
+          <td >{{user.userName}}</td>
+          <td >{{user.nickName}}</td>
+          <td>{{user.userStatus}}</td>
+          <td>{{user.roleList[0].roleName}}</td>
+          <td>{{user.createTime}}</td>
+          <td><a (click)="searchParMenu2(user.userId);deletemenu=true; clicked=true;user === selectedUser" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a   (click)="delete(user); $event.stopPropagation()">删除</a></td>
+          <!--<td><a *ngIf="edit">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  *ngIf="del" (click)="delete(menu); $event.stopPropagation()">删除</a></td>-->
+        </tr>
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+      </table>
+    </div>
+    <div style="position:relative;padding:0 30px;top:0">
+      <app-fenye *ngIf="pages" [pageParams]="{pageSize:pages.current,totalNum:5,curPage:1,totalPage:pages.size}" (changeCurPage)="getPageData($event)"></app-fenye>
+    </div>
+  </div>
+</div>
+</div>
+<div [hidden]="!clicked"  class="mask"></div>
+
+
+<div [hidden]="!tjmenu"  class="operate menu">
+  <form class="operate-form"  #tjmenuform="ngForm" (ngSubmit)="submied = false; tjmenuform.form.valid && add(userName.value,nickName.value,password.value, role.value,
+        menuSelected.value);">
+    <div class="operate-title">添加用户<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <div class="operate-item fn-clear">
+        <label>用户名：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="userName" name="userName" class="form-box"  [(ngModel)]="User.userName" #userName="ngModel">
+          <p *ngIf="tjmenuform.submitted && !userName.valid && !submied"   class="text-danger">用户名不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>昵称：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="nickName" name="nickName" class="form-box"  [(ngModel)]="User.nickName" #nickName="ngModel">
+          <p *ngIf="tjmenuform.submitted && !nickName.valid && !submied"   class="text-danger">昵称不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >密码：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="password" name="password" class="form-box" [rangeLength]="[6, 30]" [(ngModel)]="User.userPassword" #password="ngModel">
+          <p *ngIf="tjmenuform.submitted && !password.value && !submied"   class="text-danger">昵称不能为空</p>
+          <p class="text-danger sbd" *ngIf="password.errors?.rangeLength && password.touched">密码长度至少6位</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >角色：</label>
+        <div class="operate-group">
+          <select #role id="role" required name="role"  class="form-select" >
+            <option value="" selected = "selected">请选择</option>
+            <option *ngFor="let role of parentNames" [value]="role.roleId">{{role.roleName}}</option>
+          </select>
+          <!--<p style="display: none" class="text-danger must3">-->
+            <!--角色为必选项-->
+          <!--</p>-->
+          <p *ngIf="tjmenuform.submitted && !role.valid && !role.value && !submied"  class="text-danger">角色为必选项</p>
+        </div>
+      </div>
+
+      <div class="operate-item fn-clear">
+        <label class="unmust">资源类型:</label>
+        <div class="operate-radio">
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="男"  required> 男-->
+          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="女"  required> 女-->
+          <input #menuSelected   [(ngModel)]="myWindow"  name="menuSelected"  type="radio" class="form-box" value="功能" >  功能
+          <input #menuSelected   [(ngModel)]="myWindow"  name="menuSelected"  type="radio" class="form-box" value="按钮">  按钮
+        </div>
+      </div>
+      <div class="operate-btn">
+        <button type="submit"  class="btns btn-blue">保存</button>
+        <button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
+
+<div [hidden]="!deletemenu"  class="operate menu"  *ngIf="selectedUser">
+  <form class="operate-form"  #deletemenuform="ngForm" (ngSubmit)="deletemenuform.form.valid && save(usersId.value,userName2.value,nickName2.value,password2.value, role2.value);">
+    <div class="operate-title">修改用户<span (click)="clicked=false; deletemenu=false;" class="fa fa-close"></span></div>
+    <div class="operate-content">
+      <!--<input type="hidden" id="originalRoleId" [value]="selectedUser.roleList[0].roleId" name="originalRoleId" #originalRoleId/>-->
+      <!--<input type="hidden" id="originalUserName" [value]="selectedUser.userName"  name="originalRoleId" #originalUserName/>-->
+      <input type="hidden" id="usersId" [value]="selectedUser.userId" name="usersId" #usersId/>
+      <div class="operate-item fn-clear">
+        <label>用户名：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="userName2" name="userName2" class="form-box"  [(ngModel)]="selectedUser.userName" #userName2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !userName2.valid"   class="text-danger">用户名不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>昵称：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="nickName2" name="nickName2" class="form-box"  [(ngModel)]="selectedUser.nickName" #nickName2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !nickName2.valid"   class="text-danger">昵称不能为空</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >密码：</label>
+        <div class="operate-group">
+          <input required  type="text"  id="password2" name="password2" class="form-box" [rangeLength]="[6, 30]" [(ngModel)]="selectedUser.userPassword" #password2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !password2.value"   class="text-danger">密码不能为空</p>
+          <p class="text-danger sbd" *ngIf="password2.errors?.rangeLength && password2.touched">密码长度至少6位</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >角色：</label>
+        <div class="operate-group">
+          <select #role2 id="role2" [(ngModel)]="selectedUser.roleList[0].roleId" required name="role2"  class="form-select"  >
+            <option value="0" selected = "selected">请选择</option>
+            <option *ngFor="let role of parentNames2" [value]="role.roleId">{{role.roleName}}</option>
+          </select>
+          <!--<p style="display: none" class="text-danger must3">-->
+          <!--角色为必选项-->
+          <!--</p>-->
+          <!--<p *ngIf="deletemenuform.submitted && !role.valid && !role.value"  class="text-danger">角色为必选项</p>-->
+        </div>
+      </div>
+      <div class="operate-btn">
+        <button type="submit"     class="btns btn-blue">保存</button>
+        <button (click)="deletemenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
+      </div>
+    </div>
+  </form>
+</div>

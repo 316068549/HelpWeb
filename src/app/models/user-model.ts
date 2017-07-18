@@ -1,9 +1,12 @@
-
+import { Role } from '../models/role';
   export class User {
   userId: number;
   userName: string;
-  userPassword: string;
-  roleId:number;
-  tokenId: string;
+  nickName: string;
+  userPassword:number;
+  createTime:number;
+  userStatus:boolean;
+  departmentId:number;
+  roleList:Array<Role>;
 }
 

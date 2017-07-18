@@ -1,5 +1,5 @@
-import { PermissionComponent } from './permission.component';
-import { PermissionTableComponent } from './permission-table/permission-table.component';
+import { PermissionComponent } from './permissions.component';
+import { PermissionTableComponent } from './permissions-table/permissions-table.component';
 
 export const permissionRoutes = [{
 	path: '',
