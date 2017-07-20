@@ -30,6 +30,11 @@ export class UsersTableComponent implements OnInit {
   private edit:boolean = false;
   private del:boolean = false;
   private deletemenu:boolean = false;
+  public params; // 保存页面url参数
+  public totalNum ; // 总数据条数
+  public pageSize = 5;// 每页数据条数
+  public totalPage ;// 总页数
+  public curPage = 1;// 当前页码
   User=new User();
   pages: any;
   parentNames = [];
@@ -41,7 +46,23 @@ export class UsersTableComponent implements OnInit {
     private userService: UserService,
     private location: Location,
   private route: ActivatedRoute
-  ) { }
+  ) {
+    let vm = this;
+    if (vm.params) {
+      vm.params = vm.params.replace('?', '').split('&');
+      let theRequest = [];
+      for (let i = 0; i < vm.params.length; i++) {
+        theRequest[vm.params[i].split("=")[0]] = vm.params[i].split("=")[0] == 'pageNo' ? parseInt(vm.params[i].split("=")[1]) : vm.params[i].split("=")[1];
+      }
+      vm.params = theRequest;
+      if (vm.params['pageNo']) {
+        vm.curPage = vm.params['pageNo'];
+        //console.log('当前页面', vm.curPage);
+      }
+    } else {
+      vm.params = {};
+    }
+  }
 
   ngOnInit(): void {
     this.route.params
@@ -82,6 +103,35 @@ export class UsersTableComponent implements OnInit {
   }
   onSelect(user: User): void {
     this.selectedUser = user;
+  }
+
+  getPageData(pageNo) {
+    let vm = this;
+    vm.curPage = pageNo;
+    this.userService.getMenuList(pageNo).then( res => {
+      if(res['code'] == 0){
+        this.users = res['data']['list'];
+      }
+      else if(res['code'] == 5){
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else if(res['code'] == 6){
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+      }
+    })
+    console.log('触发', pageNo);
   }
 
   searchParMenu(): void{

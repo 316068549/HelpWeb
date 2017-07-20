@@ -36,7 +36,7 @@ export const workspaceRoutes = [
       //   loadChildren: '../configure/config.module#ConfigModule'
       // },
       {
-        path: 'helpers',
+        path: 'helpers/:permissionId',
         loadChildren: '../helpers/helpers.module#HelpersModule'
       },
       {

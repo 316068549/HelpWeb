@@ -10,7 +10,7 @@ import { PermissionService } from '../permissions/permissions-service';
 import { permissionRoutes } from './permissions.routes';
 import { PermissionComponent } from './permissions.component';
 import { PermissionTableComponent } from './permissions-table/permissions-table.component';
-import { FenyeComponent } from '../fenye/fenye.component';
+import { FenyeComponent } from './fenye/fenye.component';
 
 
 @NgModule({

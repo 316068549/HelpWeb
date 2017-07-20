@@ -1,9 +1,10 @@
 export class Helpers {
-  helperId: number;
-  helperName: string;
-  age:number;
-  sex:string;
+  userId: string;
+  userName: string;
+  sex:number;
+  password:string;
   telephone: string;
   nationalId:string;
-  address: string;
+  rescueTeam: string;
 }
+

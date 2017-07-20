@@ -19,9 +19,9 @@ export class PermissionService {
   private menuslistUrl = 'role/query/adminRole';
   private roleUrl = 'role/query/adminRoleAll';
   private userUrl = 'admin/query/adminUserId';
-  private menusaddUrl = 'admin/add/adminUser';
-  private menusmodifyUrl = 'admin/update/adminUser';
-  private menusdeleteUrl = 'admin/del/adminUser';
+  private menusaddUrl = 'role/add/adminRole';
+  private menusmodifyUrl = 'role/update/adminRole';
+  private menusdeleteUrl = 'role/del/adminRole';
   private userId = localStorage.getItem("userId");
   private roleId = localStorage.getItem("roleId");
   private tokenId = localStorage.getItem("tokenId");
@@ -51,9 +51,13 @@ export class PermissionService {
       .catch(this.handleError);
   }
 
-  getMenuDatas(): Promise<object> {
-    const url = this.menusUrl+'?null&userId=undefined&tokenId='+this.tokenId;
-    return this.http.get(url)
+  getMenuDatas(id?:number): Promise<object> {
+    if(id){
+        this.parUrl=this.menusUrl+'?roleId='+id+'&userId=undefined&tokenId='+this.tokenId;
+    }else{
+      this.parUrl=this.menusUrl+'?null&userId=undefined&tokenId='+this.tokenId;
+    }
+    return this.http.get(this.parUrl)
       .toPromise()
       .then(response => response.json().data as object)
       .catch(this.handleError);
@@ -75,37 +79,36 @@ export class PermissionService {
       .catch(this.handleError);
   }
 
-  // create(userName: string, nickName: string, password: string,  role: string): Promise<User> {
-  //   let parment = 'addId='+''+'&userName='+userName+'&nickName='+nickName+'&userPassword='+password+
-  //     '&roleId='+role+'&userId='+this.userId+'&tokenId='+this.tokenId;
-  //   console.log(parment)
-  //   return this.http
-  //     .post(this.menusaddUrl,parment,{headers:this.headers2})
-  //     .toPromise()
-  //     .then(res => res.json().data as User)
-  //     .catch(this.handleError);
-  // }
-  //
+  create(addIDs: string, roleName: string, roleDescription: string,  str2: string): Promise<Role> {
+    let parment = 'delId=&addId='+addIDs+'&roleName='+roleName+'&roleDescription='+roleDescription+'&'+str2+
+      'userId=undefined&tokenId='+this.tokenId;
+    console.log(parment)
+    return this.http
+      .post(this.menusaddUrl,parment,{headers:this.headers2})
+      .toPromise()
+      .then(res => res.json().data as Role)
+      .catch(this.handleError);
+  }
+
   delete(id: number): Promise<object> {
-    const durl=this.menusdeleteUrl+'?usersId='+id+'&tokenId='+this.tokenId;
+    const durl=this.menusdeleteUrl+'?roleId='+id+'&usersId=undefined&tokenId='+this.tokenId;
     return this.http.get(durl)
       .toPromise()
       .then((res) => res.json() as object)
       .catch(this.handleError);
   }
-  //
-  // update(usersId:number,originalRoleId:number,originalUserName:string,userName: string, nickName: string, password: string,  role: number): Promise<object> {
-  //   console.log(role)
-  //   let parment = 'addId='+''+'&usersId='+usersId+'&originalRoleId='+originalRoleId+'&originalUserName='+originalUserName+'&userName='+userName+'&nickName='+nickName+
-  //     '&password='+password+'&roleId='+role+
-  //     '&userId='+this.userId+'&tokenId='+this.tokenId;
-  //   console.log(parment)
-  //   return this.http
-  //     .post(this.menusmodifyUrl, parment, {headers: this.headers2})
-  //     .toPromise()
-  //     .then(res => res.json() as object)
-  //     .catch(this.handleError);
-  // }
+
+  update(roleId:number,roleName:string,rolename2:string,des:string, str:string, str2:string): Promise<object> {
+
+    let parment = 'delId=&addId='+str+'&originalRoleName='+roleName+'&roleId='+roleId+'&roleName='+rolename2+'&roleDescription='+des+'&'+str2+
+      'userId=undefined&tokenId='+this.tokenId;
+    console.log(parment)
+    return this.http
+      .post(this.menusmodifyUrl, parment, {headers: this.headers2})
+      .toPromise()
+      .then(res => res.json() as object)
+      .catch(this.handleError);
+  }
 
   private handleError(error: any): Promise<any> {
     layer.open({

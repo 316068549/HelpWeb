@@ -10,7 +10,7 @@ import { MenuComponent } from './menu.component';
 import { MenuDetailComponent } from './menu-detail/menu-detail.component';
 import { MenuTableComponent } from './menu-table/menu-table.component';
 import { MenuSearchComponent } from './menu-search/menu-search.component';
-import { FenyeComponent } from '../fenye/fenye.component';
+import { FeyeComponent } from './fenye/fenye.component';
 
 @NgModule({
   imports: [
@@ -25,7 +25,7 @@ import { FenyeComponent } from '../fenye/fenye.component';
     MenuDetailComponent,
     MenuTableComponent,
     MenuSearchComponent,
-    FenyeComponent
+    FeyeComponent
   ]
 })
 export class MenuModule { }

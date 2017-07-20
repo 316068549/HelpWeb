@@ -14,6 +14,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 
 import { Helpers } from '../../models/helpers';
 import { HelperService } from '../helpers-service';
+import { ActivatedRoute, Params }   from '@angular/router';
 declare var $:any;
 declare var layer:any;
 
@@ -23,10 +24,6 @@ declare var layer:any;
   styleUrls: ['./helpers-table.component.css']
 })
 export class HelpersTableComponent implements OnInit {
-  // form:FormGroup;
-  public data: any[];
-  rowsOnPage = 10;
-  sortOrder = "asc";
   helpers: Helpers[];
   helper: Helpers;
   selectedHelper: Helpers;
@@ -34,8 +31,20 @@ export class HelpersTableComponent implements OnInit {
   private clicked:boolean;
   private deletemenu:boolean = false;
   Helpers=new Helpers();
-  parentNames = ['普通管理员', '超级管理员', '初级管理'];
+  parentNames = [];
+  private submied:boolean = false;
+  private addbtn:boolean = false;
+  private edit:boolean = false;
+  private del:boolean = false;
+  public params; // 保存页面url参数
+  public totalNum ; // 总数据条数
+  public pageSize = 5;// 每页数据条数
+  public totalPage ;// 总页数
+  public curPage = 1;// 当前页码
+  pages: any;
+  term={};
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private userService: HelperService,
     private location: Location
@@ -44,163 +53,207 @@ export class HelpersTableComponent implements OnInit {
     // this.form = new FormGroup({
     //   phone: new FormControl('', CustomValidators.phone("zh-CN"))
     // });
+    let vm = this;
+    if (vm.params) {
+      vm.params = vm.params.replace('?', '').split('&');
+      let theRequest = [];
+      for (let i = 0; i < vm.params.length; i++) {
+        theRequest[vm.params[i].split("=")[0]] = vm.params[i].split("=")[0] == 'pageNo' ? parseInt(vm.params[i].split("=")[1]) : vm.params[i].split("=")[1];
+      }
+      vm.params = theRequest;
+      if (vm.params['pageNo']) {
+        vm.curPage = vm.params['pageNo'];
+        //console.log('当前页面', vm.curPage);
+      }
+    } else {
+      vm.params = {};
+    }
   }
-
+  // 添加选择数据初始化
+  searchParMenu(): void{
+    // this.parentNames=[];
+    // this.addIDs=[];
+    // this.addIDs2=[];
+    // this.term={};
+    // this.userService.getMenuDatas().then( menus => {
+    //   this.menus = menus['allList']
+    //   console.log(this.menus)
+    // });
+  }
+  // 编辑选择数据初始化
+  searchParMenu2(){
+  }
   ngOnInit(): void {
+    // var imeicode = this.route.snapshot.params['deviceIMEI'];
+    this.route.params
+      .switchMap((params: Params) => this.userService.getMenuBtns(params['permissionId']))
+      .subscribe(rescue => {
+        for(let i=0;i<rescue.length;i++){
+          if(rescue[i].permissionUrl=="add"){
+            this.addbtn = true;
+          }
+          if(rescue[i].permissionUrl=="edit"){
+            this.edit = true;
+          }
+          if(rescue[i].permissionUrl=="del"){
+            this.del = true;
+          }
+
+        }
+      });
     this.getElectricities();
   }
 
-
-  delete(helper: Helpers): void {
-    console.log(helper.helperId)
-    this.userService
-      .delete(helper.helperId)
-      .then(() => {
-        this.helpers = this.helpers.filter(h => h !== helper);
-        this.data = this.helpers;
+  getPageData(pageNo) {
+    let vm = this;
+    vm.curPage = pageNo;
+    this.userService.getMenuDatas(pageNo).then( res => {
+      if(res['code'] == 0){
+        this.helpers = res['data']['list'];
+      }
+      else if(res['code'] == 5){
         layer.open({
-                    title: '提示'
-                    ,content: '删除成功'
-                  });
-        if (this.selectedHelper === helper) { this.selectedHelper = null; }
-      });
-      // layer.open({
-      //   content: '确定删除？'
-      //   , btn: ['确定', '取消']
-      //   , yes: () => {
-      //     this.userService
-      //       .delete(helper.helperId)
-      //       .then(() => {
-      //         this.helpers = this.helpers.filter(h => h !== helper);
-      //         if (this.selectedHelper === helper) { this.selectedHelper = null; }
-      //       });
-      //   }
-      //   , btn2: () => {
-      //
-      //   }
-      // })
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else if(res['code'] == 6){
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+      }
+    })
+    console.log('触发', pageNo);
   }
 
-  // delete(userId: number): void{
-  //   layer.open({
-  //     content: '确定删除？'
-  //     , btn: ['确定', '取消']
-  //     , yes: () => {
-  //       this.userService.delete(userId).then(() =>{
-  //         this.getMenus();
-  //       })
-  //     }
-  //     , btn2: () => {
-  //
-  //     }
-  //   })
-  // }
+  delete(helper: Helpers): void{
+    var ak = layer.open({
+      content: '确定删除？'
+      , btn: ['确定', '取消']
+      , yes: () => {
+        this.userService.delete(helper.userId).then(res =>{
+          if(res['code'] == 0){
+          }else if(res['code'] == 5){
+            alert(res['error']);
+            this.router.navigate(['login']);
+          }else if(res['code'] == 6){
+            alert(res['error']);
+            this.router.navigate(['login']);
+          }else{
+            alert(res['error']);
+          }
+          layer.close(ak);
+          this.getElectricities();
+        })
+      }
+      , btn2: () => {
+
+      }
+    })
+  }
 
   getElectricities(): void {
-    this.userService.getMenuDatas().then( electricities => {
-      console.log(electricities)
-      this.helpers = electricities
-      this.data = this.helpers;
+    this.userService.getMenuDatas().then( res => {
+      if(res['code'] == 0){
+
+      }else if(res['code'] == 5){
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else if(res['code'] == 6){
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+      }
+      this.helpers = res['data']['list'];
+      this.totalPage = Math.ceil(this.helpers.length/5);
+      this.totalNum = this.helpers.length;
+      this.pages  = res['data']['page'];
+      console.log(this.pages)
     });
   }
 
   onSelect(helper: Helpers): void {
     this.selectedHelper = helper;
-    // console.log(electricity.data);
-
   }
-
-  // search(term: string): void {
-  //   this.searchTerms.next(term);
-  // }
 
   search2(term: string): void{
-
     this.userService.search2(term).then( menus => {
-      // if(typeof (menus)=='string'){
-      //   layer.open({
-      //     title: '提示'
-      //     ,content: '没有查询到数据！'
-      //   });
-      // }else{
-        this.data=menus;
-      // }
-      console.log(this.data);
+      if(!menus['list']){
+        layer.open({
+          title: '提示'
+          ,content: '错误'
+        });
+      }
+      if(this.helpers.length==0){
+        layer.open({
+          title: '提示'
+          ,content: '没有查询到数据！'
+        });
+      }
+      if(this.helpers.length>0){
+        this.helpers = menus['list'];
+      }
     });
   }
-  add(helperId:number,helperName: string, age: number, sex: string,address: string,
-           phoneNumber: string, nationalId: string): void {
 
-    this.userService.create(helperId,helperName,age,sex,address,phoneNumber,nationalId)
-      .then(hero => {
-        this.helpers.push(hero);
-        this.selectedHelper = null;
-        this.tjmenu = false;
-        this.clicked = false;
-        this.getMenus();
+  add(helperName: string, sex: string, password: string,phone: string,
+      nationalId: string, rescue: string ): void {
+    helperName = helperName.trim();
+    phone = phone.trim();
+    nationalId = nationalId.trim();
+    rescue = rescue.trim();
+    if (!helperName && !sex  && !password && !phone && !nationalId && rescue ) { return; }
+    this.userService.create(helperName,sex,password,phone,nationalId,rescue)
+      .subscribe(res => {
+        if(res["code"]==0){
+          layer.open({
+            title: '提示'
+            ,content: '添加成功'
+          });
+          this.getElectricities();
+          this.selectedHelper = null;
+          this.tjmenu = false;
+          this.clicked = false;
+        }else{
+          layer.open({
+            title: '提示'
+            ,content: res["error"],
+            end:function () {
+              $('#helperName').focus();
+            }
+          });
+
+        }
       });
   }
-  // add(helperId:number,helperName: string, age: number, sex: string,address: string,
-  //     phoneNumber: string, nationalId: string ): void {
-  //   helperName = helperName.trim();
-  //
-  //   address = address.trim();
-  //   nationalId = nationalId.trim();
-  //   phoneNumber = phoneNumber.trim();
-  //   if (!helperId && !helperName && !age  && !sex && !phoneNumber && !address && nationalId ) { return; }
-  //   this.userService.create(helperId,helperName,age,sex,address,phoneNumber,nationalId)
-  //     .subscribe(res => {
-  //       console.log(res["status"])
-  //       // console.log(typeof (res))
-  //       if(res["status"]==1){
-  //         layer.open({
-  //           title: '提示'
-  //           ,content: '添加成功'
-  //         });
-  //         // this.dictionarys.push(menu);
-  //         this.getMenus();
-  //         this.selectedHelper = null;
-  //         this.tjmenu = false;
-  //         this.clicked = false;
-  //       }else{
-  //         layer.open({
-  //           title: '提示'
-  //           ,content: res["objectbean"],
-  //           end:function () {
-  //             $('#helperId').focus();
-  //           }
-  //         });
-  //
-  //       }
-  //     });
-  // }
-  getMenus(): void {
-    this.userService.getMenuDatas().then( menus => {
-      this.helpers  = menus;
-      this.data = this.helpers;
-    });
-  }
+
   save(): void {
     this.userService.update(this.selectedHelper)
-      .then(() => {
-        this.deletemenu = false;
-        this.clicked = false;
+      .then(() => {this.getElectricities();this.deletemenu = false;this.clicked = false;
         layer.open({
-                  title: '提示'
-                  ,content: '修改成功'
-                });
+          title: '提示'
+          ,content: '修改成功'
+        });
+
     });
   }
-  // save(): void {
-  //   this.userService.update(this.selectedHelper)
-  //     .then(() => {this.getMenus();this.deletemenu = false;this.clicked = false;
-  //       layer.open({
-  //         title: '提示'
-  //         ,content: '修改成功'
-  //       });
-  //
-  //   });
-  // }
   // gotoDetail(): void {
   //   this.router.navigate(['/user-detail', this.selectedMenu.id]);
   // }
@@ -208,6 +261,9 @@ export class HelpersTableComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
+  // search(term: string): void {
+  //   this.searchTerms.next(term);
+  // }
 
 
 }

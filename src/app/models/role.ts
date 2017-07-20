@@ -4,6 +4,7 @@ export class Role {
   roleId: number;
   roleName: string;
   roleDescription: string;
+  selected:boolean;
   status: boolean;
   createTime:number;
   permissionList: Array<Menu>;
