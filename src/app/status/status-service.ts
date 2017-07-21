@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-
-
-
 import { Http, Headers, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
@@ -17,31 +14,40 @@ declare var layer: any;
 export class StatusService {
   private headers = new Headers({'Content-Type': 'application/x-www-from-urlencoded'});
   private headers2 = new Headers({'Content-Type': 'application/json'});
-
-  private  statusUrl = '/api/query/messageStatus';
-
+  private  statusUrl = 'web/query/onLine';
+  private  statusUrl2 = 'web/query/offLine';
+  private userId = localStorage.getItem("userId");
+  private roleId = localStorage.getItem("roleId");
+  private tokenId = localStorage.getItem("tokenId");
+  private parUrl;
 
   constructor(public http:Http
   ){}
 
-
-  // getElectricities(): Observable<Electricity[]> {
-  //   return this.http.get(this.electricitiesUrl)
-  //     .map(res => {
-  //               console.log(res);
-  //             let result=res.json();
-  //             console.log(result);
-  //             return result;
-  //           })
-  // }
-
-
-  getStatuses(): Promise<Status[]> {
-  return this.http.post(this.statusUrl,this.headers2)
-    .toPromise()
-    .then(response => response .json().objectbean as Status[])
-    .catch(this.handleError);
+  getStatuses(current?:number,size?:number): Promise<object> {
+    let uurl='';
+    if(current){
+      uurl = this.statusUrl+'?current='+current +'&size=5&tokenId='+this.tokenId;
+    }else{
+      uurl = this.statusUrl+'?tokenId='+this.tokenId;
+    }
+    return this.http.get(uurl)
+      .toPromise()
+      .then(response => response .json() as object)
+      .catch(this.handleError);
 }
+  getStatuses2(current?:number,size?:number): Promise<object> {
+    let uurl='';
+    if(current){
+      uurl = this.statusUrl2+'?current='+current +'&size=5&tokenId='+this.tokenId;
+    }else{
+      uurl = this.statusUrl2+'?tokenId='+this.tokenId;
+    }
+    return this.http.get(uurl)
+      .toPromise()
+      .then(response => response .json() as object)
+      .catch(this.handleError);
+  }
 
 
   //

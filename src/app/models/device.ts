@@ -1,11 +1,12 @@
 export class Device {
-  deviceImeiCode: string;
-  deviceUser: string;
-  deviceMobile:string;
-  locationMode:number;
-  deviceMobile1:string;
-  deviceMobile2:string;
-  address:string;
+  deviceImei: string;
+  deviceUserName: string;
+  devicePhone:string;
   timeInterval:number;
-  deviceCreateTime:string;
+  familyPhones:string;
+  railName:string;
+  parameter:number;
+  railLatitude:number;
+  railLongitude:number;
 }
+

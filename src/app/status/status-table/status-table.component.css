@@ -1,0 +1,7 @@
+.btn-group{
+  width:70px;
+}
+.circle{
+  border-radius: 15px;
+  outline: none !important;
+}

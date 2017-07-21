@@ -2,24 +2,23 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-
-
-
 import { Http, Headers, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import { Electricity } from '../models/Electricity';
-import { Electricitiess } from '../mock-data/mock-electricities'
 
 @Injectable()
 
 export class ElectricityService {
   private headers = new Headers({'Content-Type': 'application/x-www-from-urlencoded'});
   private headers2 = new Headers({'Content-Type': 'application/json'});
-
-  private  electricityUrl = '/api/query/messageAll';
+  private  electricityUrl = 'web/query/status';
   private  electricitiesUrl = '/api/query/messageNow';
+  private userId = localStorage.getItem("userId");
+  private roleId = localStorage.getItem("roleId");
+  private tokenId = localStorage.getItem("tokenId");
+  private parUrl;
   dataed:Object;
 
   constructor(public http:Http
@@ -36,11 +35,16 @@ export class ElectricityService {
   //           })
   // }
 
-
-  getElectricities(): Promise<Electricity[]> {
-  return this.http.post(this.electricitiesUrl,this.headers2)
+  getElectricities(current?:number,size?:number): Promise<object> {
+    let uurl='';
+    if(current){
+      uurl = this.electricityUrl+'?current='+current +'&size=5&tokenId='+this.tokenId;
+    }else{
+      uurl = this.electricityUrl+'?tokenId='+this.tokenId;
+    }
+  return this.http.get(uurl)
     .toPromise()
-    .then(response => response .json().objectbean as Electricity[])
+    .then(response => response .json() as object)
     .catch(this.handleError);
 }
 
@@ -54,18 +58,11 @@ export class ElectricityService {
 
   }
 
-  search(IMEI: string): Observable<Electricity[]> {
-    return this.http.post(this.electricitiesUrl,{imeiCode:IMEI},this.headers2)
-        .map(res => {
-            console.log(res);
-            let result=res.json().objectbean;
-            console.log(result);
-            return result;
-              })
-
-    // return this.getElectricities()
-    //     .then(menus => menus.find(menu => menu.id === id));
-
+  search(IMEI: string): Promise<object> {
+    return this.http.get(this.electricityUrl+'?deviceImei='+IMEI)
+      .toPromise()
+      .then(response => response.json().data as object)
+      .catch(this.handleError);
   }
 
   private handleError(error: any): Promise<any> {

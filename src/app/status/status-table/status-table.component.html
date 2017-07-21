@@ -1,88 +1,81 @@
+<div id="page-wrapper" class="fadeInRight animated marg220">
 <div class="page-t">
   <div class="page-nav">
-    <a  href="javascript:;">系统管理</a>
-    <a  href="javascript:;">状态管理</a>
-    <a  routerLinkActive="active" routerLink="/track">状态列表</a>
+    <a  href="javascript:;">设备管理</a>
+    <a  routerLinkActive="active" >设备在线</a>
   </div>
-  <div class="search-box col-sm-12 mt20">
-    <span class="inlined">设备ID：</span>
-        <input #searchBox1 type="text" placeholder="请输入设备ID" class="input-sm form-control inlined inputwidth100">
+  <!--<div class="search-box col-sm-12 mt20">-->
+    <!--<span class="inlined">设备ID：</span>-->
+        <!--<input #searchBox1 type="text" placeholder="请输入设备ID" class="input-sm form-control inlined inputwidth100">-->
 
-      <span class="inlined">手机号：</span>
-        <input #searchBox2 type="text" placeholder="请输入手机号" class="input-sm form-control inlined inputwidth100">
-    <span class="laydate">
-      <span>开始时间：
-        <input #startTime class="form-box layer-date" id="start" name="start" placeholder="请选择"
-               onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-      </span>
-         <span>结束时间：
-        <input #endTime class="form-box layer-date" id="end" name="end" placeholder="请选择"
-               onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-      </span>
-    </span>
-    <button type="button" class="btn btn-sm btn-primary" (click)="search(searchBox1.value,searchBox2.value,startTime.value,endTime.value)"> 搜索</button>
-  </div>
+      <!--<span class="inlined">手机号：</span>-->
+        <!--<input #searchBox2 type="text" placeholder="请输入手机号" class="input-sm form-control inlined inputwidth100">-->
+    <!--&lt;!&ndash;<span class="laydate">&ndash;&gt;-->
+      <!--&lt;!&ndash;<span>开始时间：&ndash;&gt;-->
+        <!--&lt;!&ndash;<input #startTime class="form-box layer-date" id="start" name="start" placeholder="请选择"&ndash;&gt;-->
+               <!--&lt;!&ndash;onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">&ndash;&gt;-->
+      <!--&lt;!&ndash;</span>&ndash;&gt;-->
+         <!--&lt;!&ndash;<span>结束时间：&ndash;&gt;-->
+        <!--&lt;!&ndash;<input #endTime class="form-box layer-date" id="end" name="end" placeholder="请选择"&ndash;&gt;-->
+               <!--&lt;!&ndash;onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">&ndash;&gt;-->
+      <!--&lt;!&ndash;</span>&ndash;&gt;-->
+    <!--&lt;!&ndash;</span>&ndash;&gt;-->
+    <!--<button type="button" class="btn btn-sm btn-primary" (click)="search(searchBox1.value,searchBox2.value,startTime.value,endTime.value)"> 搜索</button>-->
+  <!--</div>-->
 
 
 </div>
 <div class="J_mainContent" id="content-main">
+
   <div class="wrapper wrapper-content">
+    <div class="btn-group btn-group-justified mt25" role="group" >
+      <div class="btn-group" role="group">
+        <button type="button" [ngClass]="{'btn-primary':onActive,'btn-default':!onActive}" class="btn btn-primary btn-sm circle"  (click)="searchOn()">在线</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" [ngClass]="{'btn-primary':!onActive,'btn-default':onActive}" class="btn btn-default btn-sm circle" (click)="searchOff()">不在线</button>
+      </div>
+    </div>
     <!--<track-map></track-map>-->
     <div class="xt-list">
-
-
-      <table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="10">
+      <table class="table table-striped" >
         <thead>
         <tr>
           <th >
             序号
           </th>
           <th>
-            <mfDefaultSorter by="deviceIMEI">设备ID</mfDefaultSorter>
+            设备ID
           </th>
           <th>
-            <mfDefaultSorter by="serverTime">时间</mfDefaultSorter>
+            设备使用者
           </th>
           <th>
-            <mfDefaultSorter by="deviceMobile">联系电话</mfDefaultSorter>
+            电话
           </th>
           <th>
-            <mfDefaultSorter by="onlineTime">在线时间点</mfDefaultSorter>
+            在线时间
           </th>
           <th>
-            <mfDefaultSorter by="locationPower">电量</mfDefaultSorter>
-          </th>
-          <th>
-            <mfDefaultSorter by="deviceStatus">设备状态</mfDefaultSorter>
-          </th>
-          <th>
-            位置
+            监护人
           </th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let status of mf.data; let i = index;" [class.selected]="status === selectedStatus" (click)="onSelect(electricity)">
+        <tr *ngFor="let status of statuses; let i = index;"  (click)="onSelect(electricity)">
           <td>{{i+1}}</td>
-          <!--<td>{{electricity.locationType}}</td>-->
-          <td >{{status.deviceIMEI}}</td>
-          <td >{{status.serverTime}}</td>
-          <td >{{status.deviceMobile}}</td>
+          <td >{{status.deviceImei}}</td>
+          <td >{{status.ownerName}}</td>
+          <td >{{status.mobile}}</td>
           <td >{{status.onlineTime}}</td>
-          <td >{{status.locationPower}}</td>
-          <td >{{status.deviceStatus}}</td>
-          <td>{{status.locationType}}({{status.locationLongitude}},{{status.locationLatitude}})</td>
-
+          <td >{{status.guardian}}</td>
         </tr>
         </tbody>
-        <tfoot>
-        <tr>
-          <td colspan="8">
-            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
-          </td>
-        </tr>
-        </tfoot>
       </table>
-
+    </div>
+    <div style="position:relative;padding:0 30px;top:0">
+      <app-fenye *ngIf="pages" [pageParams]="{pageSize:5,totalNum:totalNum,curPage:1,totalPage:totalPage}" (changeCurPage)="getPageData($event)"></app-fenye>
     </div>
   </div>
+</div>
 </div>

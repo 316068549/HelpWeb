@@ -14,6 +14,6 @@
   <button class="btn btn-default previous" [routerLink]="['./']" [disabled]="pageParams.totalPage-pageParams.curPage<=5"
           (click)="changePage(pageParams.curPage-(-5))" [queryParams]="{pageNo:pageParams.curPage-(-5)}">>></button>
 </div>
-<div class="col-md-12 text-center text-sm text-dark-gray" *ngIf="!pageParams.totalNum">
-  空空如也
+<div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="!pageParams.totalNum">
+  没有查询到数据
 </div>

@@ -3,7 +3,7 @@
     <div class="page-nav">
       <a  href="javascript:;">救援管理</a>
       <!--<a  href="javascript:;">用户管理</a>-->
-      <a  routerLinkActive="active" routerLink="/rescuecount">救助统计</a>
+      <a  routerLinkActive="active">救助统计</a>
     </div>
     <router-outlet></router-outlet>
     <div class="search-box">
@@ -11,10 +11,10 @@
                <input #searchBox type="text" id="search-box"  class="form-box"
                       placeholder="请输入名字">
            <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
-  <span>
-          <span *ngFor="let menu of menus | async"
-                (click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>
-        </span>
+  <!--<span>-->
+          <!--<span *ngFor="let menu of menus | async"-->
+                <!--(click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>-->
+        <!--</span>-->
    </span>
 
       <!--<button (click)="tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button">+添加用户</button>-->
@@ -25,12 +25,10 @@
     <div class="wrapper wrapper-content">
       <!--<track-map></track-map>-->
       <div class="xt-list">
-
-
-        <table class="table table-striped" [mfData]="data" #mf="mfDataTable" [mfRowsOnPage]="10">
+        <table class="table table-striped" >
           <thead>
           <tr>
-            <th >
+            <th>
               序号
             </th>
             <th>
@@ -40,7 +38,7 @@
               救助状态
             </th>
             <th>
-              <mfDefaultSorter by="rescueNumber">救助人数</mfDefaultSorter>
+              救助人数
             </th>
             <th>
               志愿者姓名
@@ -57,33 +55,24 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let rescue of mf.data; let i = index;" [class.selected]="rescue === selectedRescue" (click)="onSelect(rescue)">
+          <tr *ngFor="let rescue of rescues; let i = index;"  (click)="onSelect(rescue)">
             <td>{{i+1}}</td>
-            <!--<td>{{electricity.locationType}}</td>-->
             <td >{{rescue.rescueName}}</td>
             <td>{{rescue.rescueStatus}}</td>
             <td >{{rescue.rescueNumber}}</td>
             <td >{{rescue.helperName}}</td>
             <td>{{rescue.telephone}}</td>
-
             <td>{{rescue.address}}</td>
-
             <td>&nbsp;&nbsp;
               <a  [routerLink]="['detail', rescue.rescueId]" >查看</a>&nbsp;&nbsp;&nbsp;&nbsp;
 
             </td>
           </tr>
           </tbody>
-          <tfoot>
-          <tr>
-            <td colspan="8">
-              <mfBootstrapPaginator [rowsOnPageSet]="[5,10,15]"></mfBootstrapPaginator>
-            </td>
-          </tr>
-          </tfoot>
-        </table>
 
+        </table>
       </div>
+
     </div>
   </div>
 </div>

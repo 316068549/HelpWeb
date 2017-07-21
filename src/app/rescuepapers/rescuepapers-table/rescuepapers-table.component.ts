@@ -9,16 +9,16 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
 import { Device } from '../../models/device';
-import { DeviceService } from '../device-service';
+import { RescuePapersService } from '../rescuepapers-service';
 declare var $:any;
 declare var layer:any;
 
 @Component({
-  selector: 'app-device-table',
-  templateUrl: './device-table.component.html',
-  styleUrls: ['./device-table.component.css']
+  selector: 'app-rescuepapers-table',
+  templateUrl: './rescuepapers-table.component.html',
+  styleUrls: ['./rescuepapers-table.component.css']
 })
-export class DeviceTableComponent implements OnInit {
+export class RescuepapersTableComponent implements OnInit {
   devices: Device[];
   device: Device;
   selectedDevice: Device;
@@ -35,7 +35,7 @@ export class DeviceTableComponent implements OnInit {
   parentNames = ['普通管理员', '超级管理员', '初级管理'];
   constructor(
     private router: Router,
-    private userService: DeviceService,
+    private userService: RescuePapersService,
     private location: Location
   ) {
     let vm = this;

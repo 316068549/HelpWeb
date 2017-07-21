@@ -13,27 +13,41 @@ declare var layer:any;
 
 export class RescueCountService {
   private headers = new Headers({'Content-Type': 'application/json'});
-  // private menusUrl = 'api/menus';
   private menusUrl = 'api/query/findUser';
-  private menusaddUrl = 'api/query/addUser';
-  private menusmodifyUrl = 'api/query/modifyUser';
-  private menusdeleteUrl = 'api/query/deleteUser';
+  // private menusaddUrl = 'api/query/addUser';
+  // private menusmodifyUrl = 'api/query/modifyUser';
+  // private menusdeleteUrl = 'api/query/deleteUser';
+  private userId = localStorage.getItem("userId");
+  private roleId = localStorage.getItem("roleId");
+  private tokenId = localStorage.getItem("tokenId");
+  private parUrl;
 
   constructor(public http:Http
   ){}
 
-  getMenuDatas(): Promise<Rescue[]> {
-    return Promise.resolve(Rescues);
-    // return this.getWarns()
-    //   .then(warns => warns.find(warn => warn.id === id));
-    // const url = `${this.menusUrl}/${id}`;
-
-
-    // return this.http.get(this.menusUrl)
-    //   .toPromise()
-    //   .then(response => response.json().objectbean as Rescue[])
-    //   .catch(this.handleError);
+  getMenuDatas(current?:number,size?:number): Promise<object> {
+    let uurl='';
+    if(current){
+      uurl = this.menusUrl+'?current='+current +'&size=5&tokenId='+this.tokenId;
+    }else{
+      uurl = this.menusUrl+'?tokenId='+this.tokenId;
+    }
+    return this.http.get(uurl)
+      .toPromise()
+      .then(response => response .json() as object)
+      .catch(this.handleError);
   }
+
+  search2(term: string): Promise<object> {
+    return this.http.get(this.menusUrl+'?userName='+term)
+      .toPromise()
+      .then(response => response.json().data as object)
+      .catch(this.handleError);
+  }
+
+  // getMenuDatas(): Promise<Rescue[]> {
+  //   return Promise.resolve(Rescues);
+  // }
 
   private handleError(error: any): Promise<any> {
     layer.open({
@@ -44,30 +58,20 @@ export class RescueCountService {
     return Promise.reject(error.message || error);
   }
 
-  getMenuData(rescueId: number): Promise<Rescue> {
-    const url = this.menusUrl+'?rescueId='+rescueId;
-    return this.http.get(url)
-      .toPromise()
-      .then(response => response.json().objectbean[0] as Rescue)
-      .catch(this.handleError);
-  }
-
-  // getMenuData(id: number): Promise<Menu> {
-  //   return this.getMenuDatas()
-  //     .then(menus => menus.find(menu => menu.id === id));
+  // getMenuData(rescueId: number): Promise<Rescue> {
+  //   const url = this.menusUrl+'?rescueId='+rescueId;
+  //   return this.http.get(url)
+  //     .toPromise()
+  //     .then(response => response.json().objectbean[0] as Rescue)
+  //     .catch(this.handleError);
   // }
 
 
-  search(term: string): Observable<Rescue []> {
-    return this.http.get(this.menusUrl+'?userName='+term)
-      .map(response => response.json().objectbean as Rescue[]
-      );
-  }
-  search2(term: string): Promise<Rescue []> {
-    return this.http.get(this.menusUrl+'?userName='+term)
-      .toPromise()
-      .then(response => response.json().objectbean as Rescue[])
-      .catch(this.handleError);
-  }
+  // search(term: string): Observable<Rescue []> {
+  //   return this.http.get(this.menusUrl+'?userName='+term)
+  //     .map(response => response.json().objectbean as Rescue[]
+  //     );
+  // }
+
 
 }

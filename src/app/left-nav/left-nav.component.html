@@ -34,21 +34,21 @@
         <div class="logo-element">跌倒报警2.0</div>
       </li>
 
-      <li class="item">
-        <a href="#" routerLink="/main">
+      <li class="item" routerLinkActive="active">
+        <a>
           <i class="fa fa-home"></i>
-          <span class="nav-label">主页</span>
+          <span class="nav-label" routerLink="monitor" data-index="1">首页</span>
           <!--<span class="fa arrow"></span>-->
         </a>
       </li>
 
-      <li class="item actives"   *ngFor="let menu of menus" >
-        <a>
+      <li class="item actives"   *ngFor="let menu of menus; let i = index;" [ngClass]="{'actives':!menuactive}" >
+        <a *ngIf="i>2">
           <i class="fa fa-envelope"></i>
           <span class="nav-label">{{menu.permissionName}}</span>
           <span class="fa arrow" (click)="menuactive=!menuactive" ></span>
         </a>
-        <ul class="nav nav-second-level" >
+        <ul class="nav nav-second-level" *ngIf="i>2" [ngClass]="{'collapse in':menuactive}" >
           <li routerLinkActive="active" *ngFor="let menu2 of menu.subAdminPermission ">
             <a [routerLink]="[menu2.permissionUrl, menu2.permissionId]"  routerLinkActive="active"  class="J_menuItem"  data-index="3" >{{menu2.permissionName}}</a>
           </li>
@@ -80,20 +80,21 @@
           <!--<li routerLinkActive="active">-->
           <!--<a routerLink="config"  class="J_menuItem" data-index="7">配置管理</a>-->
           <!--</li>-->
-          <li routerLinkActive="active">
-            <a routerLink="helpers"  class="J_menuItem" data-index="16">志愿者信息</a>
-          </li>
-          <li routerLinkActive="active">
-            <a routerLink="device"  class="J_menuItem" data-index="17">设备信息</a>
-          </li>
-          <li routerLinkActive="active">
-            <a routerLink="rescuecount"  class="J_menuItem" data-index="16">救援统计</a>
-          </li>
+          <!--<li routerLinkActive="active">-->
+            <!--<a routerLink="helpers"  class="J_menuItem" data-index="16">志愿者信息</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+            <!--<a routerLink="device"  class="J_menuItem" data-index="17">设备信息</a>-->
+          <!--</li>-->
+          <!--<li routerLinkActive="active">-->
+            <!--<a routerLink="rescuecount"  class="J_menuItem" data-index="16">救援统计</a>-->
+          <!--</li>-->
           <li routerLinkActive="active">
             <a routerLink="monitor"  class="J_menuItem" data-index="16">监控页面</a>
           </li>
         </ul>
       </li>
+
       <!--<li class="item actives" [ngClass]="{'actives':!menuactive2}">-->
         <!--<a>-->
           <!--<i class="fa fa-columns"></i>-->

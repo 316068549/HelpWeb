@@ -10,7 +10,7 @@ import { DeviceService } from '../device/device-service';
 import { deviceRoutes } from './device.routes';
 import { DeviceComponent } from './device.component';
 import { DeviceTableComponent } from './device-table/device-table.component';
-
+import { FenyeComponent } from './fenye/fenye.component';
 
 
 @NgModule({
@@ -23,7 +23,8 @@ import { DeviceTableComponent } from './device-table/device-table.component';
   ],
   declarations: [
     DeviceTableComponent,
-    DeviceComponent
+    DeviceComponent,
+    FenyeComponent
   ],
   providers: [ DeviceService ]
 })

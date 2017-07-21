@@ -60,8 +60,8 @@ export class ElectricityTableComponent implements OnInit {
     //   );
     this.electricityService.getElectricities().then( electricities => {
       console.log(electricities)
-      this.electricities = electricities
-      this.data = this.electricities;
+      // this.electricities = electricities
+      // this.data = this.electricities;
     });
   }
 
@@ -69,26 +69,26 @@ export class ElectricityTableComponent implements OnInit {
     this.selectedElectricity = electricity;
 
   }
-  search(IMEI: string) {
-    return this.electricityService.search(IMEI).subscribe(
-      res => {
-        this.data = res;
-      },
-      error => {
-        console.log(error);
-        if (error.message.indexOf('Unexpected end of JSON input') > -1) {
-          layer.open({
-            title: '提示'
-            ,content: '没有查询到数据！'
-          });
-          // this.data = res;
-          return;
-        }
-
-      },
-      () => { }
-    );
-  }
+  // search(IMEI: string) {
+  //   return this.electricityService.search(IMEI).subscribe(
+  //     res => {
+  //       this.data = res;
+  //     },
+  //     error => {
+  //       console.log(error);
+  //       if (error.message.indexOf('Unexpected end of JSON input') > -1) {
+  //         layer.open({
+  //           title: '提示'
+  //           ,content: '没有查询到数据！'
+  //         });
+  //         // this.data = res;
+  //         return;
+  //       }
+  //
+  //     },
+  //     () => { }
+  //   );
+  // }
 
   goBack(): void {
     this.location.back();

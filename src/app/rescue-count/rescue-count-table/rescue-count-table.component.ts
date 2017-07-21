@@ -19,18 +19,66 @@ declare var layer:any;
   styleUrls: ['./rescue-count-table.component.css']
 })
 export class RescueCountTableComponent implements OnInit {
-  public data: any[];
-  rowsOnPage = 10;
-  sortOrder = "asc";
   rescues: Rescue[];
   rescue: Rescue;
   selectedRescue: Rescue;
+  public params; // 保存页面url参数 2012-10-20 11:11:11
+  public totalNum ; // 总数据条数
+  public pageSize = 5;// 每页数据条数
+  public totalPage ;// 总页数
+  public curPage = 1;// 当前页码
+  pages: any;
   Rescue=new Rescue();
   constructor(
     private router: Router,
     private rescueCountService: RescueCountService,
     private location: Location
-  ) { }
+  ) {
+    let vm = this;
+    if (vm.params) {
+      vm.params = vm.params.replace('?', '').split('&');
+      let theRequest = [];
+      for (let i = 0; i < vm.params.length; i++) {
+        theRequest[vm.params[i].split("=")[0]] = vm.params[i].split("=")[0] == 'pageNo' ? parseInt(vm.params[i].split("=")[1]) : vm.params[i].split("=")[1];
+      }
+      vm.params = theRequest;
+      if (vm.params['pageNo']) {
+        vm.curPage = vm.params['pageNo'];
+        //console.log('当前页面', vm.curPage);
+      }
+    } else {
+      vm.params = {};
+    }
+  }
+
+  getPageData(pageNo) {
+    let vm = this;
+    vm.curPage = pageNo;
+    this.rescueCountService.getMenuDatas(pageNo).then( res => {
+      if(res['code'] == 0){
+        this.rescues = res['data']['list'];
+      }
+      else if(res['code'] == 5){
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else if(res['code'] == 6){
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+      }
+    })
+    console.log('触发', pageNo);
+  }
 
   ngOnInit(): void {
     this.getElectricities();
@@ -38,43 +86,56 @@ export class RescueCountTableComponent implements OnInit {
 
 
   getElectricities(): void {
-    this.rescueCountService.getMenuDatas().then(rescues => {
-        this.rescues = rescues;
-      this.data = this.rescues;
+    this.rescueCountService.getMenuDatas().then(res => {
+      if(res['code'] == 0){
+
+      }else if(res['code'] == 5){
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else if(res['code'] == 6){
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+        this.router.navigate(['login']);
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+      }
+      this.rescues = res['data']['list'];
+      this.totalPage = Math.ceil(this.rescues.length/5);
+      this.totalNum = this.rescues.length;
+      this.pages  = res['data']['page'];
       }
     );
-    // this.rescueCountService.getMenuDatas().then( electricities => {
-    //   console.log(electricities)
-    //   this.rescues = electricities
-    //   this.data = this.rescues;
-    // });
   }
 
   onSelect(rescue: Rescue): void {
     this.selectedRescue = rescue;
-    // console.log(electricity.data);
-
   }
 
   search2(term: string): void{
-
     this.rescueCountService.search2(term).then( menus => {
-      if(typeof (menus)=='string'){
+      if(!menus['list']){
+        layer.open({
+          title: '提示'
+          ,content: '错误'
+        });
+      }
+      if(menus['list'].length==0){
         layer.open({
           title: '提示'
           ,content: '没有查询到数据！'
         });
-      }else{
-        this.data=menus;
       }
-      console.log(this.data);
-    });
-  }
-
-  getMenus(): void {
-    this.rescueCountService.getMenuDatas().then( menus => {
-      this.rescues  = menus;
-      this.data = this.rescues;
+      if(menus['list'].length>0){
+        this.rescues = menus['list'];
+      }
     });
   }
 

@@ -10,7 +10,7 @@ export const workspaceRoutes = [
 		path: '',
 		component: HomeComponent,
 		children: [
-			{ path: '', redirectTo: 'device', pathMatch: 'full' },
+			{ path: '', redirectTo: 'users/110', pathMatch: 'full' },
       {
         path: 'menu/:permissionId',
         loadChildren: '../menu/menu.module#MenuModule'
@@ -19,12 +19,16 @@ export const workspaceRoutes = [
       //   path: 'electricity',
       //   loadChildren: '../electricity/electricity.module#ElectricityModule'
       // },
+      {
+        path: 'track/:permissionId',
+        loadChildren: '../track/track.module#TrackModule'
+      },
+      {
+        path: 'online/:permissionId',
+        loadChildren: '../status/status.module#StatusModule'
+      },
       // {
-      //   path: 'track',
-      //   loadChildren: '../track/track.module#TrackModule'
-      // },
-      // {
-      //   path: 'status',
+      //   path: 'status/:permissionId',
       //   loadChildren: '../status/status.module#StatusModule'
       // },
       // {
@@ -40,12 +44,16 @@ export const workspaceRoutes = [
         loadChildren: '../helpers/helpers.module#HelpersModule'
       },
       {
-        path: 'device',
+        path: 'device/:permissionId',
         loadChildren: '../device/device.module#DeviceModule'
       },
       {
-        path: 'rescuecount',
+        path: 'rescuecount/:permissionId',
         loadChildren: '../rescue-count/rescue-count.module#RescueCountModule'
+      },
+      {
+        path: 'rescuepapers/:permissionId',
+        loadChildren: '../rescuepapers/rescuepapers.module#RescuepapersModule'
       },
       {
         path: 'users/:permissionId',

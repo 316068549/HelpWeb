@@ -28,6 +28,8 @@ export class GaodeMapComponent implements OnInit {
 
     var map = new BMap.Map("container");            // 创建Map实例
     var point = new BMap.Point(108.924295,34.235939); // 创建点坐标
+    map.centerAndZoom(point,15);
+    map.addControl(new BMap.NavigationControl());
 
     // map.centerAndZoom(point,15);
     map.enableScrollWheelZoom();                 //启用滚轮放大缩小
@@ -42,51 +44,20 @@ export class GaodeMapComponent implements OnInit {
     //   map.plugin(toolbar2);
     // });
     //初始化
-    track()
-    // init();
-    console.log(pointList);
+    // 鹰眼获取轨迹
     // changeX();
-    //  startRun();
+    // track()
+
+    // 后台获取GPS坐标点
+    // {"status":0,"msg":null,"time":0,"objectbean":null,"code":0,"error":null,"data":null}
+    init();
+     startRun();
 
     // this.route.params
     //   .switchMap((params: Params) => this.electricityService.getElectricity(params['deviceIMEI'].toString()))
     //   .subscribe(electricity => {
     //     // pointList = electricity;
-    //     pointList =
-    //
-    //       [
-    //         {
-    //           "deviceIMEI": "1234567890123456",
-    //           "locationTime": "2017-03-06 11:22:56",
-    //           "locationPower": "97%",
-    //           "locationLongitude": 108.912575,
-    //           "locationLatitude": 34.230698,
-    //           "locationType": "GPS"
-    //         },
-    //         {
-    //           "deviceIMEI": "1234567890123456",
-    //           "locationTime": "2017-03-06 11:22:56",
-    //           "locationPower": "97%",
-    //           "locationLongitude": 108.812575,
-    //           "locationLatitude": 34.230698,
-    //           "locationType": "GPS"
-    //         },
-    //         {
-    //           "deviceIMEI": "1234567890123456",
-    //           "locationTime": "2017-03-06 11:22:56",
-    //           "locationPower": "97%",
-    //           "locationLongitude": 108.712575,
-    //           "locationLatitude": 34.230698,
-    //           "locationType": "GPS"
-    //         },
-    //         {
-    //           "deviceIMEI": "1234567890123456",
-    //           "locationTime": "2017-03-06 11:22:56",
-    //           "locationPower": "97%",
-    //           "locationLongitude": 108.612575,
-    //           "locationLatitude": 34.230698,
-    //           "locationType": "GPS"
-    //         }]
+
     //     console.log(pointList);
     //     // marker = new AMap.Marker({
     //     //   map: map,
@@ -133,6 +104,40 @@ export class GaodeMapComponent implements OnInit {
         latY = pointList[i].latitude;
         // lineArr.push(new AMap.LngLat(lngX,latY));
         lineArr.push(new BMap.Point(lngX,latY));
+        var convertor = new BMap.Convertor();
+        convertor.translate(lineArr, 1, 5, translateCallback)
+        var  translateCallback = function (data){
+          if(data.status === 0) {
+            console.log(data.points)
+            for(var a = 0,marker;a<data.points.length;a++){
+              if(pointList.length == 0){
+                return;
+              }
+              if(a==0){
+                var myIcon = new BMap.Icon("markers.png");
+                var point = new BMap.Point(pointList[i].lng, pointList[i].lat);
+                var marker = new BMap.Marker(point);
+                marker.setLabel('起');
+                map.addOverlay(marker);
+              }else if(i<pointList.length-1){
+                var point = new BMap.Point(pointList[i].lng, pointList[i].lat);
+                var marker = new BMap.Marker(point);
+                map.addOverlay(marker);
+              }else{
+                var point = new BMap.Point(pointList[i].lng, pointList[i].lat);
+                var marker = new BMap.Marker(point);
+                map.addOverlay(marker);
+              }
+
+            }
+            // var marker = new BMap.Marker(data.points[0]); lat:;lng:
+            // bm.addOverlay(marker);
+            // var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
+            // marker.setLabel(label); //添加百度label
+            // bm.setCenter(data.points[0]);
+          }
+        }
+
           if(pointList.length == 0){
             return;
           }
@@ -222,8 +227,11 @@ export class GaodeMapComponent implements OnInit {
       // });
     }
     function startRun(){  //开始绘制轨迹
+
       var x=pointList[0].longitude;
       var y=pointList[0].latitude;
+      //坐标转换完之后的回调函数
+
       completeEventHandler(x,y);
       // marker.moveAlong(lineArr,80);     //开始轨迹回放
     }
@@ -243,17 +251,37 @@ export class GaodeMapComponent implements OnInit {
       }
       $.ajax({
        type: "post",
-       url: "/api/query/messageAll",
+       url: "web/query/orbit",
+       //    url: " api/query/messageAll",
         contentType:"application/json",
         dataType: "json",
        data:JSON.stringify(paramms),
         cache: false,
         async: false,
        success: function(data){
-         result=data.objectbean;
+         console.log('success')
+         // result=data.data.list;
        }
        });
-        pointList=result;
+      pointList =
+        [
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.912575,
+            "latitude": 34.230698,
+            "locationType": "GPS"
+          },
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.812575,
+            "latitude": 34.230688,
+            "locationType": "GPS"
+          }]
+        // pointList=result;
     }
     function changeX(){
       var ak = 'PmTFEuep7FmccxTrTn67TxRn';

@@ -10,7 +10,7 @@ declare var layer:any;
 
 @Injectable()
 
-export class DeviceService {
+export class RescuePapersService {
   private headers = new Headers({'Content-Type': 'application/json'});
   // private menusUrl = 'api/menus';
   private menusUrl = 'web/query/device';
