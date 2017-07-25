@@ -91,7 +91,7 @@ export class PermissionTableComponent implements OnInit {
   }
 
   getElectricities(): void {
-    this.userService.getMenuList().then( res => {
+    this.userService.getMenuList(1).then( res => {
       // if(res['code'] == 0){
       //   this.getElectricities();
       // }else if(res['code'] == 5){

@@ -221,20 +221,20 @@ export class UsersTableComponent implements OnInit {
   ak(a){
     console.log(a)
   }
-  // search2(term: string): void{
-  //
-  //   this.userService.search2(term).then( menus => {
-  //     if(typeof (menus)=='string'){
-  //       layer.open({
-  //         title: '提示'
-  //         ,content: '没有查询到数据！'
-  //       });
-  //     }else{
-  //       this.data=menus;
-  //     }
-  //     console.log(this.data);  userName.value,nickName.value,password.value, role.value,
-  //   });
-  // }
+  search2(term: number): void{
+    this.userService.getMenuDetail(term).then( menus => {
+      if(menus['adminUser']){
+        menus['adminUser']['roleList'] = menus['adminRoleList'];
+        this.users = [];
+        this.users.push(menus['adminUser'])
+      }else {
+        layer.open({
+          title: '提示'
+          ,content: '没有查询到数据'
+        });
+      }
+    });
+  }
   add(userName: string, nickName: string, password: string,  role: string,menuSelected: number): void {
     console.log(menuSelected)
     userName = userName.trim();

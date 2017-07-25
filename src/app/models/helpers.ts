@@ -1,10 +1,11 @@
 export class Helpers {
-  userId: string;
-  userName: string;
+  volunteerId: string;
+  name: string;
+  imageUrl:string;
   sex:number;
   password:string;
-  telephone: string;
-  nationalId:string;
+  mobile: string;
+  identityCard:string;
   rescueTeam: string;
 }
 

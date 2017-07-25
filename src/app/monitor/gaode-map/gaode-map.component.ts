@@ -47,28 +47,35 @@ export class GaodeMapComponent implements OnInit {
     // map.enableInertialDragging();
     map.centerAndZoom(point,15);
     map.addControl(new BMap.NavigationControl());
-    var bounds = map.getBounds();
-    var sw = bounds.getSouthWest();
-    var ne = bounds.getNorthEast();
-    var lngSpan = Math.abs(sw.lng - ne.lng);
-    var latSpan = Math.abs(ne.lat - sw.lat);
-    for (var i = 0; i < 10; i ++) {
-      var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
-      addMarker(point);
-    }
-    for (var i = 0; i < 10; i ++) {
-      var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
-      var marker = new BMap.Marker(point);
-      map.addOverlay(marker);
-    }
+    // var bounds = map.getBounds();
+    // var sw = bounds.getSouthWest();
+    // var ne = bounds.getNorthEast();
+    // var lngSpan = Math.abs(sw.lng - ne.lng);
+    // var latSpan = Math.abs(ne.lat - sw.lat);
+    init();
+    startRun();
+    // for (var i = 0; i < 10; i ++) {
+    //   var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
+    //   addMarker(point);
+    // }
+    // for (var i = 0; i < 10; i ++) {
+    //   var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
+    //   var marker = new BMap.Marker(point);
+    //   map.addOverlay(marker);
+    // }
 
+    // setTimeout(function(){
+    //   var convertor = new BMap.Convertor();
+    //   var pointArr = [];
+    //   pointArr.push(point);
+    //   convertor.translate(pointArr, 1, 5, translateCallback)
+    // }, 500);
     //坐标转换完之后的回调函数
     var  translateCallback = function (data){
       if(data.status === 0) {
         // var marker = new BMap.Marker(data.points[0]);
         // map.addOverlay(marker);
-        // marker.setLabel(label);         // var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
-//添加百度label
+        // marker.setLabel(label);
         // map.setCenter(data.points[0]);
 
         // var label = new BMap.Label("求助点刘胡兰",{offset:new BMap.Size(20,-10)});
@@ -119,7 +126,9 @@ export class GaodeMapComponent implements OnInit {
 
         var content = '<div style="margin:0;line-height:20px;padding:2px;">' +
           '<img src="assets/img/profile_small.jpg" alt="" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
-          '简介：需要救援人刘大虎，77岁<br/><a   videohref="ttp://vjs.zencdn.net/v/oceans.mp4" class="video_link">查看视频</a><br/>地址：西安市雁塔区上地十街10号<br/>电话：13898966666<br/>救援状态：志愿者乙正在前往救援' +
+          '简介：需要救援人刘大虎，77岁<br/>' +
+          // '<a   videohref="ttp://vjs.zencdn.net/v/oceans.mp4" class="video_link">查看视频</a>' +
+          '地址：西安市雁塔区上地十街10号<br/>电话：13898966666<br/>救援状态：志愿者乙正在前往救援' +
           '</div>';
 
         //创建检索信息窗口对象
@@ -163,36 +172,105 @@ export class GaodeMapComponent implements OnInit {
       }
     }
 
-    setTimeout(function(){
-      var convertor = new BMap.Convertor();
-      var pointArr = [];
-      pointArr.push(point);
-      convertor.translate(pointArr, 1, 5, translateCallback)
-    }, 500);
+
 
     //播放视频
-    var myPlayer = videojs('my-video');
-    videojs("my-video").ready(function(){
-      var myPlayer = this;
-      myPlayer.play();
-    });
-
-    videojs("my-video", {}, function(){
-      // Player (this) is initialized and ready.
-    });
-    var fullscreenchange = function(){
-      $('#page-wrapper').removeClass('marg220').addClass('fullscreen');
-    };
-
-    myPlayer.on("pause", function(){
-      console.log("pause")
-    });
-
-
-
-
+    // var myPlayer = videojs('my-video');
+    // videojs("my-video").ready(function(){
+    //   var myPlayer = this;
+    //   myPlayer.play();
+    // });
+    //
+    // videojs("my-video", {}, function(){
+    // });
+    // var fullscreenchange = function(){
+    //   $('#page-wrapper').removeClass('marg220').addClass('fullscreen');
+    // };
+    //
+    // myPlayer.on("pause", function(){
+    //   console.log("pause")
+    // });
+    // 地图初始化位置
+    function init(){
+      getBoundary('西安市雁塔区');
+      var result;
+      // var paramms = {imeiCode:imeicode,startTime:start,endTime:end}
+      var paramms = {imeiCode:111}
+      $.ajax({
+        type: "post",
+        url: "web/query/orbit",
+        //    url: " api/query/messageAll",
+        contentType:"application/json",
+        dataType: "json",
+        data:JSON.stringify(paramms),
+        cache: false,
+        async: false,
+        success: function(data){
+          console.log('success')
+          // result=data.data.list;
+        }
+      });
+      pointList =
+        [
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.912575,
+            "latitude": 34.230698,
+            "locationType": "GPS"
+          },
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.812575,
+            "latitude": 34.230688,
+            "locationType": "GPS"
+          }]
+      // pointList=result;
+    }
+    //地图坐标转换，添加marker
+    function completeEventHandler(x,y){
+      var lngX ;
+      var latY ;
+      markers = [];
+      lineArr = new Array();
+      lineArr=[];
+      console.log(pointList)
+      for(var i = 0,marker;i<pointList.length;i++){
+        lngX = pointList[i].longitude;
+        latY = pointList[i].latitude;
+        lineArr.push(new BMap.Point(lngX,latY));
+        var convertor = new BMap.Convertor();
+        convertor.translate(lineArr, 1, 5, translateCallback)
+        var  translateCallback = function (data){
+          if(data.status === 0) {
+            console.log(data.points)
+            for(var a = 0,marker;a<data.points.length;a++){
+              if(data.points.length == 0){
+                return;
+              }
+                var myIcon = new BMap.Icon("markers.png");
+                var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
+                var marker = new BMap.Marker(point);
+                map.addOverlay(marker);
+            }
+            var view = map.getViewport(data.points);
+            var mapZoom = view.zoom;
+            var centerPoint = view.center;
+            map.centerAndZoom(centerPoint,mapZoom);
+          }
+        }
+      }
+    }
+    function startRun(){
+      var x=pointList[0].longitude;
+      var y=pointList[0].latitude;
+      completeEventHandler(x,y);
+    }
+    // 全屏
     $('.video_link').on('click',()=>{
-      alert(1);
       this.router.navigate(['video']);
     }
     )
@@ -209,6 +287,8 @@ export class GaodeMapComponent implements OnInit {
 
     })
     $('.quanping').on('click',function () {
+      $(this).hide()
+      $('.back').show();
       var showMap = document.getElementById("container");
       $('#page-wrapper').removeClass('marg220').addClass('fullscreen');
 
@@ -217,6 +297,8 @@ export class GaodeMapComponent implements OnInit {
       requestFullScreen(document.documentElement);
     })
     $('.back').on('click',function () {
+      $(this).hide()
+      $('.quanping').show();
       var showMap = document.getElementById("container");
       $('#page-wrapper').addClass('marg220').removeClass('fullscreen');
       showMap.style.width = X;
@@ -233,7 +315,7 @@ export class GaodeMapComponent implements OnInit {
     function getBoundary(ak){
       var bdary = new BMap.Boundary();
       bdary.get(ak, function(rs){       //获取行政区域
-        map.clearOverlays();        //清除地图覆盖物
+        // map.clearOverlays();        //清除地图覆盖物
         var count = rs.boundaries.length; //行政区域的点有多少个 ACABF4  E4F6F8
         if (count === 0) {
           alert('未能获取当前输入行政区域');

@@ -36,7 +36,7 @@
   overflow-y: auto;
   top: 10px;
   left: 10px;
-  width: 560px;
+  width: 160px;
   padding: 10px;
   box-shadow: 3px 4px 3px 0px silver;
 }
@@ -65,7 +65,7 @@ li{
 .quanping{
   position: absolute;
   font-size: 12px;
-  right: 310px;
+  right: 350px;
   top: 5px;
   border-radius: 3px;
   line-height: 36px;
@@ -76,11 +76,12 @@ li{
 .back{
   position: absolute;
   font-size: 12px;
-  right: 410px;
+  right: 350px;
   top: 5px;
   border-radius: 3px;
   line-height: 36px;
   width: 90px;
   height: 50px;
   z-index: 999;
+  display: none;
 }

@@ -14,11 +14,13 @@ export class MenuService {
   private headers = new Headers({'Content-Type': 'application/json'});
   private headers2 = new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'});
   private menusUrl = 'index';
+  private logoutUrl = 'logout';
   private menusbtnUrl = 'adminPermission/query/adminPermissionButton';
   private menuslistUrl = 'adminPermission/query/adminPermissionList';
   private menuslistUrl2 = 'adminPermission/query/subPermission';
   private menuslistUrl3 = 'adminPermission/query/parentPermission';
   private menuslistUrl4 = 'adminPermission/query/queryPermissionInfo';
+  private userUrl = 'admin/query/adminUserId';
   // private menusUrl = 'api/query/findMenu';
   private menusaddUrl = 'adminPermission/add/adminPermission';
   private menusmodifyUrl = 'adminPermission/edit/adminPermission';
@@ -107,6 +109,13 @@ export class MenuService {
       .then(response => response.json().data as object)
       .catch(this.handleError);
   }
+  getMenuDetail2(id:number): Promise<object> {
+    const url = this.userUrl+'?usersId='+id+'&roleId='+this.roleId+'&tokenId='+this.tokenId;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json().data as object)
+      .catch(this.handleError);
+  }
 
   // getMenuDatas(): Promise<Menu[]> {
   //   // return this.getWarns()
@@ -151,11 +160,11 @@ export class MenuService {
   }
 
 
-  delete(id: number): Promise<void> {
+  delete(id: number): Promise<object> {
     const durl=this.menusdeleteUrl+'?permissionId='+id+'&tokenId='+this.tokenId;
     return this.http.get(durl)
       .toPromise()
-      .then(() => null)
+      .then((res) => res.json() as object)
       .catch(this.handleError);
   }
 
@@ -170,6 +179,13 @@ export class MenuService {
       .post(this.menusmodifyUrl, parment, {headers: this.headers2})
       .toPromise()
       .then(res => res.json().data as Menu)
+      .catch(this.handleError);
+  }
+  logout(){
+    let parment = 'tokenId='+ this.tokenId;
+    return this.http.post(this.logoutUrl,parment, {headers: this.headers2})
+      .toPromise()
+      .then((res) => res.json() as object)
       .catch(this.handleError);
   }
   //

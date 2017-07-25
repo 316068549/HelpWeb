@@ -99,6 +99,7 @@ export class UserService {
       .catch(this.handleError);
   }
 
+
   private handleError(error: any): Promise<any> {
     layer.open({
       title: '提示'
@@ -143,12 +144,7 @@ export class UserService {
   //     .map(response => response.json().objectbean as User[]
   //     );
   // }
-  // search2(term: string): Promise<User []> {
-  //   return this.http.get(this.menusUrl+'?userName='+term)
-  //     .toPromise()
-  //     .then(response => response.json().objectbean as User[])
-  //     .catch(this.handleError);
-  // }
+
   // addItem(item){
   //     ITEMS.push(item);
   // }

@@ -37,9 +37,9 @@ export class HelpersTableComponent implements OnInit {
   private edit:boolean = false;
   private del:boolean = false;
   public params; // 保存页面url参数
-  public totalNum ; // 总数据条数
+  public totalNum =0; // 总数据条数
   public pageSize = 5;// 每页数据条数
-  public totalPage ;// 总页数
+  public totalPage = 0;// 总页数
   public curPage = 1;// 当前页码
   pages: any;
   term={};
@@ -138,7 +138,7 @@ export class HelpersTableComponent implements OnInit {
       content: '确定删除？'
       , btn: ['确定', '取消']
       , yes: () => {
-        this.userService.delete(helper.userId).then(res =>{
+        this.userService.delete(helper.volunteerId).then(res =>{
           if(res['code'] == 0){
           }else if(res['code'] == 5){
             alert(res['error']);
@@ -160,7 +160,7 @@ export class HelpersTableComponent implements OnInit {
   }
 
   getElectricities(): void {
-    this.userService.getMenuDatas().then( res => {
+    this.userService.getMenuDatas(1).then( res => {
       if(res['code'] == 0){
 
       }else if(res['code'] == 5){
@@ -191,11 +191,12 @@ export class HelpersTableComponent implements OnInit {
 
   onSelect(helper: Helpers): void {
     this.selectedHelper = helper;
+    console.log(this.selectedHelper)
   }
 
   search2(term: string): void{
     this.userService.search2(term).then( menus => {
-      if(!menus['list']){
+      if(!menus){
         layer.open({
           title: '提示'
           ,content: '错误'
@@ -207,20 +208,21 @@ export class HelpersTableComponent implements OnInit {
           ,content: '没有查询到数据！'
         });
       }
-      if(this.helpers.length>0){
-        this.helpers = menus['list'];
+      if(menus['volunteerId']){
+        this.helpers = [];
+        this.helpers.push(menus);
       }
     });
   }
 
   add(helperName: string, sex: string, password: string,phone: string,
-      nationalId: string, rescue: string ): void {
+      nationalId: string, rescue: string,imageUrl:string ): void {
     helperName = helperName.trim();
     phone = phone.trim();
     nationalId = nationalId.trim();
     rescue = rescue.trim();
     if (!helperName && !sex  && !password && !phone && !nationalId && rescue ) { return; }
-    this.userService.create(helperName,sex,password,phone,nationalId,rescue)
+    this.userService.create(helperName,sex,password,phone,nationalId,rescue,imageUrl)
       .subscribe(res => {
         if(res["code"]==0){
           layer.open({

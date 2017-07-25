@@ -59,11 +59,11 @@
         <tbody>
         <tr *ngFor="let helper of helpers; let i = index;"  (click)="onSelect(helper)">
           <td>{{i+1}}</td>
-          <td >{{helper.userName}}</td>
+          <td >{{helper.name}}</td>
           <td >{{helper.sex}}</td>
           <td>{{helper.password}}</td>
-          <td>{{helper.nationalId}}</td>
-          <td>{{helper.telephone}}</td>
+          <td>{{helper.identityCard}}</td>
+          <td>{{helper.mobile}}</td>
           <td>{{helper.rescueTeam}}</td>
           <!--<td>&nbsp;&nbsp;-->
             <!--<a  (click)="deletemenu=true; clicked=true;helper === selectedHelper" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
@@ -77,7 +77,7 @@
       </table>
     </div>
     <div style="position:relative;padding:0 30px;top:0">
-      <app-fenye *ngIf="pages" [pageParams]="{pageSize:5,totalNum:totalNum,curPage:1,totalPage:totalPage}" (changeCurPage)="getPageData($event)"></app-fenye>
+      <app-fenye  [pageParams]="{pageSize:5,totalNum:totalNum,curPage:1,totalPage:totalPage}" (changeCurPage)="getPageData($event)"></app-fenye>
     </div>
   </div>
 </div>
@@ -87,7 +87,7 @@
 
 <div [hidden]="!tjmenu"  class="operate menu">
   <form class="operate-form"  #tjmenuform="ngForm" (ngSubmit)="submied = false;tjmenuform.form.valid && add(helperName.value,menuSelected.value,password.value,
-        phoneNumber.value, nationalId.value,rescueTeam.value);">
+        phoneNumber.value, nationalId.value,rescueTeam.value,imageUrl.value);">
     <div class="operate-title">添加救助人员<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
     <div class="operate-content">
       <!--<div class="operate-item fn-clear">-->
@@ -100,7 +100,7 @@
       <div class="operate-item fn-clear">
         <label>姓名:</label>
         <div class="operate-group">
-          <input required  type="text"  id="helperName" name="helperName" class="form-box"  [(ngModel)]="Helpers.userName" #helperName="ngModel">
+          <input required  type="text"  id="helperName" name="helperName" class="form-box"  [(ngModel)]="Helpers.name" #helperName="ngModel">
           <p *ngIf="tjmenuform.submitted && !helperName.valid && !submied"   class="text-danger">姓名不能为空</p>
         </div>
       </div>
@@ -121,11 +121,16 @@
           <p *ngIf="tjmenuform.submitted && !password.valid && !submied"   class="text-danger">密码不能为空</p>
         </div>
       </div>
-
+      <div class="operate-item fn-clear">
+        <label class="unmust">头像Url:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="imageUrl" name="imageUrl" class="form-box"  [(ngModel)]="Helpers.imageUrl" #imageUrl="ngModel">
+        </div>
+      </div>
       <div class="operate-item fn-clear">
         <label>电话:</label>
         <div class="operate-group">
-          <input required  type="text"  id="phoneNumber" name="phoneNumber" class="form-box"  [(ngModel)]="Helpers.telephone" #phoneNumber="ngModel"
+          <input required  type="text"  id="phoneNumber" name="phoneNumber" class="form-box"  [(ngModel)]="Helpers.mobile" #phoneNumber="ngModel"
                  pattern="^1[3|4|5|8][0-9]\d{4,8}$">
           <p *ngIf="tjmenuform.submitted && !phoneNumber.value && !submied"   class="text-danger">电话不能为空</p>
           <p class="text-danger" *ngIf="phoneNumber.errors?.pattern && phoneNumber.touched && !submied">手机号码格式不正确</p>
@@ -134,7 +139,7 @@
       <div class="operate-item fn-clear">
         <label>身份证号:</label>
         <div class="operate-group">
-          <input required  type="text"  id="nationalId" name="nationalId" class="form-box" [(ngModel)]="Helpers.nationalId" #nationalId="ngModel"
+          <input required  type="text"  id="nationalId" name="nationalId" class="form-box" [(ngModel)]="Helpers.identityCard" #nationalId="ngModel"
                  pattern="/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/">
           <p *ngIf="tjmenuform.submitted && !nationalId.value && !submied"   class="text-danger">身份证号不能为空</p>
           <p *ngIf="nationalId.errors?.pattern && nationalId.touched && !submied"  class="text-danger">身份证格式错误</p>
@@ -162,7 +167,7 @@
       <div class="operate-item fn-clear">
         <label>姓名:</label>
         <div class="operate-group">
-          <input required  type="text"  id="helperName2" name="helperName2" class="form-box"  [(ngModel)]="selectedHelper.userName" #helperName2="ngModel">
+          <input required  type="text"  id="helperName2" name="helperName2" class="form-box"  [(ngModel)]="selectedHelper.name" #helperName2="ngModel">
           <p *ngIf="deletemenuform.submitted && !helperName2.valid"   class="text-danger">姓名不能为空</p>
         </div>
       </div>
@@ -182,9 +187,15 @@
         </div>
       </div>
       <div class="operate-item fn-clear">
+        <label class="unmust">头像Url:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="imageUrl2" name="imageUrl2" class="form-box"  [(ngModel)]="selectedHelper.imageUrl" #imageUrl2="ngModel">
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
         <label>电话:</label>
         <div class="operate-group">
-          <input required  type="text"  id="phoneNumber2" name="phoneNumber2" class="form-box"  [(ngModel)]="selectedHelper.telephone" #phoneNumber2="ngModel"
+          <input required  type="text"  id="phoneNumber2" name="phoneNumber2" class="form-box"  [(ngModel)]="selectedHelper.mobile" #phoneNumber2="ngModel"
                  pattern="^1[3|4|5|8][0-9]\d{4,8}$">
           <p *ngIf="deletemenuform.submitted && !phoneNumber2.value"   class="text-danger">电话不能为空</p>
           <p class="text-danger" *ngIf="phoneNumber2.errors?.pattern&& phoneNumber2.touched">手机号码格式不正确</p>
@@ -193,7 +204,7 @@
       <div class="operate-item fn-clear">
         <label>身份证号:</label>
         <div class="operate-group">
-          <input required  type="text"  id="nationalId2" name="nationalId2" class="form-box" [(ngModel)]="selectedHelper.nationalId" #nationalId2="ngModel"
+          <input required  type="text"  id="nationalId2" name="nationalId2" class="form-box" [(ngModel)]="selectedHelper.identityCard" #nationalId2="ngModel"
                  pattern="/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/">
           <p *ngIf="deletemenuform.submitted && !nationalId2.value"   class="text-danger">身份证号不能为空</p>
           <div *ngIf="nationalId2.errors?.pattern && nationalId2.touched"  class="text-danger">身份证格式错误</div>

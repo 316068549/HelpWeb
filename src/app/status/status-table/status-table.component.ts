@@ -100,7 +100,7 @@ export class StatusTableComponent implements OnInit {
   }
 
   getStatuses(): void {
-    this.statusService.getStatuses().then( res => {
+    this.statusService.getStatuses(1).then( res => {
       if(res['code'] == 0){
 
       }else if(res['code'] == 5){
@@ -130,7 +130,7 @@ export class StatusTableComponent implements OnInit {
   }
 
   getStatuses2(): void {
-    this.statusService.getStatuses2().then( res => {
+    this.statusService.getStatuses2(1).then( res => {
       if(res['code'] == 0){
 
       }else if(res['code'] == 5){

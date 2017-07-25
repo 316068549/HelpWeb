@@ -20,8 +20,11 @@ export class UserLoginService {
   public login(user:User){
     console.log(JSON.stringify(user))
     let headers = new Headers({ 'Content-Type': 'application/json' });
+    let headers2 = new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'});
     const url = this.userLoginURL+"?userName="+user.userName+"&userPassword="+user.userPassword;
-    return this.http.get(url,headers)
+    // const url = this.userLoginURL;
+    // let parment = 'username='+user.userName+'&password='+user.userPassword;
+    return this.http.post(url,{headers: headers2})
       .map(response => {
           if(response.json().code==0){
             let result=response.json().data;

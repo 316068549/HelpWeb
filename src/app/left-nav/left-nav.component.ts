@@ -16,13 +16,16 @@ export class LeftNavComponent implements OnInit {
   menus: Menu[];
   menuactive:boolean = false;
   menuactive2:boolean = true;
+  userName:string;
+  roleName:string;
+  private userId = parseInt(localStorage.getItem("userId"));
   constructor(
     private menuService: MenuService,
     private router: Router
   ) { }
   ngOnInit(): void {
     this.getMenu();
-
+    this.getUser();
    // $('.item').click(function () {
    //  if($(this).hasClass("actives")){
    //    $(this).removeClass("actives");
@@ -37,12 +40,34 @@ export class LeftNavComponent implements OnInit {
 
   }
 
+  logout(){
+    this.menuService
+      .logout()
+      .then(menus => {
+        if(menus['code'] == 0){
+          localStorage.removeItem("tokenId");//清除
+          this.router.navigateByUrl("");
+        }
+      });
+  }
+
   getMenus(): void {
     this.menuService
       .getMenuDatas()
       .then(menus => this.menus = menus);
-  }
 
+  }
+  getUser(): void{
+    this.menuService.getMenuDetail2(this.userId).then(res => {
+      if(res['adminUser']){
+        console.log(res['adminUser'])
+        // menus['adminUser']['roleList'] = menus['adminRoleList'];
+        this.userName = res['adminUser']['userName'];
+        this.roleName = res['adminRoleList'][0]['roleName'];
+      }
+
+    });
+  }
   getSubMenu(menu2:Menu){
     this.data=null;
     this.data = menu2.subAdminPermission;

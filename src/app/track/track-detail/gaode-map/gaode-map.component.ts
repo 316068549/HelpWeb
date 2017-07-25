@@ -110,26 +110,34 @@ export class GaodeMapComponent implements OnInit {
           if(data.status === 0) {
             console.log(data.points)
             for(var a = 0,marker;a<data.points.length;a++){
-              if(pointList.length == 0){
+              if(data.points.length == 0){
                 return;
               }
               if(a==0){
                 var myIcon = new BMap.Icon("markers.png");
-                var point = new BMap.Point(pointList[i].lng, pointList[i].lat);
+                var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
                 var marker = new BMap.Marker(point);
                 marker.setLabel('起');
                 map.addOverlay(marker);
-              }else if(i<pointList.length-1){
-                var point = new BMap.Point(pointList[i].lng, pointList[i].lat);
+              }else if(a<data.points.length-1){
+                var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
                 var marker = new BMap.Marker(point);
                 map.addOverlay(marker);
               }else{
-                var point = new BMap.Point(pointList[i].lng, pointList[i].lat);
+                var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
                 var marker = new BMap.Marker(point);
                 map.addOverlay(marker);
               }
 
             }
+            var view = map.getViewport(data.points);
+            var mapZoom = view.zoom;
+            var centerPoint = view.center;
+            map.centerAndZoom(centerPoint,mapZoom);
+            //绘制轨迹
+            polyline = new BMap.Polyline(data.points, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
+            map.addOverlay(polyline);
+
             // var marker = new BMap.Marker(data.points[0]); lat:;lng:
             // bm.addOverlay(marker);
             // var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
@@ -138,63 +146,63 @@ export class GaodeMapComponent implements OnInit {
           }
         }
 
-          if(pointList.length == 0){
-            return;
-          }
-        if(i==0){
-          var myIcon = new BMap.Icon("markers.png");
-          var point = new BMap.Point(pointList[i].longitude, pointList[i].latitude);
-          var marker = new BMap.Marker(point);
-          marker.setLabel('起');
-          map.addOverlay(marker);
-
-
-          //  marker = new AMap.Marker({ //添加自定义点标记
-          //   map: map,
-          //   position: [pointList[i].locationLongitude, pointList[i].locationLatitude], //基点位置
-          //   offset: new AMap.Pixel(-17, -42), //相对于基点的偏移位置
-          //   draggable: true,  //是否可拖动
-          //    zIndex:999,
-          //   content: '<div class="marker-route marker-marker-bus-from"></div>'   //自定义点标记覆盖物内容
-          // });
-          // markers.push(marker)
-        }else if(i<pointList.length-1){
-          var point = new BMap.Point(pointList[i].longitude, pointList[i].latitude);
-          var marker = new BMap.Marker(point);
-          map.addOverlay(marker);
-          //  marker = new AMap.Marker({ //添加自定义点标记
-          //   map: map,
-          //   position: [pointList[i].locationLongitude, pointList[i].locationLatitude], //基点位置
-          //   offset: new AMap.Pixel(-17, -42), //相对于基点的偏移位置
-          //   draggable: true,  //是否可拖动
-          //   content: '<div class="marker-route" style=" width:30px;height:40px;background-position: -333px -23px;margin-top: 6px"></div>'   //自定义点标记覆盖物内容
-          // });
-          // markers.push(marker)
-        }else{
-          var point = new BMap.Point(pointList[i].longitude, pointList[i].latitude);
-          var marker = new BMap.Marker(point);
-          map.addOverlay(marker);
-          //  marker = new AMap.Marker({ //添加自定义点标记
-          //   map: map,
-          //   position: [pointList[i].locationLongitude, pointList[i].locationLatitude], //基点位置
-          //   offset: new AMap.Pixel(-17, -42), //相对于基点的偏移位置
-          //   draggable: true,  //是否可拖动
-          //    zIndex:999,
-          //   content: '<div class="marker-route" style=" background-position: -334px -135px"></div>'   //自定义点标记覆盖物内容
-          // });
-          // markers.push(marker)
-        }
+        //   if(pointList.length == 0){
+        //     return;
+        //   }
+        // if(i==0){
+        //   var myIcon = new BMap.Icon("markers.png");
+        //   var point = new BMap.Point(pointList[i].longitude, pointList[i].latitude);
+        //   var marker = new BMap.Marker(point);
+        //   marker.setLabel('起');
+        //   map.addOverlay(marker);
+        //
+        //
+        //   //  marker = new AMap.Marker({ //添加自定义点标记
+        //   //   map: map,
+        //   //   position: [pointList[i].locationLongitude, pointList[i].locationLatitude], //基点位置
+        //   //   offset: new AMap.Pixel(-17, -42), //相对于基点的偏移位置
+        //   //   draggable: true,  //是否可拖动
+        //   //    zIndex:999,
+        //   //   content: '<div class="marker-route marker-marker-bus-from"></div>'   //自定义点标记覆盖物内容
+        //   // });
+        //   // markers.push(marker)
+        // }else if(i<pointList.length-1){
+        //   var point = new BMap.Point(pointList[i].longitude, pointList[i].latitude);
+        //   var marker = new BMap.Marker(point);
+        //   map.addOverlay(marker);
+        //   //  marker = new AMap.Marker({ //添加自定义点标记
+        //   //   map: map,
+        //   //   position: [pointList[i].locationLongitude, pointList[i].locationLatitude], //基点位置
+        //   //   offset: new AMap.Pixel(-17, -42), //相对于基点的偏移位置
+        //   //   draggable: true,  //是否可拖动
+        //   //   content: '<div class="marker-route" style=" width:30px;height:40px;background-position: -333px -23px;margin-top: 6px"></div>'   //自定义点标记覆盖物内容
+        //   // });
+        //   // markers.push(marker)
+        // }else{
+        //   var point = new BMap.Point(pointList[i].longitude, pointList[i].latitude);
+        //   var marker = new BMap.Marker(point);
+        //   map.addOverlay(marker);
+        //   //  marker = new AMap.Marker({ //添加自定义点标记
+        //   //   map: map,
+        //   //   position: [pointList[i].locationLongitude, pointList[i].locationLatitude], //基点位置
+        //   //   offset: new AMap.Pixel(-17, -42), //相对于基点的偏移位置
+        //   //   draggable: true,  //是否可拖动
+        //   //    zIndex:999,
+        //   //   content: '<div class="marker-route" style=" background-position: -334px -135px"></div>'   //自定义点标记覆盖物内容
+        //   // });
+        //   // markers.push(marker)
+        // }
 
 
       }
       console.log(lineArr);
-      var view = map.getViewport(lineArr);
-      var mapZoom = view.zoom;
-      var centerPoint = view.center;
-      map.centerAndZoom(centerPoint,mapZoom);
-      //绘制轨迹
-      polyline = new BMap.Polyline(lineArr, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
-      map.addOverlay(polyline);
+      // var view = map.getViewport(lineArr);
+      // var mapZoom = view.zoom;
+      // var centerPoint = view.center;
+      // map.centerAndZoom(centerPoint,mapZoom);
+      // //绘制轨迹
+      // polyline = new BMap.Polyline(lineArr, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
+      // map.addOverlay(polyline);
       // function addLine(points){
       //
       //   var linePoints = [],pointsLen = points.length,i,polyline;
@@ -412,12 +420,13 @@ export class GaodeMapComponent implements OnInit {
 
 
 
-    // $('#search1').on('click',function () {
-    //   polyline.hide( );
-    //    map.remove(markers);
-    //   init();
-    //   startRun();
-    // })
+    $('#search1').on('click',function () {
+      // polyline.hide( );
+      //  map.remove(markers);
+      map.clearOverlays();
+      init();
+      startRun();
+    })
 
   }
   goBack(): void {

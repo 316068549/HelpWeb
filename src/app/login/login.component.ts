@@ -29,11 +29,6 @@ export class LoginComponent implements OnInit {
     console.log("--- user-login-component ---");
     console.log(this.router);
     console.log(this.activatedRoute);
-
-
-
-
-
     let activatedRouteSnapshot:ActivatedRouteSnapshot=this.activatedRoute.snapshot;
     let routerState: RouterState = this.router.routerState;
     let routerStateSnapshot: RouterStateSnapshot = routerState.snapshot;
@@ -49,22 +44,18 @@ export class LoginComponent implements OnInit {
     this.userLoginService.login(this.user).subscribe(res => {
       console.log(res)
       if(res){
-        localStorage.setItem("userId", res.userId);
-        localStorage.setItem("roleId", res.roleId);
         localStorage.setItem("tokenId", res.tokenId);
+        localStorage.setItem("roleId", res.roleId);
+        let userid = res.tokenId.split('==')[1]
+        localStorage.setItem("userId", userid);
+
+
         this.router.navigateByUrl("home");
       }
       return false;
 
     });
-
-
   }
-
-
-
-
-
 
 }
 

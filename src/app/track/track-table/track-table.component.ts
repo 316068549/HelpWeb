@@ -85,7 +85,7 @@ export class TrackTableComponent implements OnInit {
     this.getElectricities();
   }
   getElectricities(): void {
-    this.electricityService.getElectricities().then( res => {
+    this.electricityService.getElectricities(1).then( res => {
       if(res['code'] == 0){
 
       }else if(res['code'] == 5){

@@ -43,10 +43,12 @@ export class MenuTableComponent implements OnInit {
   // }
   private tjmenu:boolean;
   private clicked:boolean;
+  private submied:boolean = false;
   private deletemenu:boolean = false;
   private addbtn:boolean = false;
   private edit:boolean = false;
   private del:boolean = false;
+  originalUserName:string;
   public params: any;  // 保存页面url参数
   public totalNum = 0; // 总数据条数
   public pageSize ;// 每页数据条数
@@ -64,7 +66,6 @@ export class MenuTableComponent implements OnInit {
   menu: Menu;
   selectedMenu: Menu;
   Menu=new Menu();
-
   wordControl: string='展开';
   comIdList:any = [
   ];
@@ -91,7 +92,23 @@ export class MenuTableComponent implements OnInit {
   }
   setInfo2(obj){
     console.log(obj)
+    if(obj<0){
+      this.Menu.permissionTypeId=1
+    }else {
+      this.Menu.permissionTypeId=2;
+      this.Menu.permissionUrl='add';
+    }
   }
+  setInfo22(obj){
+    console.log(obj)
+    if(obj<0){
+      this.selectedMenu.permissionTypeId=1;
+    }else {
+      this.selectedMenu.permissionTypeId=2;
+      this.selectedMenu.permissionUrl='add';
+    }
+  }
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -126,7 +143,7 @@ export class MenuTableComponent implements OnInit {
       // email: new FormControl('', CustomValidators.email),
       // url: new FormControl('', CustomValidators.url)
     });
-
+    this.Menu.permissionTypeId = 1;
   }
 
   getPageData(pageNo) {
@@ -168,7 +185,7 @@ export class MenuTableComponent implements OnInit {
 
   }
   searchParMenu(): void{
-    this.Menu.permissionTypeId = 1;
+    this.Menu.permissionTypeId=1;
     this.comIdList=[];
     this.menuService.getParMenus(-1).then( menus => {
       for(let i=0;i<menus.length;i++){
@@ -177,10 +194,14 @@ export class MenuTableComponent implements OnInit {
     });
   }
   searchParMenu2(id:number): void{
+    this.originalUserName='';
     this.comIdList=[];
     this.comIdList2=[];
     this.menuService.getMenuDetail(id).then( menus => {
 
+      if(menus['adminPermission']){
+        this.originalUserName=menus['adminPermission'].permissionName;
+      }
       if(menus['parentPermissionList']){
         for(let i=0;i<menus['parentPermissionList'].length;i++){
           this.comIdList.push(menus['parentPermissionList'][i])
@@ -196,6 +217,7 @@ export class MenuTableComponent implements OnInit {
         }
       }
     });
+
   }
   openClose(id:number,val:string,number:number): void{
       this.menuService.getSubMenu(id).then( menus => {
@@ -232,7 +254,7 @@ export class MenuTableComponent implements OnInit {
 
   getMenus() {
     var self = this;
-    this.menuService.getMenuList().then( menus => {
+    this.menuService.getMenuList(1).then( menus => {
       if(menus){
         this.menus  = menus['list'];
         // for(let i=0;i<this.menus.length;i++){
@@ -254,8 +276,9 @@ export class MenuTableComponent implements OnInit {
   // gotoDetail(): void {
   //   this.router.navigate(['/user-detail', this.selectedMenu.id]);
   // }
-  add(name: string, coding: number, subName: number,  parentName: string,parentCode: string,address3:string, newWindow: number, details: string ): void {
+  add(name: string, coding: number, subName: number,  parentName: string,parentCode: string, newWindow: number, details: string ): void {
     console.log(newWindow)
+    console.log(parentCode)
     name = name.trim();
     if(!parentName){
       $('.must3').show();
@@ -265,7 +288,9 @@ export class MenuTableComponent implements OnInit {
     parentCode = parentCode.trim();
     details = details.trim();
     // if (!name && !coding && !subName  && !parentName  ) { return; }
-    if(newWindow==1){
+    if(!newWindow){
+      newWindow = 1;
+    }
       this.menuService.create(name, coding, subName, parentName, parentCode,newWindow, details)
         .then(menu => {
           if(!menu) {
@@ -285,31 +310,10 @@ export class MenuTableComponent implements OnInit {
           this.selectedMenu = null;
           $('#details').val('');
           this.tjmenu = false;
+          this.submied = true;
           this.clicked = false;
         });
-    }else{
-      this.menuService.create(name, coding, subName, parentName, address3,newWindow, details)
-        .then(menu => {
-          if(!menu) {
-            layer.open({
-              title: '提示'
-              , content: "添加失败"
-            });
-            return;
-          }
-          if(typeof (menu)=='string'){
-            layer.open({
-              title: '提示'
-              ,content: menu
-            });
-          }
-          this.getMenus();
-          this.selectedMenu = null;
-          $('#details').val('');
-          this.tjmenu = false;
-          this.clicked = false;
-        });
-    }
+
     // this.menuService.create(name, coding, subName, parentName, parentCode,newWindow, details)
     //   .then(menu => {
     //     if(!menu) {
@@ -335,18 +339,28 @@ export class MenuTableComponent implements OnInit {
     // });
   }
   delete(menu: Menu): void {
-    layer.open({
+    var ak = layer.open({
       content: '确定删除？'
       , btn: ['确定', '取消']
       , yes: () => {
         this.menuService
           .delete(menu.permissionId)
-          .then(() => {
-            this.menus = this.menus.filter(h => h !== menu);
-            // this.data = this.data.filter(h => h !== menu);
+          .then(res =>{
+            if(res['code'] == 0){
+            }else if(res['code'] == 5){
+              alert(res['error']);
+              this.router.navigate(['login']);
+            }else if(res['code'] == 6){
+              alert(res['error']);
+              this.router.navigate(['login']);
+            }else{
+              alert(res['error']);
+            }
+            layer.close(ak);
+            this.getMenus();
             if (this.selectedMenu === menu) { this.selectedMenu = null; }
           });
-        this.getMenus();
+
       }
       , btn2: () => {
 
@@ -354,13 +368,13 @@ export class MenuTableComponent implements OnInit {
     })
   }
 
-  save(id:number,oldName:string,name: string, coding: number, subName: number,  parentName: string,parentCode: string, newWindow: number, details: string): void {
+  save(id:number,name: string, coding: number, subName: number,  parentName: string,parentCode: string, newWindow: number, details: string): void {
     name = name.trim();
     parentName = parentName.trim();
     parentCode = parentCode.trim();
     details = details.trim();
-    if (!id&&!oldName&&!name && !coding && !subName && !newWindow && !parentName && !parentCode ) { return; }
-    this.menuService.update(id,oldName,name, coding, subName, parentName, parentCode,newWindow, details)
+    if (!id&&!name && !coding && !subName && !newWindow && !parentName && !parentCode ) { return; }
+    this.menuService.update(id,this.originalUserName,name, coding, subName, parentName, parentCode,newWindow, details)
       .then(menu => {
         if(!menu) {
           layer.open({

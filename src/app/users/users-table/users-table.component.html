@@ -3,18 +3,18 @@
   <div class="page-nav">
     <a  href="javascript:;">系统管理</a>
     <a  href="javascript:;">用户管理</a>
-    <a  routerLinkActive="active" routerLink="/users">用户列表</a>
+    <a  routerLinkActive="active" >用户列表</a>
   </div>
   <router-outlet></router-outlet>
   <div class="search-box">
     <span class="xt-search">
-               <input #searchBox type="text" id="search-box"  class="form-box" (keyup)="search(searchBox.value)"
-                      placeholder="请输入用户名">
+               <input #searchBox type="text" id="search-box"  class="form-box"
+                      placeholder="请输入用户ID">
            <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
-  <span>
-          <span *ngFor="let menu of menus | async"
-                (click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>
-        </span>
+  <!--<span>-->
+          <!--<span *ngFor="let menu of menus | async"-->
+                <!--(click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>-->
+        <!--</span>-->
    </span>
 
     <button (click)="searchParMenu();submied = true;tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button">+添加用户</button>
@@ -126,8 +126,8 @@
         <div class="operate-radio">
           <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="男"  required> 男-->
           <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="女"  required> 女-->
-          <input #menuSelected   [(ngModel)]="myWindow"  name="menuSelected"  type="radio" class="form-box" value="功能" >  功能
-          <input #menuSelected   [(ngModel)]="myWindow"  name="menuSelected"  type="radio" class="form-box" value="按钮">  按钮
+          <input      name="menuSelected"  type="radio" class="form-box" value="功能" >  功能
+          <input     name="menuSelected"  type="radio" class="form-box" value="按钮">  按钮
         </div>
       </div>
       <div class="operate-btn">
