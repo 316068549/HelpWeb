@@ -38,6 +38,7 @@ export class UsersTableComponent implements OnInit {
   User=new User();
   pages: any;
   parentNames = [];
+  rescueTeams = [];
   parentNames2 = [];
   originalRoleId:number;
   originalUserName:string;
@@ -136,18 +137,25 @@ export class UsersTableComponent implements OnInit {
 
   searchParMenu(): void{
     this.parentNames=[];
+    this.rescueTeams=[];
     this.userService.getParMenus().then( menus => {
       for(let i=0;i<menus.length;i++){
         this.parentNames.push(menus[i])
       }
     });
+    this.userService.getRescuesList().then( menus => {
+      for(let i=0;i<menus.length;i++){
+        this.rescueTeams.push(menus[i])
+      }
+    });
   }
+
 
   searchParMenu2(id:number): void{
     this.originalRoleId=null;
     this.originalUserName='';
     this.parentNames2=[];
-
+    this.rescueTeams=[];
     this.userService.getMenuDetail(id).then( menus => {
       if(menus['adminUser']){
          this.originalRoleId = this.selectedUser.roleList[0].roleId;
@@ -164,6 +172,11 @@ export class UsersTableComponent implements OnInit {
         //   }
         //   this.parentNames2.push(menus['subPermissionList'][i])
         // }
+      }
+    });
+    this.userService.getRescuesList().then( menus => {
+      for(let i=0;i<menus.length;i++){
+        this.rescueTeams.push(menus[i])
       }
     });
   }
@@ -194,9 +207,9 @@ export class UsersTableComponent implements OnInit {
     })
   }
 
-  save(usersId:number,userName: string, nickName: string, password: string,  role: number): void {
+  save(usersId:number,userName: string, nickName: string, password: string,  role: number,rescueTeam: string): void {
     console.log(this.selectedUser.roleList[0].roleId)
-    this.userService.update(usersId,this.originalRoleId,this.originalUserName,userName, nickName, password,  role)
+    this.userService.update(usersId,this.originalRoleId,this.originalUserName,userName, nickName, password,  role,rescueTeam)
       .then(res => {
         if(res['code'] == 0){
           layer.open({
@@ -235,16 +248,16 @@ export class UsersTableComponent implements OnInit {
       }
     });
   }
-  add(userName: string, nickName: string, password: string,  role: string,menuSelected: number): void {
-    console.log(menuSelected)
+  add(userName: string, nickName: string, password: string,  role: string,rescueTeam: string): void {
+    console.log(rescueTeam)
     userName = userName.trim();
     if(!role){
       $('.must3').show();
       return;
     }
     nickName = nickName.trim();
-    if (!userName && !nickName && !password  && !role  ) { return; }
-      this.userService.create(userName, nickName, password, role)
+    if (!userName && !nickName && !password  && !role && !rescueTeam ) { return; }
+      this.userService.create(userName, nickName, password, role,rescueTeam)
         .then(menu => {
           if(!menu) {
             layer.open({

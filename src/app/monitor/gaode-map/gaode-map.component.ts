@@ -12,7 +12,6 @@ declare var videojs:any;
   styleUrls: ['./gaode-map.component.css']
 })
 export class GaodeMapComponent implements OnInit {
-
   constructor(
     private router: Router,
     private location: Location
@@ -21,17 +20,29 @@ export class GaodeMapComponent implements OnInit {
   ngOnInit() {
     var defaultIconStyle = 'red', //默认的图标样式
       hoverIconStyle = 'green', //鼠标hover时的样式
-      selectedIconStyle = 'purple' //选中时的图标样式
-    ;
+      selectedIconStyle = 'purple'; //选中时的图标样式
     var pointList;
-    var  markers,lineArr = [];
-
+    var pointList2;
+    var rescueAddress = localStorage.getItem('address');
+    var statuses =[];
+    var infoWindow;
+    var  markers,lineArr,lineArr2 = [];
     var map = new BMap.Map("container");            // 创建Map实例
     //获取下拉数据
+
     var type = "LOCAL_SEARCH";
     var X = $('#container').width();
     var Y = $('#container').height();
+    var content = '<div style="margin:0;line-height:20px;padding:2px;width:300px;height: auto;">' +
+      '<img src="assets/img/profile_small.jpg" id="imgDemo" alt="" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+      '简介：需要救援人刘大虎，77岁<br/>' +
+       '<div style="display: none">救援状态：<span></span></div>' +
+      '地址：西安市雁塔区上地十街10号<br/>电话：13898966666' +'<button class="btn btn-red" id="startRescue">启动救援</button>'+
+    '</div>';
 
+    //创建检索信息窗口对象
+    var searchInfoWindow = null;
+    infoWindow = new BMap.InfoWindow(content);
 //创建检索控件
     var searchControl = new BMapLib.SearchControl({
       container : "searchBox" //存放控件的容器
@@ -41,28 +52,20 @@ export class GaodeMapComponent implements OnInit {
     var point = new BMap.Point(108.924295,34.235939); // 创建点坐标
     var myIcon = new BMap.Icon("assets/img/006f (3).gif", new BMap.Size(30,30));
     var myIcon2 = new BMap.Icon("http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png", new BMap.Size(30,30));
-    // var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
-    // marker.setLabel(label); //添加百度label
-    map.enableScrollWheelZoom();                 //启用滚轮放大缩小
+    map.enableScrollWheelZoom();  //启用滚轮放大缩小
     // map.enableInertialDragging();
     map.centerAndZoom(point,15);
     map.addControl(new BMap.NavigationControl());
-    // var bounds = map.getBounds();
-    // var sw = bounds.getSouthWest();
-    // var ne = bounds.getNorthEast();
-    // var lngSpan = Math.abs(sw.lng - ne.lng);
-    // var latSpan = Math.abs(ne.lat - sw.lat);
+
+    getBoundary(rescueAddress);
     init();
     startRun();
-    // for (var i = 0; i < 10; i ++) {
-    //   var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
-    //   addMarker(point);
-    // }
-    // for (var i = 0; i < 10; i ++) {
-    //   var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
-    //   var marker = new BMap.Marker(point);
-    //   map.addOverlay(marker);
-    // }
+    setInterval(function () {
+      map.clearOverlays();
+      changePlace();
+      searchWarn();
+      startRun();
+    },30000)
 
     // setTimeout(function(){
     //   var convertor = new BMap.Convertor();
@@ -124,32 +127,7 @@ export class GaodeMapComponent implements OnInit {
 
 
 
-        var content = '<div style="margin:0;line-height:20px;padding:2px;">' +
-          '<img src="assets/img/profile_small.jpg" alt="" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
-          '简介：需要救援人刘大虎，77岁<br/>' +
-          // '<a   videohref="ttp://vjs.zencdn.net/v/oceans.mp4" class="video_link">查看视频</a>' +
-          '地址：西安市雁塔区上地十街10号<br/>电话：13898966666<br/>救援状态：志愿者乙正在前往救援' +
-          '</div>';
 
-        //创建检索信息窗口对象
-        var searchInfoWindow = null;
-        searchInfoWindow = new BMapLib.SearchInfoWindow(map, content, {
-          title  : "救援信息",      //标题
-          width  : 290,             //宽度
-          height : 115,              //高度
-          panel  : "panel",         //检索结果面板
-          enableAutoPan : true,   //自动平移
-          enableSendToPhone: true, //是否显示发送到手机按钮
-          // searchTypes   :[
-          //   BMAPLIB_TAB_SEARCH,   //周边检索
-          //   BMAPLIB_TAB_TO_HERE,  //到这里去
-          //   BMAPLIB_TAB_FROM_HERE //从这里出发
-          // ]
-        });
-
-        marker2.addEventListener("click", function(e){
-          searchInfoWindow.open(marker2);
-        })
 
 
         //圆形区域搜索
@@ -192,24 +170,23 @@ export class GaodeMapComponent implements OnInit {
     // });
     // 地图初始化位置
     function init(){
-      getBoundary('西安市雁塔区');
       var result;
       // var paramms = {imeiCode:imeicode,startTime:start,endTime:end}
       var paramms = {imeiCode:111}
-      $.ajax({
-        type: "post",
-        url: "web/query/orbit",
-        //    url: " api/query/messageAll",
-        contentType:"application/json",
-        dataType: "json",
-        data:JSON.stringify(paramms),
-        cache: false,
-        async: false,
-        success: function(data){
-          console.log('success')
-          // result=data.data.list;
-        }
-      });
+      // $.ajax({
+      //   type: "post",
+      //   url: "web/query/orbit",
+      //   //    url: " api/query/messageAll",
+      //   contentType:"application/json",
+      //   dataType: "json",
+      //   data:JSON.stringify(paramms),
+      //   cache: false,
+      //   async: false,
+      //   success: function(data){
+      //     console.log('success')
+      //     // result=data.data.list;
+      //   }
+      // });
       pointList =
         [
           {
@@ -228,6 +205,190 @@ export class GaodeMapComponent implements OnInit {
             "latitude": 34.230688,
             "locationType": "GPS"
           }]
+      pointList2=
+        [
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.922575,
+            "latitude": 34.230698,
+            "locationType": "GPS"
+          },
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.822575,
+            "latitude": 34.230688,
+            "locationType": "GPS"
+          }]
+      // pointList=result;
+    }
+    // 地图刷新位置
+    function changePlace(){
+      var result;
+      // var paramms = {imeiCode:imeicode,startTime:start,endTime:end}
+      var paramms = {imeiCode:111}
+      // $.ajax({
+      //   type: "post",
+      //   url: "web/query/orbit",
+      //   //    url: " api/query/messageAll",
+      //   contentType:"application/json",
+      //   dataType: "json",
+      //   data:JSON.stringify(paramms),
+      //   cache: false,
+      //   async: false,
+      //   success: function(data){
+      //     console.log('success')
+      //     // result=data.data.list;
+      //   }
+      // });
+      pointList =
+        [
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.932575,
+            "latitude": 34.230698,
+            "locationType": "GPS"
+          },
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.822575,
+            "latitude": 34.230688,
+            "locationType": "GPS"
+          },
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.812575,
+            "latitude": 34.230688,
+            "locationType": "GPS"
+          }
+          ]
+      // pointList2=
+      //   [
+      //     {
+      //       "deviceIMEI": "1234567890123456",
+      //       "locationTime": "2017-03-06 11:22:56",
+      //       "locationPower": "97%",
+      //       "longitude": 108.942575,
+      //       "latitude": 34.230698,
+      //       "locationType": "GPS"
+      //     },
+      //     {
+      //       "deviceIMEI": "1234567890123456",
+      //       "locationTime": "2017-03-06 11:22:56",
+      //       "locationPower": "97%",
+      //       "longitude": 108.812575,
+      //       "latitude": 34.230688,
+      //       "locationType": "GPS"
+      //     },
+      //     {
+      //       "deviceIMEI": "1234567890123456",
+      //       "locationTime": "2017-03-06 11:22:56",
+      //       "locationPower": "97%",
+      //       "longitude": 108.822575,
+      //       "latitude": 34.221688,
+      //       "locationType": "GPS"
+      //     }]
+      //清空数据表
+      $.ajax({
+        type: "post",
+        url: 'wwe/lbs/delete',
+        cache: false,
+        success: function(data){
+          console.log('success')
+          //存入百度LBS(不支持批量，只能循环存)
+          $.each(pointList,function (i,obj) {
+            $.ajax({
+              type: "post",
+              url: 'wwe/lbs/create',
+              //    url: " api/query/messageAll",
+              // contentType:"application/json",
+              // dataType: "json",
+              data:'&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv&geotable_id=172905&coordType=1&lng='+obj.longitude+'&lat='+obj.latitude+'&tags='+obj.deviceIMEI,
+              cache: false,
+              success: function(data){
+                console.log('success')
+                // result=data.data.list;
+              }
+            });
+          })
+        }
+      });
+
+      // var parment = '&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv&geotable_id=172905&coordType=3&lng=108.214295&lat=34.135939&tags=13898966666'
+      // $.ajax({
+      //   type: "post",
+      //   url: 'wwe/lbs/create',
+      //   //    url: " api/query/messageAll",
+      //   // contentType:"application/json",
+      //   // dataType: "json",
+      //    data:parment,
+      //   cache: false,
+      //   success: function(data){
+      //     console.log('success')
+      //     // result=data.data.list;
+      //   }
+      // });
+
+
+      // pointList=result;
+    }
+    // 查询报警状态
+    function searchWarn(){
+      var result;
+      // var paramms = {imeiCode:imeicode,startTime:start,endTime:end}
+      var paramms = {imeiCode:111}
+      // $.ajax({
+      //   type: "post",
+      //   url: "web/query/orbit",
+      //   //    url: " api/query/messageAll",
+      //   contentType:"application/json",
+      //   dataType: "json",
+      //   data:JSON.stringify(paramms),
+      //   cache: false,
+      //   async: false,
+      //   success: function(data){
+      //     console.log('success')
+      //     // result=data.data.list;
+      //   }
+      // });
+      pointList2=
+        [
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.942575,
+            "latitude": 34.230698,
+            "locationType": "GPS",
+            "warning":true
+          },
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.812575,
+            "latitude": 34.230688,
+            "locationType": "GPS",
+            "warning":false
+          },
+          {
+            "deviceIMEI": "1234567890123456",
+            "locationTime": "2017-03-06 11:22:56",
+            "locationPower": "97%",
+            "longitude": 108.822575,
+            "latitude": 34.221688,
+            "locationType": "GPS",
+            "warning":false
+          }]
       // pointList=result;
     }
     //地图坐标转换，添加marker
@@ -237,14 +398,20 @@ export class GaodeMapComponent implements OnInit {
       markers = [];
       lineArr = new Array();
       lineArr=[];
-      console.log(pointList)
-      for(var i = 0,marker;i<pointList.length;i++){
+      lineArr2=[];
+      statuses=[];
+      var devicess = pointList.length;
+      var volunters = pointList2.length;
+      console.log(pointList2)
+      $('#result .devicess').text(devicess);
+      $('#result .volunters').text(volunters);
+      for(var i = 0,marker;i<devicess;i++){
         lngX = pointList[i].longitude;
         latY = pointList[i].latitude;
         lineArr.push(new BMap.Point(lngX,latY));
         var convertor = new BMap.Convertor();
-        convertor.translate(lineArr, 1, 5, translateCallback)
-        var  translateCallback = function (data){
+        convertor.translate(lineArr, 1, 5, translateCallback1)
+        var  translateCallback1 = function (data){
           if(data.status === 0) {
             console.log(data.points)
             for(var a = 0,marker;a<data.points.length;a++){
@@ -253,8 +420,30 @@ export class GaodeMapComponent implements OnInit {
               }
                 var myIcon = new BMap.Icon("markers.png");
                 var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
-                var marker = new BMap.Marker(point);
+                var marker = new BMap.Marker(point,{title:'志愿者'});
                 map.addOverlay(marker);
+            }
+          }
+        }
+      }
+      for(var b = 0,marker;b<volunters;b++){
+        lngX = pointList2[b].longitude;
+        latY = pointList2[b].latitude;
+        lineArr2.push(new BMap.Point(lngX,latY));
+        statuses.push(pointList2[b].warning)
+        var convertor = new BMap.Convertor();
+        convertor.translate(lineArr2, 1, 5, translateCallback2)
+        var  translateCallback2 = function (data){
+          if(data.status === 0) {
+            console.log(data.points)
+            console.log(statuses)
+            for(var c = 0,marker;c<data.points.length;c++){
+              if(data.points.length == 0){
+                return;
+              }
+              var myIcon = new BMap.Icon("markers.png");
+              var point = new BMap.Point(data.points[c].lng, data.points[c].lat);
+              addMarker(point,statuses[c],pointList2[c].deviceIMEI);
             }
             var view = map.getViewport(data.points);
             var mapZoom = view.zoom;
@@ -269,11 +458,55 @@ export class GaodeMapComponent implements OnInit {
       var y=pointList[0].latitude;
       completeEventHandler(x,y);
     }
+    // $('.container').on("click", "#startRescue", function(){
+    //   alert(1)
+    //   var mPoint = infoWindow.getPosition();
+    //   //圆形区域搜索
+    //   var circle = new BMap.Circle(mPoint,100,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.2});
+    //   map.addOverlay(circle);
+    //   var local =  new BMap.LocalSearch(map, {renderOptions: {map: map, autoViewport: false,panel: "results"}});
+    //   local.searchNearby('志愿者',mPoint,100);
+    // });
+
     // 全屏
     $('.video_link').on('click',()=>{
+      alert(2)
       this.router.navigate(['video']);
     }
     )
+    infoWindow.addEventListener("open", function(e){
+      $('#startRescue').on("click", function(){
+        var mPoint = infoWindow.getPosition();
+        //圆形区域搜索
+        var circle = new BMap.Circle(mPoint, 10000, {
+          fillColor: "blue",
+          strokeWeight: 1,
+          fillOpacity: 0.3,
+          strokeOpacity: 0.3
+        });
+        map.addOverlay(circle);
+        //检索附近志愿者
+        var parment2={
+          'ak':'nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv',
+          'geotable_id':172905,
+          'coord_type':3,
+          'location':''+mPoint.lng+','+mPoint.lat+'',
+          'radius':100000
+        };
+        $.ajax({
+          type: "get",
+          url: 'http://api.map.baidu.com/geosearch/v3/nearby?callback=?',
+          contentType: 'application/json',
+          data:parment2,
+          dataType: 'json',
+          cache: false,
+          success: function(data){
+            console.log('success')
+            // result=data.data.list;
+          }
+        });
+      });
+    })
     $('.seracch').on('click',function () {
       var address = $("#address").val();
       getBoundary(address)
@@ -305,10 +538,51 @@ export class GaodeMapComponent implements OnInit {
       showMap.style.height = Y;
       exitFull();
     })
+
     // 编写自定义函数,创建标注
-    function addMarker(point){
-      var marker = new BMap.Marker(point,{icon:myIcon2});
-      map.addOverlay(marker);
+    function addMarker(point,status,deviceIMEI){
+      console.log(status)
+      if(status){
+        var marker = new BMap.Marker(point,{icon:myIcon});
+        map.addOverlay(marker,{title:deviceIMEI});
+        var html = "<li><a href='' class="+deviceIMEI+">"+point.lng+","+point.lat+"</a></li>"
+        $('.panel').append(html)
+        // searchInfoWindow = new BMapLib.SearchInfoWindow(map, content, {
+        //   title  : "救援信息",      //标题
+        //   width  : 290,             //宽度
+        //   height : 115,              //高度
+        //   panel  : "panel",         //检索结果面板
+        //   enableAutoPan : true,   //自动平移
+        //   enableSendToPhone: true, //是否显示发送到手机按钮
+        //   // searchTypes   :[
+        //   //   BMAPLIB_TAB_SEARCH,   //周边检索
+        //   //   BMAPLIB_TAB_TO_HERE,  //到这里去
+        //   //   BMAPLIB_TAB_FROM_HERE //从这里出发
+        //   // ]
+        // });
+        $('.'+deviceIMEI).on('click',function () {
+         alert(2)
+
+        })
+        marker.addEventListener("click", function(e){
+          this.openInfoWindow(infoWindow);
+          var circle = new BMap.Circle(point,100,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.2});
+          map.addOverlay(circle);
+          var local =  new BMap.LocalSearch(map, {renderOptions: {map: map, autoViewport: false,panel: "results"}});
+          local.searchNearby('志愿者',point,100);
+          //图片加载完毕重绘infowindow
+          document.getElementById('imgDemo').onload = function (){
+            infoWindow.redraw();   //防止在网速较慢，图片未加载时，生成的信息框高度比图片的总高度小，导致图片部分被隐藏
+          }
+          // searchInfoWindow.open(marker);
+        })
+
+
+      }else {
+        var marker = new BMap.Marker(point,{icon:myIcon2});
+        map.addOverlay(marker);
+      }
+
     }
 
     //区域标出

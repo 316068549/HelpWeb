@@ -64,6 +64,7 @@ export class LeftNavComponent implements OnInit {
         // menus['adminUser']['roleList'] = menus['adminRoleList'];
         this.userName = res['adminUser']['userName'];
         this.roleName = res['adminRoleList'][0]['roleName'];
+        localStorage.setItem("address", res['rescueTeam']['addr']);
       }
 
     });

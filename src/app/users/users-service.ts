@@ -9,6 +9,7 @@ import { User } from '../models/user-model';
 declare var layer:any;
 import { Menu } from '../models/menu';
 import { Role } from '../models/role';
+import { rescueTeam } from '../models/rescueTeams';
 
 @Injectable()
 
@@ -17,6 +18,7 @@ export class UserService {
   private headers2 = new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'});
   private menusbtnUrl = 'adminPermission/query/adminPermissionButton';
   private menuslistUrl = 'admin/query/adminUser';
+  private rescueslistUrl = 'wwe/rescueTeam/find';
   private roleUrl = 'role/query/adminRoleAll';
   private userUrl = 'admin/query/adminUserId';
   private menusaddUrl = 'admin/add/adminUser';
@@ -51,6 +53,13 @@ export class UserService {
       .catch(this.handleError);
   }
 
+  getRescuesList(): Promise<rescueTeam[]> {
+    return this.http.get(this.rescueslistUrl)
+      .toPromise()
+      .then(response => response.json().data as rescueTeam[])
+      .catch(this.handleError);
+  }
+
   getParMenus(): Promise<Role[]> {
       this.parUrl = this.roleUrl+'?roleId='+this.roleId+'&userId='+this.userId+'&tokenId='+this.tokenId;
     return this.http.get(this.parUrl)
@@ -67,8 +76,8 @@ export class UserService {
       .catch(this.handleError);
   }
 
-  create(userName: string, nickName: string, password: string,  role: string): Promise<User> {
-    let parment = 'addId='+''+'&userName='+userName+'&nickName='+nickName+'&userPassword='+password+
+  create(userName: string, nickName: string, password: string,  role: string,rescueTeam:string): Promise<User> {
+    let parment = 'addId='+''+'&userName='+userName+'&nickName='+nickName+'&userPassword='+password+'&rescueTeamId='+rescueTeam+
       '&roleId='+role+'&userId='+this.userId+'&tokenId='+this.tokenId;
     console.log(parment)
     return this.http
@@ -86,10 +95,10 @@ export class UserService {
       .catch(this.handleError);
   }
 
-  update(usersId:number,originalRoleId:number,originalUserName:string,userName: string, nickName: string, password: string,  role: number): Promise<object> {
+  update(usersId:number,originalRoleId:number,originalUserName:string,userName: string, nickName: string, password: string,  role: number,rescueTeam: string): Promise<object> {
     console.log(role)
     let parment = 'addId='+''+'&usersId='+usersId+'&originalRoleId='+originalRoleId+'&originalUserName='+originalUserName+'&userName='+userName+'&nickName='+nickName+
-      '&password='+password+'&roleId='+role+
+      '&password='+password+'&roleId='+role+'&rescueTeamId='+rescueTeam+
       '&userId='+this.userId+'&tokenId='+this.tokenId;
     console.log(parment)
     return this.http

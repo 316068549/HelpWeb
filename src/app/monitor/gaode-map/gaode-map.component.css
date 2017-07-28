@@ -36,8 +36,9 @@
   overflow-y: auto;
   top: 10px;
   left: 10px;
-  width: 160px;
+  width: 190px;
   padding: 10px;
+  line-height: 28px;
   box-shadow: 3px 4px 3px 0px silver;
 }
 dl,dt,dd,ul,li{
@@ -84,4 +85,37 @@ li{
   height: 50px;
   z-index: 999;
   display: none;
+}
+.ak{
+  display: inline-block;
+  background: url(http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png);
+  width: 19px;
+  height: 28px;
+  vertical-align: bottom;
+  margin-right: 5px;
+}
+.ak2{
+  display: inline-block;
+  background: url(../../../assets/img/markers.png) no-repeat;
+  width: 19px;
+  height: 27px;
+  vertical-align: bottom;
+  margin-right: 5px;
+  background-position: -23px -274px;
+}
+.panel{
+  position: absolute;
+  background-color: white;
+  border: 1px solid silver;
+  height: auto;
+  overflow-y: auto;
+  bottom: 10px;
+  left: 10px;
+  width: 250px;
+  padding: 10px;
+  line-height: 28px;
+  box-shadow: 3px 4px 3px 0px silver;
+}
+.panel ul li{
+  list-style: none;
 }

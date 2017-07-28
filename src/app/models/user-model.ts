@@ -7,6 +7,7 @@ import { Role } from '../models/role';
   createTime:number;
   userStatus:boolean;
   departmentId:number;
+  rescueTeamId:string;
   roleList:Array<Role>;
 }
 

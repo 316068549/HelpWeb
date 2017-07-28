@@ -46,6 +46,9 @@
             角色
           </th>
           <th>
+            所属救援队ID
+          </th>
+          <th>
             创建时间
           </th>
           <th>
@@ -60,6 +63,7 @@
           <td >{{user.nickName}}</td>
           <td>{{user.userStatus}}</td>
           <td>{{user.roleList[0].roleName}}</td>
+          <td>{{user.rescueTeamId}}</td>
           <td>{{user.createTime}}</td>
           <td><a (click)="searchParMenu2(user.userId);deletemenu=true; clicked=true;user === selectedUser" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
             <a   (click)="delete(user); $event.stopPropagation()">删除</a></td>
@@ -82,7 +86,7 @@
 
 <div [hidden]="!tjmenu"  class="operate menu">
   <form class="operate-form"  #tjmenuform="ngForm" (ngSubmit)="submied = false; tjmenuform.form.valid && add(userName.value,nickName.value,password.value, role.value,
-        menuSelected.value);">
+        rescueTeam.value);">
     <div class="operate-title">添加用户<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
     <div class="operate-content">
       <div class="operate-item fn-clear">
@@ -120,16 +124,29 @@
           <p *ngIf="tjmenuform.submitted && !role.valid && !role.value && !submied"  class="text-danger">角色为必选项</p>
         </div>
       </div>
-
       <div class="operate-item fn-clear">
-        <label class="unmust">资源类型:</label>
-        <div class="operate-radio">
-          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="男"  required> 男-->
-          <!--<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="女"  required> 女-->
-          <input      name="menuSelected"  type="radio" class="form-box" value="功能" >  功能
-          <input     name="menuSelected"  type="radio" class="form-box" value="按钮">  按钮
+        <label >所属救援队：</label>
+        <div class="operate-group">
+          <select #rescueTeam id="rescueTeam" required name="rescueTeam"  class="form-select" >
+            <option value="" selected = "selected">请选择</option>
+            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId">{{rescue.name}}</option>
+          </select>
+          <!--<p style="display: none" class="text-danger must3">-->
+          <!--角色为必选项-->
+          <!--</p>-->
+          <!--<p *ngIf="tjmenuform.submitted && !rescueTeam.valid && !rescueTeam.value && !submied"  class="text-danger">角色为必选项</p>-->
         </div>
       </div>
+
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label class="unmust">资源类型:</label>-->
+        <!--<div class="operate-radio">-->
+          <!--&lt;!&ndash;<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="男"  required> 男&ndash;&gt;-->
+          <!--&lt;!&ndash;<input #userSex [(ngModel)]="mySex"  name="sexs" type="radio" value="女"  required> 女&ndash;&gt;-->
+          <!--<input      name="menuSelected"  type="radio" class="form-box" value="功能" >  功能-->
+          <!--<input     name="menuSelected"  type="radio" class="form-box" value="按钮">  按钮-->
+        <!--</div>-->
+      <!--</div>-->
       <div class="operate-btn">
         <button type="submit"  class="btns btn-blue">保存</button>
         <button (click)="tjmenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>
@@ -142,7 +159,7 @@
 
 
 <div [hidden]="!deletemenu"  class="operate menu"  *ngIf="selectedUser">
-  <form class="operate-form"  #deletemenuform="ngForm" (ngSubmit)="deletemenuform.form.valid && save(usersId.value,userName2.value,nickName2.value,password2.value, role2.value);">
+  <form class="operate-form"  #deletemenuform="ngForm" (ngSubmit)="deletemenuform.form.valid && save(usersId.value,userName2.value,nickName2.value,password2.value, role2.value,rescueTeam2.value);">
     <div class="operate-title">修改用户<span (click)="clicked=false; deletemenu=false;" class="fa fa-close"></span></div>
     <div class="operate-content">
       <!--<input type="hidden" id="originalRoleId" [value]="selectedUser.roleList[0].roleId" name="originalRoleId" #originalRoleId/>-->
@@ -181,6 +198,15 @@
           <!--角色为必选项-->
           <!--</p>-->
           <!--<p *ngIf="deletemenuform.submitted && !role.valid && !role.value"  class="text-danger">角色为必选项</p>-->
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label >所属救援队：</label>
+        <div class="operate-group">
+          <select #rescueTeam2 id="rescueTeam2" [(ngModel)]="selectedUser.rescueTeamId" required name="rescueTeam2"  class="form-select" >
+            <option value="" selected = "selected">请选择</option>
+            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId">{{rescue.name}}</option>
+          </select>
         </div>
       </div>
       <div class="operate-btn">
