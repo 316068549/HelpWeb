@@ -12,6 +12,7 @@ import { Rescue } from '../../models/rescue';
 import { RescuePapersService } from '../rescuepapers-service';
 declare var $:any;
 declare var layer:any;
+declare var videojs:any;
 
 @Component({
   selector: 'app-rescue-detail',
@@ -20,6 +21,8 @@ declare var layer:any;
 })
 export class RescueDetailComponent implements OnInit {
   rescue: Rescue;
+  imageList=[];
+  videoList=[];
 
   constructor(
     private route: ActivatedRoute,
@@ -29,9 +32,49 @@ export class RescueDetailComponent implements OnInit {
 
 
   ngOnInit() {
-    // this.route.params
-    //   .switchMap((params: Params) => this.rescueCountService.getMenuData(params['rescueId']))
-    //   .subscribe(rescue => this.rescue = rescue);
+    this.route.params
+      .switchMap((params: Params) => this.rescueCountService.getMenuData(params['id']))
+      .subscribe(menus => {
+        if(!menus['data']){
+          layer.open({
+            title: '提示'
+            ,content: '错误'
+          });
+        }
+        if(menus['data']['imageList'].length>0&&menus['data']['imageList'][0]!=null){
+          for(let i=0;i<menus['data']['imageList'].length;i++){
+            this.imageList.push(menus['data']['imageList'][i])
+          }
+        }
+        if(menus['data']['videoList'].length>0&&menus['data']['videoList'][0]!=null){
+          for(let i=0;i<menus['data']['videoList'].length;i++){
+            this.videoList.push(menus['data']['videoList'][i])
+          }
+        }
+        console.log(this.imageList.length)
+      });
+    //播放视频
+    for(var i=0;i<this.videoList.length;i++){
+      videojs(document.getElementById('my-video'+i), {}, function() {
+      });
+    }
+
+
+    // var myPlayer = videojs('my-video');
+    // videojs("my-video").ready(function(){
+    //   var myPlayer = this;
+    //   myPlayer.play();
+    // });
+
+    // videojs("my-video", {}, function(){
+    // });
+    // var fullscreenchange = function(){
+    //   $('#page-wrapper').removeClass('marg220').addClass('fullscreen');
+    // };
+
+    // myPlayer.on("pause", function(){
+    //   console.log("pause")
+    // });
   }
 
   goBack(): void {

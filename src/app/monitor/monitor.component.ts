@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GaodeMapComponent } from './gaode-map/gaode-map.component';
+declare var $:any;
 @Component({
   selector: 'app-monitor',
   templateUrl: './monitor.component.html',

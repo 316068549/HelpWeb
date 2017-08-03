@@ -53,13 +53,26 @@ header{
   padding: 40px 80px 40px 10px;
   background-color: #C6E2FF;
   width: 100%;
-  /*position: fixed;*/
+  position: fixed;
   /*z-index: 1000000;*/
+}
+.panel ul li a{
+  color: #666;
+  line-height: 28px;
+  font-size: 13px;
+}
+.panel ul li a:hover{
+  color: #337ab7 !important;
+}
+.panel ul li .active{
+  color: #337ab7 !important;
 }
 .height100{
   width:auto;
   height: 100%;
-  overflow: hidden;
+}
+.personIcon{
+  margin:0;line-height:20px;padding:2px;width:289px;height: auto;
 }
 
 header h1{
@@ -98,8 +111,10 @@ header .switch i{
 }
 #wrapper{
   width:100%;
-  height: calc(100% - 110px);;
+  height: calc(100% - 110px);
+  margin-top: 110px;
 }
+
 
 /*左侧导航*/
 body.canvas-menu .navbar-static-side, body.fixed-sidebar .navbar-static-side{

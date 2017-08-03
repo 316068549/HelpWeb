@@ -27,7 +27,7 @@ export class StatusService {
   getStatuses(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.statusUrl+'?current='+current +'&size=5&tokenId='+this.tokenId;
+      uurl = this.statusUrl+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
     }else{
       uurl = this.statusUrl+'?tokenId='+this.tokenId;
     }
@@ -39,7 +39,7 @@ export class StatusService {
   getStatuses2(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.statusUrl2+'?current='+current +'&size=5&tokenId='+this.tokenId;
+      uurl = this.statusUrl2+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
     }else{
       uurl = this.statusUrl2+'?tokenId='+this.tokenId;
     }
