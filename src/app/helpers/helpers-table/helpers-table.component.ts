@@ -181,11 +181,13 @@ export class HelpersTableComponent implements OnInit {
           ,content: res['error']
         });
       }
-      this.helpers = res['data']['list'];
-      this.totalPage = Math.ceil(this.helpers.length/5);
-      this.totalNum = this.helpers.length;
-      this.pages  = res['data']['page'];
-      console.log(this.pages)
+      if(res['data']['list']){
+        this.helpers = res['data']['list'];
+        this.totalPage = Math.ceil(this.helpers.length/5);
+        this.totalNum = this.helpers.length;
+        this.pages  = res['data']['page'];
+        console.log(this.pages)
+      }
     });
   }
 

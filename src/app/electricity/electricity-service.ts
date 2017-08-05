@@ -38,7 +38,7 @@ export class ElectricityService {
   getElectricities(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.electricityUrl+'?current='+current +'&size=5&tokenId='+this.tokenId;
+      uurl = this.electricityUrl+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
     }else{
       uurl = this.electricityUrl+'?tokenId='+this.tokenId;
     }

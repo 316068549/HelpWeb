@@ -109,14 +109,14 @@ export class UsersTableComponent implements OnInit {
   getPageData(pageNo) {
     let vm = this;
     vm.curPage = pageNo;
-    this.userService.getMenuList(pageNo).then( res => {
+    this.userService.getMenuList(pageNo,5).then( res => {
       if(res['code'] == 0){
         this.users = res['data']['list'];
       }
       else if(res['code'] == 5){
         layer.open({
           title: '提示'
-          ,content: res['error']
+          ,content: '请重新登录获取权限'
         });
         this.router.navigate(['login']);
       }else if(res['code'] == 6){

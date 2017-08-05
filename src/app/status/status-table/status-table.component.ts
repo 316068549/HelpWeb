@@ -121,11 +121,13 @@ export class StatusTableComponent implements OnInit {
           ,content: res['error']
         });
       }
-      this.statuses = res['data']['list'];
-      this.totalPage = Math.ceil(this.statuses.length/5);
-      this.totalNum = this.statuses.length;
-      this.pages  = res['data']['page'];
-      console.log(this.pages)
+      if(res['data']['list']) {
+        this.statuses = res['data']['list'];
+        this.totalPage = Math.ceil(this.statuses.length / 5);
+        this.totalNum = this.statuses.length;
+        this.pages = res['data']['page'];
+        console.log(this.pages)
+      }
     });
   }
 

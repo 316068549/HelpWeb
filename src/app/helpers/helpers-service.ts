@@ -39,7 +39,7 @@ export class HelperService {
   getMenuDatas(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menusUrl2+'?pageNum='+current +'&pageSize=5&tokenId='+this.tokenId;
+      uurl = this.menusUrl2+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
     }else{
       uurl = this.menusUrl2+'?tokenId='+this.tokenId;
     }

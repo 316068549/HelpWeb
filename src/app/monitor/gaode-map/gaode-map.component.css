@@ -134,6 +134,7 @@ li{
   line-height: 28px;
   box-shadow: 3px 4px 3px 0px silver;
   display: none;
+  max-height: 295px;
 }
 .panel ul li{
   list-style: none !important;

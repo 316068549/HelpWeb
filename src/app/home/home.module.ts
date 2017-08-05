@@ -11,7 +11,6 @@ import { workspaceRoutes } from './home.routes';
 import { ParentsmenuesPipe } from '../left-nav/left-nav.pipe';
 import { MonitorComponent } from '../monitor/monitor.component';
 import { GaodeMapComponent } from '../monitor/gaode-map/gaode-map.component';
-import { HelpComponent } from '../help/help.component';
 import { VideoComponent } from '../monitor/video/video.component';
 
 @NgModule({
@@ -27,7 +26,6 @@ import { VideoComponent } from '../monitor/video/video.component';
     ParentsmenuesPipe,
     MonitorComponent,
     GaodeMapComponent,
-    HelpComponent,
     VideoComponent
   ],
   providers: [MenuService],

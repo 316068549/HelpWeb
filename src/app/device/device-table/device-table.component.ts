@@ -90,7 +90,7 @@ export class DeviceTableComponent implements OnInit {
 
 
   getElectricities(): void {
-    this.userService.getMenuDatas().then( res => {
+    this.userService.getMenuDatas(1,5).then( res => {
       if(res['code'] == 0){
 
       }else if(res['code'] == 5){
@@ -111,10 +111,12 @@ export class DeviceTableComponent implements OnInit {
           ,content: res['error']
         });
       }
-      this.devices = res['data']['list'];
-      this.totalPage = Math.ceil(this.devices.length/5);
-      this.totalNum = this.devices.length;
-      this.pages  = res['data']['page'];
+      if(res['data']['list']){
+        this.devices = res['data']['list'];
+        this.totalPage = Math.ceil(this.devices.length/5);
+        this.totalNum = this.devices.length;
+        this.pages  = res['data']['page'];
+      }
     });
   }
 

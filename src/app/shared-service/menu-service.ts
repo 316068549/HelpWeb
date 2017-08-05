@@ -50,7 +50,7 @@ export class MenuService {
   getMenuList(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menuslistUrl+'?current='+current +'&size=5&tokenId='+this.tokenId;
+      uurl = this.menuslistUrl+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
     }else{
       uurl = this.menuslistUrl+'?tokenId='+this.tokenId;
     }
@@ -109,11 +109,11 @@ export class MenuService {
       .then(response => response.json().data as object)
       .catch(this.handleError);
   }
-  getMenuDetail2(id:number): Promise<object> {
+  getMenuDetail2(id:number): Promise<Menu> {
     const url = this.userUrl+'?usersId='+id+'&roleId='+this.roleId+'&tokenId='+this.tokenId;
     return this.http.get(url)
       .toPromise()
-      .then(response => response.json().data as object)
+      .then(response => response.json().data as Menu)
       .catch(this.handleError);
   }
 

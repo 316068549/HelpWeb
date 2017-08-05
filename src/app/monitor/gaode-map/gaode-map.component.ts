@@ -26,7 +26,7 @@ export class GaodeMapComponent implements OnInit {
     var volunteerList;
     var deviceList;
     var changeXyList=[];
-    var taskList = [];
+    var taskList ;
     var rescueAddress = localStorage.getItem('address');
     var statuses =[];//是否报警
     var warningList=[];//报警列表
@@ -52,11 +52,11 @@ export class GaodeMapComponent implements OnInit {
     init();
     startRun();
     // var awp = setTimeout(xunhuan,5000);
-    var interval = setInterval(xunhuan,30000)
+    var interval = setInterval(xunhuan,18000)
     //打开气泡延迟20秒刷新
     function aa() {
       clearInterval(interval);
-      setTimeout(cc,20000);
+      setTimeout(cc,8000);
     }
     function xunhuan(){
       map.clearOverlays();
@@ -64,7 +64,7 @@ export class GaodeMapComponent implements OnInit {
       startRun();
     }
     function cc() {
-      interval = setInterval(xunhuan,30000)
+      interval = setInterval(xunhuan,18000)
     }
     // 地图初始化位置
     function init(){
@@ -76,12 +76,81 @@ export class GaodeMapComponent implements OnInit {
         url: "indata?tokenId="+tokenId,
         success: function(data){
           console.log('success')
-           resul=data.data;
+           // resul=data.data;
+          resul = {
+            "status":0,
+            "msg":null,
+            "time":0,
+            "objectbean":null,
+            "code":0,
+            "error":null,
+            "data":{
+              "deviceList":[
+                {
+                  "address":"西安莲湖区",
+                  "locationTime":"2017-08-05 12:01:37",
+                  "image_url":"liuwei.jpg",
+                  "mobile":"15662355564",
+                  "locationLatitude":34.2307,
+                  "locationType":1,
+                  "NAME":"刘位",
+                  "deviceStatus":"00000000000000000000000000010000",
+                  "is_alarm":1,
+                  "deviceIMEI":"123456",
+                  "locationLongitude":108.813,
+                  "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+                  "onlineTime":1501745760000,
+                  "deviceMobile":"15002933699"
+                }
+              ],
+              "volunteerList":[
+                {
+                  "volunteer_id":"1",
+                  "address":null,
+                  "locationTime":1501914408000,
+                  "image_url":"http://localhost:8080/api/file/downloadFile",
+                  "sex":0,
+                  "latitude":"34.323985",
+                  "mobile":"15002933643",
+                  "rescue_team_id":1,
+                  "NAME":"lxx",
+                  "longitude":"109.049169"
+                },
+                {
+                  "volunteer_id":"111",
+                  "address":null,
+                  "locationTime":1501914594000,
+                  "image_url":"xw.jpg",
+                  "sex":0,
+                  "latitude":"34.324172",
+                  "mobile":"13072925248",
+                  "rescue_team_id":1,
+                  "NAME":"xw",
+                  "longitude":"109.049137"
+                }
+              ]
+              // ,
+              // "taskList":[
+              //   {
+              //     "volunteer_id":"1",
+              //     "receiveTime":1501911522000,
+              //     "createTime":1501911522000,
+              //     "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+              //     "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
+              //     "status":1
+              //   }
+              // ]
+            }
+          }
+
         }
       });
-      volunteerList=resul.volunteerList;
-      deviceList=resul.deviceList;
-      taskList=resul.taskList;
+      // volunteerList=resul.volunteerList;
+      // deviceList=resul.deviceList;
+      // taskList=resul.taskList;
+      volunteerList=resul.data.volunteerList;
+      deviceList=resul.data.deviceList;
+      taskList=resul.data.taskList;
       if(deviceList.length>0){
         $.each(deviceList,function (i,n) {
           if(n['is_alarm']==1){
@@ -93,45 +162,62 @@ export class GaodeMapComponent implements OnInit {
         })
       }
       //任务状态表格
-      if(taskList.length>0){
-        $.each(taskList,function (i,n) {
-          $('.panel').show();
-          var html = "<li><a href='javascript:;' class=";
-          // var html2 = "<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+item.address+")</span>"
-          // var html2 = "<span style='margin-left: 15px'>任务状态（救援中，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
-          // var html3 = "<span style='margin-left: 15px'>任务状态（已结束，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
-          if(n.status==1){
+      if(taskList){
+        if(taskList.length>0){
+          $.each(taskList,function (i,n) {
             $.each(deviceList,function (a,obj) {
               if(obj.alarmId==n.alarmId){
-                html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+obj.address+")</span></a></li>"
+                obj.isCreat = true;
               }
+              // if(n.status==3){
+              //   $.each(deviceList,function (a,obj) {
+              //     if(obj.alarmId==n.alarmId){
+              //       obj.isCreat = false;
+              //     }
+              //   })
+              // }
             })
-          }else if(n.status==2){
-            $.each(deviceList,function (a,obj) {
-              if(obj.alarmId==n.alarmId){
-                html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（救援中，接单人："
-              }
-            })
-            $.each(volunteerList,function (c,vol) {
-              if(vol['volunteer_id']==n['volunteer_id']){
-                html+=vol.NAME+"，电话："+vol.mobile+")</span></a></li>"
-              }
-            })
-          }else {
-            $.each(deviceList,function (a,obj) {
-              if(obj.alarmId==n.alarmId){
-                html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（已结束，接单人："
-              }
-            })
-            $.each(volunteerList,function (c,vol) {
-              if(vol['volunteer_id']==n['volunteer_id']){
-                html+=vol.NAME+"，电话："+vol.mobile+")</span></a></li>"
-              }
-            })
-          }
-          $('.panel ul').append(html)
-        })
+          })
+          $.each(taskList,function (i,n) {
+            $('.panel').show();
+            var html = "<li><a href='javascript:;' id="+n.task_id+" class=";
+            // var html2 = "<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+item.address+")</span>"
+            // var html2 = "<span style='margin-left: 15px'>任务状态（救援中，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
+            // var html3 = "<span style='margin-left: 15px'>任务状态（已结束，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
+            if(n.status==1){
+              $.each(deviceList,function (a,obj) {
+                if(obj.alarmId==n.alarmId){
+                  html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+obj.address+")</span></a></li>"
+                }
+              })
+            }else if(n.status==2){
+              $.each(deviceList,function (a,obj) {
+                if(obj.alarmId==n.alarmId){
+                  html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（救援中，接单人："
+                }
+              })
+              $.each(volunteerList,function (c,vol) {
+                if(vol['volunteer_id']==n['volunteer_id']){
+                  html+=vol.NAME+"，电话："+vol.mobile+")</span></a></li>"
+                }
+              })
+            }else {
+              $.each(deviceList,function (a,obj) {
+                if(obj.alarmId==n.alarmId){
+                  html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（已结束，接单人："
+                }
+              })
+              $.each(volunteerList,function (c,vol) {
+                if(vol['volunteer_id']==n['volunteer_id']){
+                  html+=vol.NAME+"，电话："+vol.mobile+")</span></a></li>"
+                }
+              })
+            }
+            $('.panel ul').append(html)
+          })
+        }
       }
+
 
       //清空数据表
       $.ajax({
@@ -161,6 +247,7 @@ export class GaodeMapComponent implements OnInit {
     }
     // 地图刷新位置
     function changePlace(){
+      changeXyList=[];
       var result;
       $.ajax({
         type: "get",
@@ -169,20 +256,128 @@ export class GaodeMapComponent implements OnInit {
         url: "indata?tokenId="+tokenId,
         success: function(data){
           console.log('success')
-          result=data.data;
+          // result=data.data;
+          result = {
+            "status":0,
+            "msg":null,
+            "time":0,
+            "objectbean":null,
+            "code":0,
+            "error":null,
+            "data":{
+              "deviceList":[
+                {
+                  "address":"西安莲湖区",
+                  "locationTime":"2017-08-05 12:01:37",
+                  "image_url":"liuwei.jpg",
+                  "mobile":"15662355564",
+                  "locationLatitude":34.2307,
+                  "locationType":1,
+                  "NAME":"刘位",
+                  "deviceStatus":"00000000000000000000000000010000",
+                  "is_alarm":0,
+                  "deviceIMEI":"123456",
+                  "locationLongitude":108.813,
+                  "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+                  "onlineTime":1501745760000,
+                  "deviceMobile":"15002933699"
+                }
+              ],
+              "volunteerList":[
+                {
+                  "volunteer_id":"1",
+                  "address":null,
+                  "locationTime":1501914408000,
+                  "image_url":"http://localhost:8080/api/file/downloadFile",
+                  "sex":0,
+                  "latitude":"34.323985",
+                  "mobile":"15002933643",
+                  "rescue_team_id":1,
+                  "NAME":"lxx",
+                  "longitude":"109.049169"
+                },
+                {
+                  "volunteer_id":"111",
+                  "address":null,
+                  "locationTime":1501914594000,
+                  "image_url":"xw.jpg",
+                  "sex":0,
+                  "latitude":"34.324172",
+                  "mobile":"13072925248",
+                  "rescue_team_id":1,
+                  "NAME":"xw",
+                  "longitude":"109.049137"
+                }
+              ],
+              "taskList":[
+                {
+                  "volunteer_id":"1",
+                  "receiveTime":1501911522000,
+                  "createTime":1501911522000,
+                  "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+                  "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
+                  "status":1
+                }
+              ]
+            }
+          }
         }
       });
-      volunteerList=result.volunteerList;
-      deviceList=result.deviceList;
-      taskList=result.taskList;
-      if(taskList.length>0){
-        $.each(taskList,function (i,n) {
-            $.each(deviceList,function (a,obj) {
-              if(obj.alarmId==n.alarmId){
-                obj.isCreat = true;
+      // volunteerList=result.volunteerList;
+      // deviceList=result.deviceList;
+      // taskList=result.taskList;
+      volunteerList=result.data.volunteerList;
+      deviceList=result.data.deviceList;
+      taskList=result.data.taskList;
+      console.log(taskList);
+      if(taskList) {
+        if (taskList.length > 0) {
+          $.each(taskList, function (i, n) {
+            $.each(deviceList, function (a, obj) {
+              if (obj.alarmId == n.alarmId) {
+                if (n.status == 1 || n.status == 2) {
+                  obj.isCreat = true;
+                } else {
+                  obj.isCreat = false;
+                }
               }
             })
-        })
+          })
+          $.each(taskList, function (s, sss) {
+            var html = "<span style='margin-left: 15px'>任务状态（";
+            if (sss.status == 1) {
+              $.each(deviceList, function (aa, oobj) {
+                if (oobj.alarmId == sss.alarmId) {
+                  html += "等待接单，报警地址：" + oobj.address + ")</span>"
+                }
+              })
+            } else if (sss.status == 2) {
+              $.each(deviceList, function (aa, oobj) {
+                if (oobj.alarmId == sss.alarmId) {
+                  html += "救援中，接单人："
+                }
+              })
+              $.each(volunteerList, function (c, vol) {
+                if (vol['volunteer_id'] == sss['volunteer_id']) {
+                  html += vol.NAME + "，电话：" + vol.mobile + ")</span>"
+                }
+              })
+            } else {
+              $.each(deviceList, function (aa, oobj) {
+                if (oobj.alarmId == sss.alarmId) {
+                  html += "已结束，接单人："
+                }
+              })
+              $.each(volunteerList, function (c, vol) {
+                if (vol['volunteer_id'] == sss['volunteer_id']) {
+                  html += vol.NAME + "，电话：" + vol.mobile + ")</span>"
+                }
+              })
+            }
+            $('#' + sss['task_id'] + ' span').remove();
+            $('#' + sss['task_id']).append(html);
+          })
+        }
       }
       console.log(volunteerList)
       console.log(deviceList)
@@ -381,15 +576,18 @@ export class GaodeMapComponent implements OnInit {
       $('#page-wrapper').addClass('marg220').removeClass('fullscreen');
       showMap.style.width = X;
       showMap.style.height = Y;
-      exitFull();
+      exitFull(document);
     })
 
     // 编写自定义函数,创建标注
-    function addMarker(point,jiedan,status,deviceIMEI,name,alarmId){
+    function addMarker(point,status,jiedan,deviceIMEI,name,alarmId){
+      console.log(jiedan)
       console.log(status)
       console.log(deviceIMEI)
-      // if(jiedan&&status==0){
-      if(jiedan){
+      var infoWindow;
+      var marker;
+      if(jiedan&&status==0){
+      // if(jiedan){
         $('.panel').show();
         var imgUrl;
         $.each(deviceList,function (i,obj) {
@@ -404,10 +602,41 @@ export class GaodeMapComponent implements OnInit {
           '</div>';
         //创建检索信息窗口对象
         var searchInfoWindow = null;
-        var infoWindow = new BMap.InfoWindow(content);
-        var marker = new BMap.Marker(point,{icon:myIcon3,title:deviceIMEI});
+        infoWindow = new BMap.InfoWindow(content);
+        marker = new BMap.Marker(point,{icon:myIcon3,title:deviceIMEI});
         map.addOverlay(marker,{title:deviceIMEI});
         markers.push(marker);
+        // 查询接单壮态,如果接单传志愿者电话给后台  志愿者status 1 创建任务无人接单 2 救援中 3 结束
+        // $.each(taskList,function (index,obj) {
+        //     if(obj.status==2){
+        //       var html2 = "<span style='margin-left: 15px'>任务状态（救援中，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
+        //       $('#'+obj['task_id']+' span').remove();
+        //       $('#'+obj['task_id']).append(html2);
+        //       var content2 = '<div class="personIcon">' +
+        //         // '<img src="assets/img/profile_small.jpg" id="imgDemo" alt="" style="float:right;zoom:1;overflow:hidden;' +
+        //         // 'width:100px;height:100px;margin-left:3px;"/>' +
+        //         '需要救援人:' +name+
+        //         '<br/><div class="rescuesta">救援状态：救援中<span></span></div>'
+        //         // '地址：'+deviceIMEI
+        //         +
+        //         '</div>';
+        //       var infoWindow = new BMap.InfoWindow(content2);
+        //     }else if(obj.status==3){
+        //       var html3 = "<span style='margin-left: 15px'>任务状态（已结束，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
+        //       $('#'+obj['task_id']+' span').remove();
+        //       $('#'+obj['task_id']).append(html3);
+        //       var content3 = '<div class="personIcon">' +
+        //         // '<img src="assets/img/profile_small.jpg" id="imgDemo" alt="" style="float:right;zoom:1;overflow:hidden;width:100px;' +
+        //         // 'height:100px;margin-left:3px;"/>' +
+        //         '需要救援人:' +name+
+        //         '<br/><div class="rescuesta">救援状态：已结束<span></span></div>'
+        //         // '地址：'+deviceIMEI
+        //         +
+        //         '</div>';
+        //       var infoWindow = new BMap.InfoWindow(content3);
+        //     }
+        //
+        // })
       }else if(status==1){
         $('.panel').show();
         // 在添加marker时附加一个id属性
@@ -435,7 +664,7 @@ export class GaodeMapComponent implements OnInit {
           '</div>';
         //创建检索信息窗口对象
         var searchInfoWindow = null;
-        var infoWindow = new BMap.InfoWindow(content);
+        infoWindow = new BMap.InfoWindow(content);
         infoWindow.addEventListener("open", function(e){
           $('#cancelRescue').on("click", function(){
             var creatUrl = "web/task/create?alarmId="+alarmId+"&rescueType=3&deviceIMEI="+deviceIMEI;
@@ -462,7 +691,7 @@ export class GaodeMapComponent implements OnInit {
 
         })
           $('#startRescue').on("click", function(){
-            var creatUrl = "web/task/create?alarmId="+alarmId+"&rescueType=2&deviceIMEI="+deviceIMEI;
+            var creatUrl = "web/task/create?alarmId="+alarmId+"&rescueType=1&deviceIMEI="+deviceIMEI;
             // var creatUrl = "web/task/create?alarmId=17248b69-e61e-4458-94cd-064c063bd235&rescueType=2&deviceIMEI="+deviceIMEI;
             var result;
             $.ajax({
@@ -582,7 +811,7 @@ export class GaodeMapComponent implements OnInit {
 
           });
         })
-        var marker = new BMap.Marker(point,{icon:myIcon,title:deviceIMEI});
+        marker = new BMap.Marker(point,{icon:myIcon,title:deviceIMEI});
         map.addOverlay(marker,{title:deviceIMEI});
         markers.push(marker);
         if($.inArray(deviceIMEI, warningList)==-1){
@@ -591,61 +820,73 @@ export class GaodeMapComponent implements OnInit {
           warningList.push(deviceIMEI);
 
         }
-        else {
-          // 查询接单壮态,如果接单传志愿者电话给后台  志愿者status 1 创建任务无人接单 2 救援中 3 结束
-          $.each(volunteerList,function (index,obj) {
-            if(obj['is_receive']==1){
-              if(obj.status==2){
-                var html2 = "<span style='margin-left: 15px'>任务状态（救援中，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
-                $('#'+obj['task_id']+' span').remove();
-                $('#'+obj['task_id']).append(html2);
-                var content2 = '<div class="personIcon">' +
-                  // '<img src="assets/img/profile_small.jpg" id="imgDemo" alt="" style="float:right;zoom:1;overflow:hidden;' +
-                  // 'width:100px;height:100px;margin-left:3px;"/>' +
-                  '需要救援人:' +name+
-                  '<br/><div class="rescuesta">救援状态：救援中<span></span></div>'
-                  // '地址：'+deviceIMEI
-                  +
-                  '</div>';
-                var infoWindow = new BMap.InfoWindow(content2);
-              }else if(obj.status==3){
-                var html3 = "<span style='margin-left: 15px'>任务状态（已结束，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
-                $('#'+obj['task_id']+' span').remove();
-                $('#'+obj['task_id']).append(html3);
-                var content3 = '<div class="personIcon">' +
-                  // '<img src="assets/img/profile_small.jpg" id="imgDemo" alt="" style="float:right;zoom:1;overflow:hidden;width:100px;' +
-                  // 'height:100px;margin-left:3px;"/>' +
-                  '需要救援人:' +name+
-                  '<br/><div class="rescuesta">救援状态：已结束<span></span></div>'
-                  // '地址：'+deviceIMEI
-                  +
-                  '</div>';
-                var infoWindow = new BMap.InfoWindow(content3);
-              }
-            }
-          })
-        }
-
-        marker.addEventListener("click", function(e){
-          this.openInfoWindow(infoWindow);
-          aa();
-          var circle = new BMap.Circle(point,100,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.2});
-          map.addOverlay(circle);
-          var local =  new BMap.LocalSearch(map, {renderOptions: {map: map, autoViewport: false,panel: "results"}});
-          local.searchNearby('志愿者',point,100);
-          //图片加载完毕重绘infowindow
-          document.getElementById('imgDemo').onload = function (){
-            infoWindow.redraw();   //防止在网速较慢，图片未加载时，生成的信息框高度比图片的总高度小，导致图片部分被隐藏
-          }
-          // searchInfoWindow.open(marker);
-        })
+        // else {
+        //   // 查询接单壮态,如果接单传志愿者电话给后台  志愿者status 1 创建任务无人接单 2 救援中 3 结束
+        //   $.each(volunteerList,function (index,obj) {
+        //     if(obj['is_receive']==1){
+        //       if(obj.status==2){
+        //         var html2 = "<span style='margin-left: 15px'>任务状态（救援中，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
+        //         $('#'+obj['task_id']+' span').remove();
+        //         $('#'+obj['task_id']).append(html2);
+        //         var content2 = '<div class="personIcon">' +
+        //           // '<img src="assets/img/profile_small.jpg" id="imgDemo" alt="" style="float:right;zoom:1;overflow:hidden;' +
+        //           // 'width:100px;height:100px;margin-left:3px;"/>' +
+        //           '需要救援人:' +name+
+        //           '<br/><div class="rescuesta">救援状态：救援中<span></span></div>'
+        //           // '地址：'+deviceIMEI
+        //           +
+        //           '</div>';
+        //         var infoWindow = new BMap.InfoWindow(content2);
+        //       }else if(obj.status==3){
+        //         var html3 = "<span style='margin-left: 15px'>任务状态（已结束，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
+        //         $('#'+obj['task_id']+' span').remove();
+        //         $('#'+obj['task_id']).append(html3);
+        //         var content3 = '<div class="personIcon">' +
+        //           // '<img src="assets/img/profile_small.jpg" id="imgDemo" alt="" style="float:right;zoom:1;overflow:hidden;width:100px;' +
+        //           // 'height:100px;margin-left:3px;"/>' +
+        //           '需要救援人:' +name+
+        //           '<br/><div class="rescuesta">救援状态：已结束<span></span></div>'
+        //           // '地址：'+deviceIMEI
+        //           +
+        //           '</div>';
+        //         var infoWindow = new BMap.InfoWindow(content3);
+        //       }
+        //     }
+        //   })
+        // }
 
       }
-      // else {
-      //   var marker = new BMap.Marker(point,{icon:myIcon2});
-      //   map.addOverlay(marker,{title:deviceIMEI});
-      //   markers.push(marker);
-      // }
+      else {
+        marker = new BMap.Marker(point,{icon:myIcon2,title:deviceIMEI});
+        map.addOverlay(marker,{title:deviceIMEI});
+        markers.push(marker);
+        $.each(deviceList,function (i,obj) {
+          if(obj.deviceIMEI == deviceIMEI){
+            imgUrl = obj['image_url'];
+          }
+        })
+        var content = '<div class="personIcon">' +
+          '<img src="'+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+          '<p style="margin: 15px 0 15px 0">设备使用者:' +name+'</p>'+
+          // '<div  class="rescuesta">救援状态：<span></span></div>'+
+          '</div>';
+        //创建检索信息窗口对象
+        var searchInfoWindow = null;
+        infoWindow = new BMap.InfoWindow(content);
+      }
+      marker.addEventListener("click", function(e){
+        this.openInfoWindow(infoWindow);
+        aa();
+        // var circle = new BMap.Circle(point,100,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.2});
+        // map.addOverlay(circle);
+        // var local =  new BMap.LocalSearch(map, {renderOptions: {map: map, autoViewport: false,panel: "results"}});
+        // local.searchNearby('志愿者',point,100);
+        //图片加载完毕重绘infowindow
+        document.getElementById('imgDemo').onload = function (){
+          infoWindow.redraw();   //防止在网速较慢，图片未加载时，生成的信息框高度比图片的总高度小，导致图片部分被隐藏
+        }
+        // searchInfoWindow.open(marker);
+      })
       //列表绑定
       $('.'+deviceIMEI).on('click',function () {
         $(this).addClass('active').siblings().removeClass('active');
@@ -665,7 +906,6 @@ export class GaodeMapComponent implements OnInit {
           }
         }
       })
-
     }
     //推送任务
     function  sendTask(id,arrObj){
@@ -743,14 +983,14 @@ export class GaodeMapComponent implements OnInit {
       // }
     }
     //退出全屏
-    function exitFull() {
-      // 判断各种浏览器，找到正确的方法
-      var exitMethod = document.exitFullscreen || //W3C
-        // document.mozCancelFullScreen ||  //Chrome等
-        document.webkitExitFullscreen || //FireFox
-        document.webkitExitFullscreen; //IE11
+    function exitFull(element) {
+      //判断各种浏览器，找到正确的方法
+      var exitMethod = element.exitFullscreen || //W3C
+         element.mozCancelFullScreen ||  //Chrome等
+        element.webkitExitFullscreen || //FireFox
+        element.msExitFullscreen; //IE11
       if (exitMethod) {
-        exitMethod.call(document);
+        exitMethod.call(element);
       }
       // else if (typeof $(window).ActiveXObject !== "undefined") {//for Internet Explorer
       //   var wscript = $(window).ActiveXObject("WScript.Shell");

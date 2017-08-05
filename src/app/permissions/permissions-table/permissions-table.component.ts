@@ -91,7 +91,7 @@ export class PermissionTableComponent implements OnInit {
   }
 
   getElectricities(): void {
-    this.userService.getMenuList(1).then( res => {
+    this.userService.getMenuList(1,5).then( res => {
       // if(res['code'] == 0){
       //   this.getElectricities();
       // }else if(res['code'] == 5){
@@ -111,7 +111,7 @@ export class PermissionTableComponent implements OnInit {
   getPageData(pageNo) {
     let vm = this;
     vm.curPage = pageNo;
-    this.userService.getMenuList(pageNo).then( res => {
+    this.userService.getMenuList(pageNo,5).then( res => {
       if(res['code'] == 0){
         this.roles = res['data']['list'];
       }
