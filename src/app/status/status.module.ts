@@ -10,7 +10,6 @@ import { statusRoutes } from './status.routes'
 import { StatusComponent } from  './status.component'
 import { StatusService } from './status-service';
 import { StatusTableComponent } from './status-table/status-table.component';
-import { FenyeComponent } from './fenye/fenye.component';
 
 
 @NgModule({
@@ -23,8 +22,7 @@ import { FenyeComponent } from './fenye/fenye.component';
   ],
   declarations: [
     StatusComponent,
-    StatusTableComponent,
-    FenyeComponent
+    StatusTableComponent
   ],
   providers: [ StatusService ]
 })

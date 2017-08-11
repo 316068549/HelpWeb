@@ -10,7 +10,6 @@ import { RescuePapersService } from '../rescuepapers/rescuepapers-service';
 import { rescuePaperRoutes } from './rescuepapers.routes';
 import { RescuepapersComponent } from './rescuepapers.component';
 import { RescuepapersTableComponent } from './rescuepapers-table/rescuepapers-table.component';
-import { FenyeComponent } from './fenye/fenye.component';
 import { RescueDetailComponent } from './rescue-detail/rescue-detail.component';
 
 @NgModule({
@@ -24,7 +23,6 @@ import { RescueDetailComponent } from './rescue-detail/rescue-detail.component';
   declarations: [
     RescuepapersTableComponent,
     RescuepapersComponent,
-    FenyeComponent,
     RescueDetailComponent
   ],
   providers: [ RescuePapersService ]

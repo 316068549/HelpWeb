@@ -8,7 +8,7 @@ export const RescueCountRoutes = [{
 	children: [
 
     { path: '', component: RescueCountTableComponent },
-    { path: 'detail/:id', component: RescueDetailComponent }
+    { path: 'detail/:rescueTeamId', component: RescueDetailComponent }
 
 	]
 }];

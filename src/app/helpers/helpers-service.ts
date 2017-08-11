@@ -7,6 +7,7 @@ import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import { Menu } from '../models/menu';
 import { Helpers } from '../models/helpers';
+import { rescueTeam } from '../models/rescueTeams';
 declare var layer:any;
 
 @Injectable()
@@ -15,6 +16,7 @@ export class HelperService {
   private headers = new Headers({'Content-Type': 'application/json'});
   private headers2 = new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'});
   private menusbtnUrl = 'adminPermission/query/adminPermissionButton';
+  private rescueslistUrl = 'wwe/rescueTeam/find';
   private menusUrl2 = 'web/vo/findVos';
   private menusUrl = 'web/vo/findVo';
   private menusaddUrl = 'web/vo/addVo';
@@ -39,13 +41,20 @@ export class HelperService {
   getMenuDatas(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menusUrl2+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
+      uurl = this.menusUrl2+'?pageIndex='+current +'&pageSize='+size+'&tokenId='+this.tokenId;
     }else{
       uurl = this.menusUrl2+'?tokenId='+this.tokenId;
     }
     return this.http.get(uurl)
       .toPromise()
       .then(response => response.json() as object)
+      .catch(this.handleError);
+  }
+
+  getRescuesList(): Promise<rescueTeam[]> {
+    return this.http.get(this.rescueslistUrl)
+      .toPromise()
+      .then(response => response.json().data as rescueTeam[])
       .catch(this.handleError);
   }
 
@@ -88,9 +97,9 @@ export class HelperService {
   // }
 
   create(helperName: string, sex: string, password: string,phone: string,
-         nationalId: string, rescue: string,imageUrl:string): Observable<Helpers> {
+         nationalId: string, rescue: number,imageUrl:string): Observable<Helpers> {
     return this.http
-      .post(this.menusaddUrl, JSON.stringify({name: helperName,sex:sex,password:password,mobile:phone,identityCard:nationalId,rescueTeam:rescue,imageUrl:imageUrl}), {headers: this.headers})
+      .post(this.menusaddUrl, JSON.stringify({name: helperName,sex:sex,password:password,mobile:phone,identityCard:nationalId,rescueTeamId:rescue,imageUrl:imageUrl}), {headers: this.headers})
       .map(response => {
           let result=response.json();
           return result;

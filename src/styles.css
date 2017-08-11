@@ -114,7 +114,10 @@ header .switch i{
   height: calc(100% - 110px);
   margin-top: 110px;
 }
-
+.wordHei{
+  color: #333;
+  line-height: 34px;
+}
 
 /*左侧导航*/
 body.canvas-menu .navbar-static-side, body.fixed-sidebar .navbar-static-side{

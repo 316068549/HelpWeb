@@ -6,6 +6,7 @@ import { Http, Headers, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import { rescuePaper } from '../models/rescue-paper';
+import { rescueTeam } from '../models/rescueTeams';
 declare var layer:any;
 
 @Injectable()
@@ -13,6 +14,7 @@ declare var layer:any;
 export class RescuePapersService {
   private headers = new Headers({'Content-Type': 'application/json'});
   private menusUrl = 'web/query/allRescue';
+  private rescueslistUrl = 'wwe/rescueTeam/find';
   private menusdetailUrl = 'web/query/allRescueUrl';
   private userId = localStorage.getItem("userId");
   private roleId = localStorage.getItem("roleId");
@@ -34,10 +36,18 @@ export class RescuePapersService {
       .catch(this.handleError);
   }
 
-  search2(IMEI: string): Promise<object> {
-    return this.http.get(this.menusUrl+'?rescueTeam='+IMEI+'&pageIndex=1&pageSize=5&tokenId='+this.tokenId)
+  getRescuesList(): Promise<rescueTeam[]> {
+    return this.http.get(this.rescueslistUrl)
       .toPromise()
-      .then(response => response.json().data as object)
+      .then(response => response.json().data as rescueTeam[])
+      .catch(this.handleError);
+  }
+
+
+  search2(term: number,current?:number,size?:number): Promise<object> {
+    return this.http.get(this.menusUrl+'?rescueTeamId='+term+'&pageIndex='+current +'&pageSize='+size+'&tokenId='+this.tokenId)
+      .toPromise()
+      .then(response => response.json() as object)
       .catch(this.handleError);
   }
 

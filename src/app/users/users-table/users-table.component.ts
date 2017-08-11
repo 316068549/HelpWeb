@@ -31,10 +31,11 @@ export class UsersTableComponent implements OnInit {
   private del:boolean = false;
   private deletemenu:boolean = false;
   public params; // 保存页面url参数
-  public totalNum ; // 总数据条数
+  public totalNum = 5 ; // 总数据条数
   public pageSize = 5;// 每页数据条数
-  public totalPage ;// 总页数
+  public totalPage = 5 ;// 总页数
   public curPage = 1;// 当前页码
+  public usersLength;// 当前页码
   User=new User();
   pages: any;
   parentNames = [];
@@ -48,21 +49,7 @@ export class UsersTableComponent implements OnInit {
     private location: Location,
   private route: ActivatedRoute
   ) {
-    let vm = this;
-    if (vm.params) {
-      vm.params = vm.params.replace('?', '').split('&');
-      let theRequest = [];
-      for (let i = 0; i < vm.params.length; i++) {
-        theRequest[vm.params[i].split("=")[0]] = vm.params[i].split("=")[0] == 'pageNo' ? parseInt(vm.params[i].split("=")[1]) : vm.params[i].split("=")[1];
-      }
-      vm.params = theRequest;
-      if (vm.params['pageNo']) {
-        vm.curPage = vm.params['pageNo'];
-        //console.log('当前页面', vm.curPage);
-      }
-    } else {
-      vm.params = {};
-    }
+
   }
 
   ngOnInit(): void {
@@ -86,51 +73,96 @@ export class UsersTableComponent implements OnInit {
   }
 
   getElectricities(): void {
-    this.userService.getMenuList().then( res => {
-      // if(res['code'] == 0){
-      //   this.getElectricities();
-      // }else if(res['code'] == 5){
-      //   alert(res['error']);
-      //   this.router.navigate(['login']);
-      // }else if(res['code'] == 6){
-      //   alert(res['error']);
-      //   this.router.navigate(['login']);
-      // }else{
-      //   alert(res['error']);
-      // }
-      this.users = res['list'];
-      this.pages  = res['page'];
-    });
-  }
-  onSelect(user: User): void {
-    this.selectedUser = user;
-  }
-
-  getPageData(pageNo) {
-    let vm = this;
-    vm.curPage = pageNo;
-    this.userService.getMenuList(pageNo,5).then( res => {
+    this.userService.getMenuList(1,5).then( res => {
       if(res['code'] == 0){
         this.users = res['data']['list'];
-      }
-      else if(res['code'] == 5){
-        layer.open({
-          title: '提示'
-          ,content: '请重新登录获取权限'
-        });
-        this.router.navigate(['login']);
-      }else if(res['code'] == 6){
-        layer.open({
-          title: '提示'
-          ,content: res['error']
-        });
-        this.router.navigate(['login']);
+        this.usersLength = res['data']['list'].length;
+        this.pages  = res['data']['page'];
+      }else if(res['code'] == 5){
+        var ak = layer.open({
+          content: res['error']+'请重新登录'
+          , btn: ['确定']
+          , yes: () => {
+            this.router.navigate(['login']);
+              layer.close(ak);
+          }
+        })
       }else{
         layer.open({
           title: '提示'
           ,content: res['error']
         });
       }
+    });
+  }
+  onSelect(user: User): void {
+    this.selectedUser = user;
+  }
+
+  getPageList() {
+    /*分页设置*/
+    let pageList=[];
+    // if (pageParams.totalPage <= 5) {//如果总的页码数小于5（前五页），那么直接放进数组里显示
+    //   for (let i = 0; i < pageParams.totalPage; i++) {
+    //     pageList.push({
+    //       pageNo: i + 1
+    //     });
+    //   }
+    // } else if (pageParams.totalPage - pageParams.curPage < 5 && pageParams.curPage > 4) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
+    //   pageList = [
+    //     {
+    //       pageNo: pageParams.curPage - 4
+    //     }, {
+    //       pageNo: pageParams.curPage - 3
+    //     }, {
+    //       pageNo: pageParams.curPage - 2
+    //     }, {
+    //       pageNo: pageParams.curPage - 1
+    //     }, {
+    //       pageNo: pageParams.curPage
+    //     }
+    //   ];
+    // } else {//在中间的页码数
+    //   let cur = Math.floor((pageParams.curPage - 1) / 5) * 5 + 1;
+    //   pageList = [
+    //     {
+    //       pageNo: cur
+    //     }, {
+    //       pageNo: cur + 1
+    //     }, {
+    //       pageNo: cur + 2
+    //     }, {
+    //       pageNo: cur + 3
+    //     }, {
+    //       pageNo: cur + 4
+    //     },
+    //   ];
+    // }
+    // return pageList;
+    return [1,2,3,4,5];
+  }
+
+  changePage(pageNo) {
+    this.userService.getMenuList(pageNo,5).then( res => {
+      if(res['code'] == 0){
+        this.users = res['data']['list'];
+        this.curPage = res['data']['page']['current'];
+      }else if(res['code'] == 5){
+        var ak = layer.open({
+          content: res['error']+'请重新登录'
+          , btn: ['确定']
+          , yes: () => {
+            this.router.navigate(['login']);
+            layer.close(ak);
+          }
+        })
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+      }
+
     })
     console.log('触发', pageNo);
   }

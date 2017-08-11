@@ -6,17 +6,16 @@ import { Http, Headers, Response } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import { Rescue } from '../models/rescue';
-import { Rescues } from '../mock-data/mock-rescue';
+import { rescueTeam } from '../models/rescueTeams';
 declare var layer:any;
 
 @Injectable()
 
 export class RescueCountService {
   private headers = new Headers({'Content-Type': 'application/json'});
-  private menusUrl = 'api/query/findUser';
-  // private menusaddUrl = 'api/query/addUser';
-  // private menusmodifyUrl = 'api/query/modifyUser';
-  // private menusdeleteUrl = 'api/query/deleteUser';
+  private rescueslistUrl = 'wwe/rescueTeam/find';
+  private menusUrl = 'web/query/rescueCount';
+  private menusUrl2 = 'web/query/rescueByVo';
   private userId = localStorage.getItem("userId");
   private roleId = localStorage.getItem("roleId");
   private tokenId = localStorage.getItem("tokenId");
@@ -28,9 +27,25 @@ export class RescueCountService {
   getMenuDatas(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menusUrl+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
-    }else{
-      uurl = this.menusUrl+'?tokenId='+this.tokenId;
+      uurl = this.menusUrl+'?pageIndex='+current +'&pageSize='+size+'&tokenId='+this.tokenId;
+    }
+    return this.http.get(uurl)
+      .toPromise()
+      .then(response => response .json() as object)
+      .catch(this.handleError);
+  }
+  //
+  getRescuesList(): Promise<rescueTeam[]> {
+    return this.http.get(this.rescueslistUrl)
+      .toPromise()
+      .then(response => response.json().data as rescueTeam[])
+      .catch(this.handleError);
+  }
+
+  getMenuDatas2(id:number,current?:number,size?:number): Promise<object> {
+    let uurl='';
+    if(current){
+      uurl = this.menusUrl2+'?rescueTeamId='+id+'&pageIndex='+current +'&pageSize='+size+'&tokenId='+this.tokenId;
     }
     return this.http.get(uurl)
       .toPromise()
@@ -38,16 +53,13 @@ export class RescueCountService {
       .catch(this.handleError);
   }
 
-  search2(term: string): Promise<object> {
-    return this.http.get(this.menusUrl+'?userName='+term)
-      .toPromise()
-      .then(response => response.json().data as object)
-      .catch(this.handleError);
-  }
-
-  // getMenuDatas(): Promise<Rescue[]> {
-  //   return Promise.resolve(Rescues);
+  // search2(term: number,current?:number,size?:number): Promise<object> {
+  //   return this.http.get(this.menusUrl+'?rescueTeamId='+term+'&pageIndex='+current +'&pageSize='+size+'&tokenId='+this.tokenId)
+  //     .toPromise()
+  //     .then(response => response.json() as object)
+  //     .catch(this.handleError);
   // }
+
 
   private handleError(error: any): Promise<any> {
     layer.open({
@@ -58,20 +70,6 @@ export class RescueCountService {
     return Promise.reject(error.message || error);
   }
 
-  // getMenuData(rescueId: number): Promise<Rescue> {
-  //   const url = this.menusUrl+'?rescueId='+rescueId;
-  //   return this.http.get(url)
-  //     .toPromise()
-  //     .then(response => response.json().objectbean[0] as Rescue)
-  //     .catch(this.handleError);
-  // }
-
-
-  // search(term: string): Observable<Rescue []> {
-  //   return this.http.get(this.menusUrl+'?userName='+term)
-  //     .map(response => response.json().objectbean as Rescue[]
-  //     );
-  // }
 
 
 }

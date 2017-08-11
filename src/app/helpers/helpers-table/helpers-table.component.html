@@ -64,7 +64,7 @@
           <td>{{helper.password}}</td>
           <td>{{helper.identityCard}}</td>
           <td>{{helper.mobile}}</td>
-          <td>{{helper.rescueTeam}}</td>
+          <td>{{helper.rescueName}}</td>
           <!--<td>&nbsp;&nbsp;-->
             <!--<a  (click)="deletemenu=true; clicked=true;helper === selectedHelper" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
             <!--<a (click)="delete(helper); $event.stopPropagation()">删除</a>-->
@@ -77,7 +77,24 @@
       </table>
     </div>
     <div style="position:relative;padding:0 30px;top:0">
-      <app-fenye  [pageParams]="{pageSize:5,totalNum:totalNum,curPage:1,totalPage:totalPage}" (changeCurPage)="getPageData($event)"></app-fenye>
+      <!--分页组件-->
+      <div class="col-md-12 text-right margin-bottom mt25" *ngIf="helpers">
+        <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
+
+        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-2)"
+                [disabled]="curPage==1">上一页</button>
+        <button class="btn btn-default"  [disabled]="curPage==x.pageNum" [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+                [hidden]="x.pageNum<curPage-1&&curPage>3&&x.pageNum!=1"
+                (click)="changePage(x,i)"  *ngFor="let x of pageList;let i = index;">
+          {{x.pageNum-(curPage+1)==2&&x.pageNum>5&&x.pageNum!=pageList.length||
+          curPage-x.pageNum==1&&x.pageNum!=1&&curPage>3||x.pageNum==6&&curPage<=3?'...':x.pageNum}}
+        </button>
+        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage)"
+                [disabled]="curPage==pageList.length">下一页</button>
+      </div>
+      <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+      没有查询到数据
+      </div>
     </div>
   </div>
 </div>
@@ -146,9 +163,12 @@
         </div>
       </div>
       <div class="operate-item fn-clear">
-        <label class="unmust">所属救援队:</label>
+        <label >所属救援队：</label>
         <div class="operate-group">
-          <input required   type="text"  id="rescueTeam" name="rescueTeam" class="form-box"  [(ngModel)]="Helpers.rescueTeam" #rescueTeam="ngModel">
+          <select #rescueTeam="ngModel" id="rescueTeam" [(ngModel)]="Helpers.rescueTeamId" required name="rescueTeam"  class="form-select" >
+            <option value="" selected = "selected">请选择</option>
+            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId">{{rescue.name}}</option>
+          </select>
           <p *ngIf="tjmenuform.submitted && !rescueTeam.valid && !submied"   class="text-danger">所属救援队不能为空</p>
         </div>
       </div>
@@ -211,14 +231,15 @@
         </div>
       </div>
       <div class="operate-item fn-clear">
-        <label>所属救援队:</label>
+        <label >所属救援队：</label>
         <div class="operate-group">
-          <input required   type="text"  id="rescueTeam2" name="rescueTeam2" class="form-box"  [(ngModel)]="selectedHelper.rescueTeam" #rescueTeam2="ngModel">
-          <p *ngIf="deletemenuform.submitted && !rescueTeam.valid"   class="text-danger">所属救援队不能为空</p>
-          <!--<p [hidden]="coding.pristine || coding.valid"  class="text-danger sbd">地址不能为空</p>-->
+          <select #rescueTeam2="ngModel" id="rescueTeam2" [(ngModel)]="selectedHelper.rescueTeamId" required name="rescueTeam2"  class="form-select" >
+            <option value="" selected = "selected">请选择</option>
+            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId">{{rescue.name}}</option>
+          </select>
+          <p *ngIf="deletemenuform.submitted && !rescueTeam2.valid"   class="text-danger">所属救援队不能为空</p>
         </div>
       </div>
-
       <div class="operate-btn">
         <button type="submit"     class="btns btn-blue">保存</button>
         <button (click)="deletemenu=false; clicked=false;" type="reset" class="btns btn-gray">取消</button>

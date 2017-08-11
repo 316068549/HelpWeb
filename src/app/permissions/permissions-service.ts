@@ -33,13 +33,13 @@ export class PermissionService {
   getMenuList(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menuslistUrl+'?pageIndex='+current +'&pageSize='+ size +'&tokenId='+this.tokenId;
+      uurl = this.menuslistUrl+'?current='+current +'&size='+ size +'&tokenId='+this.tokenId;
     }else{
       uurl = this.menuslistUrl+'?tokenId='+this.tokenId;
     }
     return this.http.get(uurl)
       .toPromise()
-      .then(response => response.json().data as object)
+      .then(response => response.json() as object)
       .catch(this.handleError);
   }
 
@@ -98,9 +98,9 @@ export class PermissionService {
       .catch(this.handleError);
   }
 
-  update(roleId:number,roleName:string,rolename2:string,des:string, str:string, str2:string): Promise<object> {
+  update(roleId:number,roleName:string,rolename2:string,des:string, str:string, str2:string,str3:string): Promise<object> {
 
-    let parment = 'delId=&addId='+str+'&originalRoleName='+roleName+'&roleId='+roleId+'&roleName='+rolename2+'&roleDescription='+des+'&'+str2+
+    let parment = 'delId='+str3+'&addId='+str+'&originalRoleName='+roleName+'&roleId='+roleId+'&roleName='+rolename2+'&roleDescription='+des+'&'+str2+
       'userId=undefined&tokenId='+this.tokenId;
     console.log(parment)
     return this.http

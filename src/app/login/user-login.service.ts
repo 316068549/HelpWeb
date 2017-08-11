@@ -7,7 +7,7 @@ import { User } from '../models/user-model';
 @Injectable()
 export class UserLoginService {
   // public userLoginURL = 'data/user-login-mock.json';
-  public userLoginURL = 'login';
+  public userLoginURL = 'denglu';
   public subject: Subject<User> = new Subject<User>();
 
   constructor(public http:Http

@@ -64,7 +64,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let menu of menus;let i = index;" [ngClass]="menu.ak?menu.ak:''"  (click)="onSelect(menu)">
+          <tr *ngFor="let menu of menus;let i = index;"  [ngClass]="menu.ak?menu.ak:''"  (click)="onSelect(menu)">
             <td>{{menu.permissionId}}</td>
             <td>{{menu.permissionName}}</td>
             <td class="text-right">{{menu.permissionUrl}}</td>
@@ -74,9 +74,9 @@
             <td>{{menu.permissionParentId}}</td>
             <td>{{menu.createTime}}</td>
             <td><a  (click)="openClose(menu.permissionId,wordControl,i+1);menu.selected=true" *ngIf="!menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId==1" >展开</a>
-              <a  (click)="openClose2(menu.permissionId,wordControl,i+1,menu.permissionParentId);menu.selected=false" *ngIf="menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId!=1" >展开</a>
+              <a  (click)="openClose2(menu.permissionId,wordControl,i+1,menu.permissionId);menu.selected=false" *ngIf="menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId!=1&&(menu.subAdminPermission.length>0)" >展开</a>
               <a (click)="Close(menu.permissionId,wordControl,i+1,menu.permissionParentId);menu.selected=false" *ngIf="menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId==1" >折叠</a>
-              <a (click)="Close2(menu.permissionId,wordControl,i+1,menu.permissionParentId);menu.selected=true" *ngIf="!menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId!=1" >折叠</a>
+              <a (click)="Close2(menu.permissionId,wordControl,i+1,menu.permissionId);menu.selected=true" *ngIf="!menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId!=1&&(menu.subAdminPermission.length>0)" >折叠</a>
             </td>
             <td><a (click)="searchParMenu2(menu.permissionId);deletemenu=true; clicked=true;menu === selectedMenu" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
               <a   (click)="delete(menu); $event.stopPropagation()">删除</a></td>
@@ -86,8 +86,24 @@
         </table>
       </div>
       <div style="position:relative;padding:0 30px;top:0">
-        <!--分页组件参数：pageSize,totalNum,curPage,totalPage-->
-        <app-fenye *ngIf="pages" [pageParams]="{pageSize:pages.current,totalNum:5,curPage:1,totalPage:pages.size}" (changeCurPage)="getPageData($event)"></app-fenye>
+        <!--分页组件-->
+        <div class="col-md-12 text-right margin-bottom mt25" *ngIf="menus">
+          <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
+
+          <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-2)"
+                  [disabled]="curPage==1">上一页</button>
+          <button class="btn btn-default"  [disabled]="curPage==x.pageNum" [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+                  [hidden]="x.pageNum<curPage-1&&curPage>3&&x.pageNum!=1"
+                  (click)="changePage(x,i)"  *ngFor="let x of pageList;let i = index;">
+            {{x.pageNum-(curPage+1)==2&&x.pageNum>5&&x.pageNum!=pageList.length||
+            curPage-x.pageNum==1&&x.pageNum!=1&&curPage>3||x.pageNum==6&&curPage<=3?'...':x.pageNum}}
+          </button>
+          <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage)"
+                  [disabled]="curPage==pageList.length">下一页</button>
+        </div>
+        <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
+          没有查询到数据
+        </div>
     </div>
   </div>
 

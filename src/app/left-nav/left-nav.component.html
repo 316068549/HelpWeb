@@ -43,25 +43,27 @@
       </li>
 
       <li class="item actives"   *ngFor="let menu of menus; let i = index;" [ngClass]="{'actives':!menuactive}" >
-        <a *ngIf="i>2">
-          <i class="fa fa-envelope"></i>
+       <!--<a *ngIf="i>2">-->
+        <a >
+      <i class="fa fa-envelope"></i>
           <span class="nav-label">{{menu.permissionName}}</span>
           <span class="fa arrow" (click)="menuactive=!menuactive" ></span>
         </a>
-        <ul class="nav nav-second-level" *ngIf="i>2" [ngClass]="{'collapse in':menuactive}" >
+          <!--<ul class="nav nav-second-level" *ngIf="i>2" [ngClass]="{'collapse in':menuactive}" >-->
+      <ul class="nav nav-second-level"  [ngClass]="{'collapse in':menuactive}" >
           <li routerLinkActive="active" *ngFor="let menu2 of menu.subAdminPermission ">
             <a [routerLink]="[menu2.permissionUrl, menu2.permissionId]"  routerLinkActive="active"  class="J_menuItem"  data-index="3" >{{menu2.permissionName}}</a>
           </li>
         </ul>
       </li>
 
-      <li class="item actives" [ngClass]="{'actives':!menuactive}" >
-        <a>
-          <i class="fa fa-envelope"></i>
-          <span class="nav-label">救援管理</span>
-          <span class="fa arrow" (click)="menuactive=!menuactive" ></span>
-        </a>
-        <ul class="nav nav-second-level" [ngClass]="{'collapse in':menuactive}">
+      <!--<li class="item actives" [ngClass]="{'actives':!menuactive}" >-->
+        <!--<a>-->
+          <!--<i class="fa fa-envelope"></i>-->
+          <!--<span class="nav-label">救援管理</span>-->
+          <!--<span class="fa arrow" (click)="menuactive=!menuactive" ></span>-->
+        <!--</a>-->
+        <!--<ul class="nav nav-second-level" [ngClass]="{'collapse in':menuactive}">-->
           <!--<li routerLinkActive="active" *ngFor="let menu of (menus | parentmenu : 2)">-->
             <!--<a [routerLink]="menu.address"  class="J_menuItem"  data-index="3">{{menu.name}}</a>-->
           <!--</li>-->
@@ -89,11 +91,11 @@
           <!--<li routerLinkActive="active">-->
             <!--<a routerLink="rescuecount"  class="J_menuItem" data-index="16">救援统计</a>-->
           <!--</li>-->
-          <li routerLinkActive="active">
-            <a routerLink="monitor"  class="J_menuItem" data-index="16">监控页面</a>
-          </li>
-        </ul>
-      </li>
+          <!--<li routerLinkActive="active">-->
+            <!--<a routerLink="monitor"  class="J_menuItem" data-index="16">监控页面</a>-->
+          <!--</li>-->
+        <!--</ul>-->
+      <!--</li>-->
 
       <!--<li class="item actives" [ngClass]="{'actives':!menuactive2}">-->
         <!--<a>-->

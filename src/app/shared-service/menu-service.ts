@@ -13,7 +13,7 @@ import { Menu } from '../models/menu';
 export class MenuService {
   private headers = new Headers({'Content-Type': 'application/json'});
   private headers2 = new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'});
-  private menusUrl = 'index';
+  private menusUrl = 'itemlist';
   private logoutUrl = 'logout';
   private menusbtnUrl = 'adminPermission/query/adminPermissionButton';
   private menuslistUrl = 'adminPermission/query/adminPermissionList';
@@ -50,14 +50,14 @@ export class MenuService {
   getMenuList(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menuslistUrl+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
+      uurl = this.menuslistUrl+'?current='+current +'&size=5&tokenId='+this.tokenId;
     }else{
       uurl = this.menuslistUrl+'?tokenId='+this.tokenId;
     }
 
     return this.http.get(uurl)
       .toPromise()
-      .then(response => response.json().data as object)
+      .then(response => response.json() as object)
       .catch(this.handleError);
         // .map(response => {
         //   if(response.json().code==0){

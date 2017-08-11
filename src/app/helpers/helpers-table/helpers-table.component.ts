@@ -37,10 +37,16 @@ export class HelpersTableComponent implements OnInit {
   private edit:boolean = false;
   private del:boolean = false;
   public params; // 保存页面url参数
-  public totalNum =0; // 总数据条数
+  public totalNum; // 总数据条数
   public pageSize = 5;// 每页数据条数
-  public totalPage = 0;// 总页数
+  public totalPage ;// 总页数
   public curPage = 1;// 当前页码
+  public isEmpty:boolean = false;
+  public pageList= [{
+    isActive: true,
+    pageNum: 1
+  }];
+  rescueTeams = [];
   pages: any;
   term={};
   constructor(
@@ -53,21 +59,7 @@ export class HelpersTableComponent implements OnInit {
     // this.form = new FormGroup({
     //   phone: new FormControl('', CustomValidators.phone("zh-CN"))
     // });
-    let vm = this;
-    if (vm.params) {
-      vm.params = vm.params.replace('?', '').split('&');
-      let theRequest = [];
-      for (let i = 0; i < vm.params.length; i++) {
-        theRequest[vm.params[i].split("=")[0]] = vm.params[i].split("=")[0] == 'pageNo' ? parseInt(vm.params[i].split("=")[1]) : vm.params[i].split("=")[1];
-      }
-      vm.params = theRequest;
-      if (vm.params['pageNo']) {
-        vm.curPage = vm.params['pageNo'];
-        //console.log('当前页面', vm.curPage);
-      }
-    } else {
-      vm.params = {};
-    }
+
   }
   // 添加选择数据初始化
   searchParMenu(): void{
@@ -104,34 +96,63 @@ export class HelpersTableComponent implements OnInit {
     this.getElectricities();
   }
 
-  getPageData(pageNo) {
-    let vm = this;
-    vm.curPage = pageNo;
-    this.userService.getMenuDatas(pageNo).then( res => {
+
+  setPagingArr() {
+      if ( this.totalPage == this.pageList.length) {
+        return
+      }
+       this.pageList = [{
+        isActive: true,
+        pageNum: 1
+      }];
+      for (var i = 1; i < this.totalPage; i++) {
+        this.pageList.push({
+          isActive:false,
+          pageNum: i + 1
+        });
+      }
+    }
+
+  resetPagingArr() {
+    this.pageList[0].isActive = true;
+      this.curPage = 0;
+    }
+
+  changePage(page,index) {
+    // if (index == lastPage.pageNum - 1 || page.pageNum - (this.curPage + 1) == 2 && page.pageNum > 5 && page.pageNum != pagingArr.length || $scope.selectPageIndex - page.pageNum == 1 && page.pageNum != 1 && $scope.selectPageIndex > 3 || page.pageNum == 6 && $scope.selectPageIndex <= 3) {
+    //   return
+    // }
+    for (var i = 0; i < this.pageList.length; i++) {
+      this.pageList[i].isActive = false;
+    }
+
+    this.pageList[index].isActive = true;
+    // lastPage = page;
+    this.curPage = index;
+    this.userService.getMenuDatas(index+1,5).then( res => {
       if(res['code'] == 0){
         this.helpers = res['data']['list'];
-      }
-      else if(res['code'] == 5){
-        layer.open({
-          title: '提示'
-          ,content: res['error']
-        });
-        this.router.navigate(['login']);
-      }else if(res['code'] == 6){
-        layer.open({
-          title: '提示'
-          ,content: res['error']
-        });
-        this.router.navigate(['login']);
+        this.curPage = res['data']['pageNum'];
+      }else if(res['code'] == 5){
+        var ak = layer.open({
+          content: res['error']+'请重新登录'
+          , btn: ['确定']
+          , yes: () => {
+            this.router.navigate(['login']);
+            layer.close(ak);
+          }
+        })
       }else{
         layer.open({
           title: '提示'
           ,content: res['error']
         });
       }
+
     })
-    console.log('触发', pageNo);
+    console.log('触发', page.pageNum);
   }
+
 
   delete(helper: Helpers): void{
     var ak = layer.open({
@@ -160,33 +181,36 @@ export class HelpersTableComponent implements OnInit {
   }
 
   getElectricities(): void {
-    this.userService.getMenuDatas(1).then( res => {
+    this.userService.getMenuDatas(1,5).then( res => {
       if(res['code'] == 0){
-
+        this.curPage = res['data']['pageNum'];
+        if(res['data']['list']){
+          this.helpers = res['data']['list'];
+        }else{
+          this.isEmpty=true;
+        }
+        this.totalNum   = res['data']['total'];
+        this.totalPage   = res['data']['pages'];
+        this.setPagingArr();
       }else if(res['code'] == 5){
-        layer.open({
-          title: '提示'
-          ,content: res['error']
-        });
-        this.router.navigate(['login']);
-      }else if(res['code'] == 6){
-        layer.open({
-          title: '提示'
-          ,content: res['error']
-        });
-        this.router.navigate(['login']);
+        var ak = layer.open({
+          content: res['error']+'请重新登录'
+          , btn: ['确定']
+          , yes: () => {
+            this.router.navigate(['login']);
+            layer.close(ak);
+          }
+        })
       }else{
         layer.open({
           title: '提示'
           ,content: res['error']
         });
       }
-      if(res['data']['list']){
-        this.helpers = res['data']['list'];
-        this.totalPage = Math.ceil(this.helpers.length/5);
-        this.totalNum = this.helpers.length;
-        this.pages  = res['data']['page'];
-        console.log(this.pages)
+    });
+    this.userService.getRescuesList().then( menus => {
+      for(let i=0;i<menus.length;i++){
+        this.rescueTeams.push(menus[i])
       }
     });
   }
@@ -218,11 +242,10 @@ export class HelpersTableComponent implements OnInit {
   }
 
   add(helperName: string, sex: string, password: string,phone: string,
-      nationalId: string, rescue: string,imageUrl:string ): void {
+      nationalId: string, rescue: number,imageUrl:string ): void {
     helperName = helperName.trim();
     phone = phone.trim();
     nationalId = nationalId.trim();
-    rescue = rescue.trim();
     if (!helperName && !sex  && !password && !phone && !nationalId && rescue ) { return; }
     this.userService.create(helperName,sex,password,phone,nationalId,rescue,imageUrl)
       .subscribe(res => {

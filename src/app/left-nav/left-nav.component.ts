@@ -11,6 +11,7 @@ declare var $:any;
 })
 export class LeftNavComponent implements OnInit {
   @Input()
+  address:string
   data:  Menu[];
 
   menus: Menu[];
@@ -18,6 +19,7 @@ export class LeftNavComponent implements OnInit {
   menuactive2:boolean = true;
   userName:string;
   roleName:string;
+  // address:string;
   private userId = parseInt(localStorage.getItem("userId"));
   constructor(
     private menuService: MenuService,
@@ -36,8 +38,6 @@ export class LeftNavComponent implements OnInit {
    //  }
    //   // $(this).find("li").not(".active").has("ul").children("ul").addClass("collapse");
    // })
-
-
   }
 
   logout(){
@@ -65,6 +65,7 @@ export class LeftNavComponent implements OnInit {
         this.userName = res['adminUser']['userName'];
         this.roleName = res['adminRoleList'][0]['roleName'];
         localStorage.setItem("address", res['rescueTeam']['addr']);
+        this.address = res['rescueTeam']['addr'];
       }
     });
   }

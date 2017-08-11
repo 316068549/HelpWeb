@@ -10,7 +10,6 @@ import { UserService } from '../users/users-service';
 import { userRoutes } from './users.routes';
 import { UserComponent } from './users.component';
 import { UsersTableComponent } from './users-table/users-table.component';
-import { FeyeComponent } from './fenye/fenye.component';
 
 
 @NgModule({
@@ -23,8 +22,7 @@ import { FeyeComponent } from './fenye/fenye.component';
   ],
   declarations: [
     UsersTableComponent,
-    UserComponent,
-    FeyeComponent
+    UserComponent
   ],
   providers: [ UserService ]
 })

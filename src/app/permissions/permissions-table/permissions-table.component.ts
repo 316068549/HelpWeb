@@ -36,11 +36,13 @@ export class PermissionTableComponent implements OnInit {
   private deletemenu:boolean = false;
   Role=new Role();
   addIDs = [];
+  delIds = [];
   public params; // 保存页面url参数
-  public totalNum ; // 总数据条数
+  public totalNum = 5 ; // 总数据条数
   public pageSize = 5;// 每页数据条数
-  public totalPage ;// 总页数
+  public totalPage = 5 ;// 总页数
   public curPage = 1;// 当前页码
+  public usersLength;// 当前页码
   pages: any;
   term={};
   parentNames = [];
@@ -53,21 +55,7 @@ export class PermissionTableComponent implements OnInit {
     private location: Location,
   private route: ActivatedRoute
   ) {
-    let vm = this;
-    if (vm.params) {
-      vm.params = vm.params.replace('?', '').split('&');
-      let theRequest = [];
-      for (let i = 0; i < vm.params.length; i++) {
-        theRequest[vm.params[i].split("=")[0]] = vm.params[i].split("=")[0] == 'pageNo' ? parseInt(vm.params[i].split("=")[1]) : vm.params[i].split("=")[1];
-      }
-      vm.params = theRequest;
-      if (vm.params['pageNo']) {
-        vm.curPage = vm.params['pageNo'];
-        //console.log('当前页面', vm.curPage);
-      }
-    } else {
-      vm.params = {};
-    }
+
   }
 
   ngOnInit(): void {
@@ -92,49 +80,58 @@ export class PermissionTableComponent implements OnInit {
 
   getElectricities(): void {
     this.userService.getMenuList(1,5).then( res => {
-      // if(res['code'] == 0){
-      //   this.getElectricities();
-      // }else if(res['code'] == 5){
-      //   alert(res['error']);
-      //   this.router.navigate(['login']);
-      // }else if(res['code'] == 6){
-      //   alert(res['error']);
-      //   this.router.navigate(['login']);
-      // }else{
-      //   alert(res['error']);
-      // }
-      this.roles = res['list'];
-      this.pages  = res['page'];
-    });
-  }
-
-  getPageData(pageNo) {
-    let vm = this;
-    vm.curPage = pageNo;
-    this.userService.getMenuList(pageNo,5).then( res => {
       if(res['code'] == 0){
         this.roles = res['data']['list'];
-      }
-      else if(res['code'] == 5){
-        layer.open({
-          title: '提示'
-          ,content: res['error']
-        });
-        this.router.navigate(['login']);
-      }else if(res['code'] == 6){
-        layer.open({
-          title: '提示'
-          ,content: res['error']
-        });
-        this.router.navigate(['login']);
+        this.usersLength = res['data']['list'].length;
+        this.pages  = res['data']['page'];
+      }else if(res['code'] == 5){
+        var ak = layer.open({
+          content: res['error']+'请重新登录'
+          , btn: ['确定']
+          , yes: () => {
+            this.router.navigate(['login']);
+            layer.close(ak);
+          }
+        })
       }else{
         layer.open({
           title: '提示'
           ,content: res['error']
         });
       }
+    });
+  }
+
+  changePage(pageNo) {
+    this.userService.getMenuList(pageNo,5).then( res => {
+      if(res['code'] == 0){
+        this.roles = res['data']['list'];
+        this.pages  = res['data']['page'];
+        this.curPage = res['data']['page']['current'];
+      }else if(res['code'] == 5){
+        var ak = layer.open({
+          content: res['error']+'请重新登录'
+          , btn: ['确定']
+          , yes: () => {
+            this.router.navigate(['login']);
+            layer.close(ak);
+          }
+        })
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+      }
+
     })
     console.log('触发', pageNo);
+  }
+
+  getPageList() {
+    /*分页设置*/
+    let pageList=[];
+    return [1,2,3,4,5];
   }
 
   onSelect(user: Role): void {
@@ -228,7 +225,6 @@ export class PermissionTableComponent implements OnInit {
         })
       }
     })
-    console.log(this.menus)
    // if(status){
    //   this.addIDs2.push(id);
    //   // if(name){
@@ -307,6 +303,7 @@ export class PermissionTableComponent implements OnInit {
   searchParMenu2(id:number): void{
     this.addIDs=[];
     this.addIDs2=[];
+    this.delIds=[];
     this.term={};
     this.originalUserName='';
     this.menus3 = null;
@@ -405,26 +402,38 @@ export class PermissionTableComponent implements OnInit {
     console.log(this.addIDs2);
     console.log(this.addIDs);
     for(let a=0;a<this.addIDs2.length;a++) {
+      if(this.addIDs.indexOf(this.addIDs2[a])<0){
+        this.delIds.push(this.addIDs2[a])
+      }
       for (let i = 0; i < this.addIDs.length; i++) {
         if (this.addIDs[i] == this.addIDs2[a]) {
           this.addIDs.splice(i, 1)
         }
+
       }
     }
+
     console.log(this.addIDs);
+    console.log(this.delIds);
     let str ='';
     $.each(this.addIDs, function(i, item){
       str +=item+',';
     });
     str=str.substring(0,str.length - 1)
     console.log(str);
+    let str3 ='';
+    $.each(this.delIds, function(i, item){
+      str3 +=item+',';
+    });
+    str3=str3.substring(0,str3.length - 1)
+    console.log(str3);
     let str2 ='';
     for(var key in this.term){
       str2+=this.term[key]+'='+key+'&';
     }
     console.log(str2);
 
-    this.userService.update(roleId,this.originalUserName,roleName,des, str, str2)
+    this.userService.update(roleId,this.originalUserName,roleName,des, str, str2,str3)
       .then(res => {
         if(res['code'] == 0){
           layer.open({

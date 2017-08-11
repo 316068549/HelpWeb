@@ -13,7 +13,6 @@ import { TrackComponent } from './track.component';
 import { TrackTableComponent } from './track-table/track-table.component';
 import { TrackDetailComponent } from './track-detail/track-detail.component';
 import { GaodeMapComponent } from '../track/track-detail/gaode-map/gaode-map.component';
-import { FenyeComponent } from './fenye/fenye.component';
 
 @NgModule({
   imports: [
@@ -27,8 +26,7 @@ import { FenyeComponent } from './fenye/fenye.component';
     TrackTableComponent,
     TrackComponent,
     TrackDetailComponent,
-    GaodeMapComponent,
-    FenyeComponent
+    GaodeMapComponent
   ],
   providers: [ ElectricityService ]
 })

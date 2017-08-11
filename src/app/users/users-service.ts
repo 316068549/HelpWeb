@@ -35,13 +35,13 @@ export class UserService {
   getMenuList(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menuslistUrl+'?pageIndex='+current +'&pageSize='+ size +'&tokenId='+this.tokenId;
+      uurl = this.menuslistUrl+'?current='+current +'&size='+ size +'&tokenId='+this.tokenId;
     }else{
       uurl = this.menuslistUrl+'?tokenId='+this.tokenId;
     }
     return this.http.get(uurl)
       .toPromise()
-      .then(response => response.json().data as object)
+      .then(response => response.json() as object)
       .catch(this.handleError);
   }
 

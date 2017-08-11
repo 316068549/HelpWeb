@@ -11,7 +11,6 @@ import { HelperService } from '../helpers/helpers-service';
 import { helperRoutes } from './helpers.routes';
 import { HelperComponent } from './helpers.component';
 import { HelpersTableComponent } from './helpers-table/helpers-table.component';
-import { FenyeComponent } from './fenye/fenye.component';
 
 
 @NgModule({
@@ -26,8 +25,7 @@ import { FenyeComponent } from './fenye/fenye.component';
   ],
   declarations: [
     HelpersTableComponent,
-    HelperComponent,
-    FenyeComponent
+    HelperComponent
   ],
   providers: [ HelperService ]
 })

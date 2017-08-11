@@ -50,10 +50,15 @@ export class MenuTableComponent implements OnInit {
   private del:boolean = false;
   originalUserName:string;
   public params: any;  // 保存页面url参数
-  public totalNum = 0; // 总数据条数
-  public pageSize ;// 每页数据条数
+  public totalNum ; // 总数据条数
+  public pageSize = 5;// 每页数据条数
   public totalPage;// 总页数
-  public curPage ;// 当前页码
+  public curPage = 1;// 当前页码
+  public isEmpty:boolean = false;
+  public pageList= [{
+    isActive: true,
+    pageNum: 1
+  }];
 
   // public data: any[];
   // filterQuery = "";
@@ -115,22 +120,7 @@ export class MenuTableComponent implements OnInit {
     private menuService: MenuService,
      ref: ChangeDetectorRef,
     private location: Location) {
-    this.ref = ref;
-    let vm = this;
-    if (vm.params) {
-      vm.params = vm.params.replace('?', '').split('&');
-      let theRequest = [];
-      for (let i = 0; i < vm.params.length; i++) {
-        theRequest[vm.params[i].split("=")[0]] = vm.params[i].split("=")[0] == 'pageNo' ? parseInt(vm.params[i].split("=")[1]) : vm.params[i].split("=")[1];
-      }
-      vm.params = theRequest;
-      if (vm.params['pageNo']) {
-        vm.curPage = vm.params['pageNo'];
-        //console.log('当前页面', vm.curPage);
-      }
-    } else {
-      vm.params = {};
-    }
+
     // 初始化表达组里面的内容
     this.form = new FormGroup({
       name: new FormControl('', CustomValidators.range([2, 10])),
@@ -146,15 +136,54 @@ export class MenuTableComponent implements OnInit {
     this.Menu.permissionTypeId = 1;
   }
 
-  getPageData(pageNo) {
-    let vm = this;
-    vm.curPage = pageNo;
-    this.menuService.getMenuList(pageNo).then( menus => {
-      if(menus){
-        this.menus  = menus['list'];
+  setPagingArr() {
+    if ( this.totalPage == this.pageList.length) {
+      return
+    }
+    this.pageList = [{
+      isActive: true,
+      pageNum: 1
+    }];
+    for (var i = 1; i < this.totalPage; i++) {
+      this.pageList.push({
+        isActive:false,
+        pageNum: i + 1
+      });
+    }
+  }
+
+  resetPagingArr() {
+    this.pageList[0].isActive = true;
+    this.curPage = 0;
+  }
+
+  changePage(page,index) {
+    for (var i = 0; i < this.pageList.length; i++) {
+      this.pageList[i].isActive = false;
+    }
+    this.pageList[index].isActive = true;
+    this.curPage = index;
+    this.menuService.getMenuList(index+1,5).then( res => {
+      if(res['code'] == 0){
+        this.menus = res['data']['list'];
+        this.curPage = res['data']['page']['current'];
+      }else if(res['code'] == 5){
+        var ak = layer.open({
+          content: res['error']+'请重新登录'
+          , btn: ['确定']
+          , yes: () => {
+            this.router.navigate(['login']);
+            layer.close(ak);
+          }
+        })
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
       }
+
     })
-    console.log('触发', pageNo);
   }
 
   ngOnInit(): void {
@@ -184,6 +213,7 @@ export class MenuTableComponent implements OnInit {
     // })
 
   }
+
   searchParMenu(): void{
     this.Menu.permissionTypeId=1;
     this.comIdList=[];
@@ -220,17 +250,19 @@ export class MenuTableComponent implements OnInit {
 
   }
   openClose(id:number,val:string,number:number): void{
-      this.menuService.getSubMenu(id).then( menus => {
-        for(let i=0;i<menus.length;i++){
-          menus[i].ak="subTr"+id;
-          this.menus.splice(number+i,0,menus[i]);
-          if(menus[i].subAdminPermission.length>0){
-            for(let a=0;a<menus[i].subAdminPermission.length;a++){
-              menus[i].subAdminPermission[a].ak="subTr2"+id;
-              this.menus.splice(number+i+a+1,0,menus[i].subAdminPermission[a]);
-            }
+      this.menuService.getSubMenu(id).then( men => {
+        $.each(men,(i,n) => {
+          n.ak="subTr"+id;
+          this.menus.splice(number,0,n)
+          number++;
+          if(n.subAdminPermission.length>0){
+            $.each(n.subAdminPermission,(m,obj) => {
+              obj.ak="subTr2"+id+' subTr3'+obj.permissionParentId;
+              this.menus.splice(number,0,obj);
+                number++;
+            })
           }
-        }
+        })
       });
   }
    Close(id:number,val:string,number:number,id2:number): void{
@@ -246,26 +278,52 @@ export class MenuTableComponent implements OnInit {
 
    }
   Close2(id:number,val:string,number:number,id2:number): void{
-      $(".subTr2"+ id2).hide();
+      $(".subTr3"+ id2).hide();
   }
   openClose2(id:number,val:string,number:number,id2:number): void{
-    $(".subTr2"+ id2).show();
+    $(".subTr3"+ id2).show();
   }
 
   getMenus() {
     var self = this;
-    this.menuService.getMenuList(1).then( menus => {
-      if(menus){
-        this.menus  = menus['list'];
-        // for(let i=0;i<this.menus.length;i++){
-        //   this.menus[i].selected = true;
-        // }
-        this.pages  = menus['page'];
-        self.ref.markForCheck();
-        self.ref.detectChanges();
-        console.log(this.pages)
-        return this.pages;
+    this.menuService.getMenuList(1).then( res => {
+      if(res['code'] == 0){
+        if(res['data']['list']){
+          this.menus = res['data']['list'];
+        }else{
+          this.isEmpty=true;
+        }
+        this.curPage = res['data']['pageNum'];
+        this.totalNum   = res['data']['total'];
+        this.totalPage   = res['data']['pages'];
+        this.setPagingArr();
+      }else if(res['code'] == 5){
+        var ak = layer.open({
+          content: res['error']+'请重新登录'
+          , btn: ['确定']
+          , yes: () => {
+            this.router.navigate(['login']);
+            layer.close(ak);
+          }
+        })
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
       }
+      // if(menus){
+      //   this.menus  = menus['list'];
+      //   // for(let i=0;i<this.menus.length;i++){
+      //   //   this.menus[i].selected = true;
+      //   // }
+      //   this.pages  = menus['page'];
+      //   this.usersLength = menus['list'].length;
+      //   self.ref.markForCheck();
+      //   self.ref.detectChanges();
+      //   console.log(this.pages)
+      //   return this.pages;
+      // }
     });
   }
   // getMenuBtns(id:number): void{

@@ -1,6 +1,7 @@
-import { Component, OnInit, DoCheck } from '@angular/core';
+import { Component, OnInit, DoCheck, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { LeftNavComponent } from '../../left-nav/left-nav.component';
 declare var BMap: any;
 declare var $:any;
 declare var BMapLib:any;
@@ -20,6 +21,8 @@ export class GaodeMapComponent implements OnInit {
 
   ngOnInit() {
   var tokenId = localStorage.getItem("tokenId");
+    var userId = localStorage.getItem("userId");
+    var mapaddress;
     var defaultIconStyle = 'red', //默认的图标样式
       hoverIconStyle = 'green', //鼠标hover时的样式
       selectedIconStyle = 'purple'; //选中时的图标样式
@@ -27,7 +30,7 @@ export class GaodeMapComponent implements OnInit {
     var deviceList;
     var changeXyList=[];
     var taskList ;
-    var rescueAddress = localStorage.getItem('address');
+    // alert(localStorage.getItem('address'));
     var statuses =[];//是否报警
     var warningList=[];//报警列表
     var obj={
@@ -48,15 +51,15 @@ export class GaodeMapComponent implements OnInit {
     // map.enableInertialDragging();
     map.centerAndZoom(point,15);
     map.addControl(new BMap.NavigationControl());
-    getBoundary(rescueAddress);
+
     init();
     startRun();
-    // var awp = setTimeout(xunhuan,5000);
-    var interval = setInterval(xunhuan,18000)
+     // var awp = setTimeout(xunhuan,5000);
+    var interval = setInterval(xunhuan,35000)
     //打开气泡延迟20秒刷新
     function aa() {
       clearInterval(interval);
-      setTimeout(cc,8000);
+      setTimeout(cc,30000);
     }
     function xunhuan(){
       map.clearOverlays();
@@ -64,10 +67,28 @@ export class GaodeMapComponent implements OnInit {
       startRun();
     }
     function cc() {
-      interval = setInterval(xunhuan,18000)
+      interval = setInterval(xunhuan,30000)
     }
     // 地图初始化位置
     function init(){
+      $.ajax({
+        type: "get",
+        cache: false,
+        async: false, //同步请求外面才能获取到*
+        url: "admin/query/adminUserId?usersId="+userId+"&tokenId="+tokenId,
+        success: function(data1){
+          mapaddress=data1.data.rescueTeam.addr;
+          if(data1.data.rescueTeam.name.indexOf('总队')){
+            map.setMinZoom(9);
+          }else if(data1.data.rescueTeam.name.indexOf('大队')){
+            map.setMinZoom(11);
+            // map.setMaxZoom(9);
+          }else {
+            map.setMinZoom(13);
+          }
+        }
+      });
+      getBoundary(mapaddress);
       var resul;
       $.ajax({
         type: "get",
@@ -76,15 +97,8 @@ export class GaodeMapComponent implements OnInit {
         url: "indata?tokenId="+tokenId,
         success: function(data){
           console.log('success')
-           // resul=data.data;
-          resul = {
-            "status":0,
-            "msg":null,
-            "time":0,
-            "objectbean":null,
-            "code":0,
-            "error":null,
-            "data":{
+           //resul=data.data;
+           resul ={
               "deviceList":[
                 {
                   "address":"西安莲湖区",
@@ -129,18 +143,18 @@ export class GaodeMapComponent implements OnInit {
                   "longitude":"109.049137"
                 }
               ]
-              // ,
-              // "taskList":[
-              //   {
-              //     "volunteer_id":"1",
-              //     "receiveTime":1501911522000,
-              //     "createTime":1501911522000,
-              //     "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
-              //     "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
-              //     "status":1
-              //   }
-              // ]
-            }
+              ,
+              "taskList":[
+                {
+                  "volunteer_id":"1",
+                  "receiveTime":1501911522000,
+                  "createTime":1501911522000,
+                  "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+                  "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
+                  "status":1
+                }
+              ]
+
           }
 
         }
@@ -148,10 +162,16 @@ export class GaodeMapComponent implements OnInit {
       // volunteerList=resul.volunteerList;
       // deviceList=resul.deviceList;
       // taskList=resul.taskList;
-      volunteerList=resul.data.volunteerList;
-      deviceList=resul.data.deviceList;
-      taskList=resul.data.taskList;
-      if(deviceList.length>0){
+      if(resul.volunteerList){
+        volunteerList=resul.volunteerList;
+      }
+      if(resul.deviceList){
+        deviceList=resul.deviceList;
+      }
+      if(resul.deviceList){
+        taskList=resul.taskList;
+      }
+      if(deviceList){
         $.each(deviceList,function (i,n) {
           if(n['is_alarm']==1){
             $('.panel').show();
@@ -256,15 +276,25 @@ export class GaodeMapComponent implements OnInit {
         url: "indata?tokenId="+tokenId,
         success: function(data){
           console.log('success')
-          // result=data.data;
-          result = {
-            "status":0,
-            "msg":null,
-            "time":0,
-            "objectbean":null,
-            "code":0,
-            "error":null,
-            "data":{
+          if (data.code == 0) {
+
+          } else if (data.code == 5) {
+            var ak = layer.open({
+              content: data.error + '，请重新登录'
+              , btn: ['确定']
+              , yes: () => {
+                this.router.navigate(['login']);
+                layer.close(ak);
+              }
+            })
+          } else {
+            layer.open({
+              title: '提示'
+              , content: data.error
+            });
+          }
+          //result=data.data;
+           result ={
               "deviceList":[
                 {
                   "address":"西安莲湖区",
@@ -319,16 +349,38 @@ export class GaodeMapComponent implements OnInit {
                   "status":1
                 }
               ]
-            }
+
           }
         }
       });
       // volunteerList=result.volunteerList;
       // deviceList=result.deviceList;
       // taskList=result.taskList;
-      volunteerList=result.data.volunteerList;
-      deviceList=result.data.deviceList;
-      taskList=result.data.taskList;
+      if(result.volunteerList){
+        volunteerList=result.volunteerList;
+      }
+      if(result.deviceList){
+        deviceList=result.deviceList;
+        if(warningList.length>0){
+          $.each(warningList, function (i, n) {
+            $.each(deviceList, function (a, obj) {
+              if(n == obj.deviceIMEI){
+                if(obj.is_alarm==0){
+                  $('.'+ n).remove();
+                  var index = warningList.indexOf(n);
+                  warningList.splice(index, 1);
+                }
+              }
+            })
+          })
+        }
+      }
+      if(result.deviceList){
+        taskList=result.taskList;
+      }
+      // volunteerList=result.data.volunteerList;
+      // deviceList=result.data.deviceList;
+      // taskList=result.data.taskList;
       console.log(taskList);
       if(taskList) {
         if (taskList.length > 0) {
@@ -345,6 +397,7 @@ export class GaodeMapComponent implements OnInit {
           })
           $.each(taskList, function (s, sss) {
             var html = "<span style='margin-left: 15px'>任务状态（";
+            // var html2 = "<li><a href='javascript:;' id="+sss.task_id+" class=";
             if (sss.status == 1) {
               $.each(deviceList, function (aa, oobj) {
                 if (oobj.alarmId == sss.alarmId) {
@@ -374,6 +427,7 @@ export class GaodeMapComponent implements OnInit {
                 }
               })
             }
+            console.log(html)
             $('#' + sss['task_id'] + ' span').remove();
             $('#' + sss['task_id']).append(html);
           })
@@ -416,9 +470,9 @@ export class GaodeMapComponent implements OnInit {
       statuses=[];
       var devicess = volunteerList.length;
       var volunters = deviceList.length;
-      console.log(deviceList)
-      $('#result .devicess').text(devicess);
-      $('#result .volunters').text(volunters);
+      console.log('报警数组'+warningList)
+      $('#result .devicess').text(volunters);
+      $('#result .volunters').text(devicess);
       var changgeUrl = "http://api.map.baidu.com/geoconv/v1/?coords=";
       var changgeUrl2 = "http://api.map.baidu.com/geoconv/v1/?coords=";
       for(var i = 0,marker,poiny;i<devicess;i++){
@@ -437,7 +491,7 @@ export class GaodeMapComponent implements OnInit {
         //   convertor.translate(lineArr, 1, 5, translateCallback1)
         // }
       }
-      console.log(changgeUrl);
+      // console.log(changgeUrl);
       $.ajax({
         type: "get",
         url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
@@ -487,8 +541,8 @@ export class GaodeMapComponent implements OnInit {
         changeXyList.push(deviceList[b]);
         statuses.push(deviceList[b].is_alarm);
       }
-      console.log(changgeUrl2);
-      console.log(changeXyList);
+      // console.log(changgeUrl2);
+      // console.log(changeXyList);
       $.ajax({
         type: "get",
         url: changgeUrl2+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
@@ -505,7 +559,6 @@ export class GaodeMapComponent implements OnInit {
               var myIcon = new BMap.Icon("markers.png");
               var point = new BMap.Point(data.result[c].x, data.result[c].y);
               points.push(point)
-              console.log(deviceList[c].deviceIMEI)
                if(changeXyList[c].isCreat){
                  addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
                }else {
@@ -549,13 +602,13 @@ export class GaodeMapComponent implements OnInit {
 
     $('.seracch').on('click',function () {
       var address = $("#address").val();
-      getBoundary(address)
+      // getBoundary()
       // searchControl.initMarker(108.924295,34.235939);
 
     })
     $('#BMapLib_sc_b0').on('click',function () {
       var address = $("#BMapLib_PoiSearch").val();
-      getBoundary(address)
+      // getBoundary()
       // searchControl.initMarker(108.924295,34.235939);
 
     })
@@ -581,9 +634,8 @@ export class GaodeMapComponent implements OnInit {
 
     // 编写自定义函数,创建标注
     function addMarker(point,status,jiedan,deviceIMEI,name,alarmId){
-      console.log(jiedan)
-      console.log(status)
-      console.log(deviceIMEI)
+      console.log('addMarker是否接单'+jiedan)
+      console.log('addMarker是否报警'+status)
       var infoWindow;
       var marker;
       if(jiedan&&status==0){
@@ -691,7 +743,7 @@ export class GaodeMapComponent implements OnInit {
 
         })
           $('#startRescue').on("click", function(){
-            var creatUrl = "web/task/create?alarmId="+alarmId+"&rescueType=1&deviceIMEI="+deviceIMEI;
+            var creatUrl = "web/task/create?alarmId="+alarmId+"&rescueType=2&deviceIMEI="+deviceIMEI;
             // var creatUrl = "web/task/create?alarmId=17248b69-e61e-4458-94cd-064c063bd235&rescueType=2&deviceIMEI="+deviceIMEI;
             var result;
             $.ajax({
@@ -711,7 +763,7 @@ export class GaodeMapComponent implements OnInit {
             //{"status":1,"msg":"创建任务单成功,成功返回任务单号",
             // "time":0,"objectbean":null,"code":0,"error":null,"data":{"taskId":"862ae897-f7d7-404f-bbd1-b1dfd086e883"}}
             if(taskId){
-              var html2 = "<span>(已经传建任务，等待接单)</span>"
+              var html2 = "<span>(已经创建任务，等待接单)</span>"
               $('.'+deviceIMEI).append(html2);
               $('.'+deviceIMEI).attr('id',taskId);
             }
@@ -815,7 +867,7 @@ export class GaodeMapComponent implements OnInit {
         map.addOverlay(marker,{title:deviceIMEI});
         markers.push(marker);
         if($.inArray(deviceIMEI, warningList)==-1){
-          var html = "<li><a href='javascript:;' class="+deviceIMEI+">"+name+"</a></li><li><a href='javascript:;'  id='2'>刘大兵</a></li>"
+          var html = "<li><a href='javascript:;' class="+deviceIMEI+">"+name+"</a></li>"
           $('.panel ul').prepend(html)
           warningList.push(deviceIMEI);
 

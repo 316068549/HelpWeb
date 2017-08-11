@@ -5,6 +5,7 @@ import { Electricity } from '../../../models/electricity';
 import { Location }               from '@angular/common';
 declare var BMap: any;
 declare var $:any;
+declare var layer:any;
 
 @Component({
   selector: 'app-gaode-map',
@@ -25,74 +26,104 @@ export class GaodeMapComponent implements OnInit {
      var  markers,lineArr = [];
     var polyline;
     var imeicode = this.route.snapshot.params['deviceIMEI'];
-
     var map = new BMap.Map("container");            // 创建Map实例
-    var point = new BMap.Point(108.924295,34.235939); // 创建点坐标
+    var point = new BMap.Point(108.924295,34.235939); // 创建点坐标  width: 437px; height: 267px; top: -3px; left: -9px;
+    var myIcon = new BMap.Icon("assets/img/poi-marker2.png", new BMap.Size(25,35),{
+      anchor: new BMap.Size(10, 30),
+      imageOffset: new BMap.Size(-10, -4)
+    });
+    var myIcon2 = new BMap.Icon("assets/img/poi-marker2.png", new BMap.Size(25,35),{
+      anchor: new BMap.Size(10, 30),
+      imageOffset: new BMap.Size(-98, -4)
+    });
     map.centerAndZoom(point,15);
     map.addControl(new BMap.NavigationControl());
-
-    // map.centerAndZoom(point,15);
     map.enableScrollWheelZoom();                 //启用滚轮放大缩小
-    // let map = new AMap.Map('container');
-    // map.setZoom(11);
-    // map.plugin(['AMap.OverView','AMap.ToolBar','AMap.PlaceSearch'], () => {
-    //   var view = new AMap.OverView();
-    //   map.addControl(view);
-    //   var toolbar = new AMap.ToolBar();
-    //   map.plugin(toolbar);
-    //   var toolbar2 = new AMap.PlaceSearch();
-    //   map.plugin(toolbar2);
-    // });
     //初始化
     // 鹰眼获取轨迹
     // changeX();
     // track()
 
     // 后台获取GPS坐标点
-    // {"status":0,"msg":null,"time":0,"objectbean":null,"code":0,"error":null,"data":null}
     init();
-     startRun();
 
-    // this.route.params
-    //   .switchMap((params: Params) => this.electricityService.getElectricity(params['deviceIMEI'].toString()))
-    //   .subscribe(electricity => {
-    //     // pointList = electricity;
 
-    //     console.log(pointList);
-    //     // marker = new AMap.Marker({
-    //     //   map: map,
-    //     //   position: [116.397428, 39.90923],
-    //     //   icon: "http://webapi.amap.com/images/car.png",
-    //     //   offset: new AMap.Pixel(-26, -13),
-    //     //   autoRotation: true
-    //     // });
-    //     // 绘制轨迹
-    //     // var polyline = new AMap.Polyline({
-    //     //   map: map,
-    //     //   path: lineArr,
-    //     //   strokeColor: "#00A",  //线颜色
-    //     //   // strokeOpacity: 1,     //线透明度
-    //     //   strokeWeight: 3,      //线宽
-    //     //   // strokeStyle: "solid"  //线样式
-    //     // });
-    //     // var passedPolyline = new AMap.Polyline({
-    //     //   map: map,
-    //     //   // path: lineArr,
-    //     //   strokeColor: "#F00",  //线颜色
-    //     //   // strokeOpacity: 1,     //线透明度
-    //     //   strokeWeight: 3,      //线宽
-    //     //   // strokeStyle: "solid"  //线样式
-    //     // });
-    //     // marker.on('moving',function(e){
-    //     //   passedPolyline.setPath(e.passedPath);
-    //     // })
-    //     // map.setFitView();
-    //
-    //
-    //   });
+
+    function init(){
+      var start= $('#start').val();
+      var end = $('#end').val();
+      var result;
+      var paramms = {imeiCode:imeicode,startTime:start,endTime:end}
+
+      if(paramms.startTime==''){
+        delete paramms['startTime'];
+      }
+      if(paramms.endTime==''){
+        delete paramms['endTime'];
+      }
+      $.ajax({
+        type: "post",
+        url: "web/query/orbit",
+        //    url: " api/query/messageAll",
+        contentType:"application/json",
+        dataType: "json",
+        data:JSON.stringify(paramms),
+        cache: false,
+        async: false,
+        success: function(data){
+          console.log('success')
+          if(data.data){
+            result=data.data.list;
+          }else {
+            layer.open({
+              title: '提示'
+              ,content: '没有查询到轨迹'
+            });
+            return;
+          }
+        }
+      });
+      // pointList =
+      //   [
+      //     {
+      //       "deviceIMEI": "1234567890123456",
+      //       "locationTime": "2017-03-06 11:22:56",
+      //       "locationPower": "97%",
+      //       "longitude": 108.912575,
+      //       "latitude": 34.230698,
+      //       "locationType": "GPS"
+      //     },
+      //     {
+      //       "deviceIMEI": "1234567890123456",
+      //       "locationTime": "2017-03-06 11:22:56",
+      //       "locationPower": "97%",
+      //       "longitude": 108.712575,
+      //       "latitude": 34.130698,
+      //       "locationType": "GPS"
+      //     },
+      //     {
+      //       "deviceIMEI": "1234567890123456",
+      //       "locationTime": "2017-03-06 11:22:56",
+      //       "locationPower": "97%",
+      //       "longitude": 108.812575,
+      //       "latitude": 34.230688,
+      //       "locationType": "GPS"
+      //     }]
+      pointList=result;
+      startRun();
+    }
+
+    function startRun(){  //开始绘制轨迹
+      if(pointList){
+        var x=pointList[0].longitude;
+        var y=pointList[0].latitude;
+        //坐标转换完之后的回调函数
+        completeEventHandler(x,y);
+      }
+      // marker.moveAlong(lineArr,80);     //开始轨迹回放
+    }
 
     function completeEventHandler(x,y){
-
       var lngX ;
       var latY ;
       markers = [];
@@ -114,9 +145,8 @@ export class GaodeMapComponent implements OnInit {
                 return;
               }
               if(a==0){
-                var myIcon = new BMap.Icon("markers.png");
                 var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
-                var marker = new BMap.Marker(point);
+                var marker = new BMap.Marker(point,{icon:myIcon});
                 marker.setLabel('起');
                 map.addOverlay(marker);
               }else if(a<data.points.length-1){
@@ -125,7 +155,7 @@ export class GaodeMapComponent implements OnInit {
                 map.addOverlay(marker);
               }else{
                 var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
-                var marker = new BMap.Marker(point);
+                var marker = new BMap.Marker(point,{icon:myIcon2});
                 map.addOverlay(marker);
               }
 
@@ -192,105 +222,10 @@ export class GaodeMapComponent implements OnInit {
         //   // });
         //   // markers.push(marker)
         // }
-
-
       }
       console.log(lineArr);
-      // var view = map.getViewport(lineArr);
-      // var mapZoom = view.zoom;
-      // var centerPoint = view.center;
-      // map.centerAndZoom(centerPoint,mapZoom);
-      // //绘制轨迹
-      // polyline = new BMap.Polyline(lineArr, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
-      // map.addOverlay(polyline);
-      // function addLine(points){
-      //
-      //   var linePoints = [],pointsLen = points.length,i,polyline;
-      //   if(pointsLen == 0){
-      //     return;
-      //   }
-      //   // 创建标注对象并添加到地图
-      //   for(i = 0;i <pointsLen;i++){
-      //     linePoints.push(new BMap.Point(points[i].lng,points[i].lat));
-      //   }
-      //
-      //   polyline = new BMap.Polyline(linePoints, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
-      //
-      //   var polyline = new BMap.Polyline([
-      //     new BMap.Point(116.399, 39.910),
-      //     new BMap.Point(116.405, 39.920)
-      //   ],
-      //   {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
-      // );
-      // map.addOverlay(polyline);
-
-
-      // polyline = new AMap.Polyline({
-      //   map:map,
-      //   path:lineArr,
-      //   strokeColor:"#00A",//线颜色
-      //   strokeOpacity:1,//线透明度
-      //   strokeWeight:3,//线宽
-      //   strokeStyle:"solid",//线样式
-      // });
-    }
-    function startRun(){  //开始绘制轨迹
-
-      var x=pointList[0].longitude;
-      var y=pointList[0].latitude;
-      //坐标转换完之后的回调函数
-
-      completeEventHandler(x,y);
-      // marker.moveAlong(lineArr,80);     //开始轨迹回放
     }
 
-
-    function init(){
-      var start= $('#start').val();
-      var end = $('#end').val();
-        var result;
-      var paramms = {imeiCode:imeicode,startTime:start,endTime:end}
-
-      if(paramms.startTime==''){
-        delete paramms['startTime'];
-      }
-      if(paramms.endTime==''){
-        delete paramms['endTime'];
-      }
-      $.ajax({
-       type: "post",
-       url: "web/query/orbit",
-       //    url: " api/query/messageAll",
-        contentType:"application/json",
-        dataType: "json",
-       data:JSON.stringify(paramms),
-        cache: false,
-        async: false,
-       success: function(data){
-         console.log('success')
-         // result=data.data.list;
-       }
-       });
-      pointList =
-        [
-          {
-            "deviceIMEI": "1234567890123456",
-            "locationTime": "2017-03-06 11:22:56",
-            "locationPower": "97%",
-            "longitude": 108.912575,
-            "latitude": 34.230698,
-            "locationType": "GPS"
-          },
-          {
-            "deviceIMEI": "1234567890123456",
-            "locationTime": "2017-03-06 11:22:56",
-            "locationPower": "97%",
-            "longitude": 108.812575,
-            "latitude": 34.230688,
-            "locationType": "GPS"
-          }]
-        // pointList=result;
-    }
     function changeX(){
       var ak = 'PmTFEuep7FmccxTrTn67TxRn';
       var service_id = 144064;
@@ -432,6 +367,44 @@ export class GaodeMapComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
+
+  // this.route.params
+  //   .switchMap((params: Params) => this.electricityService.getElectricity(params['deviceIMEI'].toString()))
+  //   .subscribe(electricity => {
+  //     // pointList = electricity;
+
+  //     console.log(pointList);
+  //     // marker = new AMap.Marker({
+  //     //   map: map,
+  //     //   position: [116.397428, 39.90923],
+  //     //   icon: "http://webapi.amap.com/images/car.png",
+  //     //   offset: new AMap.Pixel(-26, -13),
+  //     //   autoRotation: true
+  //     // });
+  //     // 绘制轨迹
+  //     // var polyline = new AMap.Polyline({
+  //     //   map: map,
+  //     //   path: lineArr,
+  //     //   strokeColor: "#00A",  //线颜色
+  //     //   // strokeOpacity: 1,     //线透明度
+  //     //   strokeWeight: 3,      //线宽
+  //     //   // strokeStyle: "solid"  //线样式
+  //     // });
+  //     // var passedPolyline = new AMap.Polyline({
+  //     //   map: map,
+  //     //   // path: lineArr,
+  //     //   strokeColor: "#F00",  //线颜色
+  //     //   // strokeOpacity: 1,     //线透明度
+  //     //   strokeWeight: 3,      //线宽
+  //     //   // strokeStyle: "solid"  //线样式
+  //     // });
+  //     // marker.on('moving',function(e){
+  //     //   passedPolyline.setPath(e.passedPath);
+  //     // })
+  //     // map.setFitView();
+  //
+  //
+  //   });
 }
 
 
