@@ -160,14 +160,21 @@ export class PermissionTableComponent implements OnInit {
   }
   ak3(status,name,id){
     $.each(this.menus,(i, role)=>{
-      $.each(role.subAdminPermission,(i, role2)=>{
-        $.each(role2.subAdminPermission,(i, role3)=>{
+      $.each(role.subAdminPermission,(s, role2)=>{
+        $.each(role2.subAdminPermission,(d, role3)=>{
+          if(role3.permissionId ==id){
+            if(status) {
+              role3.selected = false;
+            }else {
+              role3.selected = true;
+            }
+          }
           if(role3.selected) {
-            $.each(this.menus,(i, ak)=>{
-              $.each(ak.subAdminPermission,(i, ak2)=>{
+            $.each(this.menus,(m, ak)=>{
+              $.each(ak.subAdminPermission,(w, ak2)=>{
                 if(ak2.permissionId==role3.permissionParentId){
                   ak2.selected =true;
-                  $.each(this.menus,(i, it)=>{
+                  $.each(this.menus,(n, it)=>{
                     if(it.permissionId==ak2.permissionParentId){
                       it.selected =true;
                     }
@@ -181,27 +188,26 @@ export class PermissionTableComponent implements OnInit {
     })
     console.log(this.addIDs2)
   }
-  ak2(status,name,id){
+  ak2(status,name,id,pid){
     $.each(this.menus,(i, role)=>{
+       if(role.permissionId==pid){
+         if(!status) {
+           role.selected = true;
+         }
+       }
       $.each(role.subAdminPermission,(i, role2)=>{
-        if(role2.selected) {
-          $.each(this.menus,(i, ak)=>{
-            if(ak.permissionId==role2.permissionParentId){
-              ak.selected =true;
-            }
-          })
-          $.each(role2.subAdminPermission,(i, role3)=>{
-            role3.selected=true;
-          })
-        }else{
-          $.each(this.menus,(i, ak)=>{
-            if(ak.permissionId==role2.permissionParentId){
-              ak.selected=false;
-            }
-          })
-          $.each(role2.subAdminPermission,(i, role3)=>{
-            role3.selected=false;
-          })
+        if(role2.permissionId ==id){
+          if(status) {
+            role2.selected = false;
+            $.each(role2.subAdminPermission,(w, role3)=>{
+              role3.selected=false;
+            })
+          }else{
+            role2.selected = true;
+            $.each(role2.subAdminPermission,(w, role3)=>{
+              role3.selected=true;
+            })
+          }
         }
       })
     })
@@ -209,20 +215,24 @@ export class PermissionTableComponent implements OnInit {
   }
   ak(status,name,id){
     $.each(this.menus,(i, role)=>{
-      if(role.selected){
-        $.each(role.subAdminPermission,(i, role2)=>{
-          role2.selected=true;
-          $.each(role2.subAdminPermission,(i, role3)=>{
-            role3.selected=true;
+      if(role.permissionId ==id){
+        if(status) {
+          role.selected=false;
+          $.each(role.subAdminPermission,(i, role2)=>{
+            role2.selected=false;
+            $.each(role2.subAdminPermission,(m, role3)=>{
+              role3.selected=false;
+            })
           })
-        })
-      }else{
-        $.each(role.subAdminPermission,(i, role2)=>{
-          role2.selected=false;
-          $.each(role2.subAdminPermission,(i, role3)=>{
-            role3.selected=false;
+        }else{
+          role.selected=true;
+          $.each(role.subAdminPermission,(i, role2)=>{
+            role2.selected=true;
+            $.each(role2.subAdminPermission,(m, role3)=>{
+              role3.selected=true;
+            })
           })
-        })
+        }
       }
     })
    // if(status){
@@ -307,15 +317,16 @@ export class PermissionTableComponent implements OnInit {
     this.term={};
     this.originalUserName='';
     this.menus3 = null;
+    this.menus = null;
     this.userService.getMenuDatas(id).then( menus => {
       this.menus = menus['allList'];
       this.menus3 = menus['userList'];
       console.log(this.addIDs2);
       $.each(this.menus3,(i, role)=>{
           this.addIDs2.push(role.permissionId);
-        $.each(role.subAdminPermission,(i, role2)=>{
+        $.each(role.subAdminPermission,(w, role2)=>{
             this.addIDs2.push(role2.permissionId);
-          $.each(role2.subAdminPermission,(i, role3)=>{
+          $.each(role2.subAdminPermission,(l, role3)=>{
               this.addIDs2.push(role3.permissionId);
           })
         })
@@ -323,7 +334,7 @@ export class PermissionTableComponent implements OnInit {
       console.log(this.addIDs2);
         if(menus['userList'].length>0){
           $.each(this.menus, (i, item)=>{
-            $.each(menus['userList'], (i, item2)=>{
+            $.each(menus['userList'], (f, item2)=>{
               if(item.permissionId==item2.permissionId){
                 item.selected = true;
               }
@@ -349,7 +360,7 @@ export class PermissionTableComponent implements OnInit {
               })
             });
           });
-          console.log(this.menus)
+          console.log(this.addIDs2)
 
         }
     });
@@ -382,6 +393,7 @@ export class PermissionTableComponent implements OnInit {
   }
 
   save(roleId:number,roleName:string,des:string): void {
+    console.log(this.menus)
     $.each(this.menus,(i, role)=>{
       if(role.selected){
         this.addIDs.push(role.permissionId);

@@ -1,4 +1,4 @@
-<div id="page-wrapper" class="fadeInRight animated marg220">
+<div id="page-wrapper" class="animated marg220">
   <div class="page-t">
     <div class="page-nav">
       <a  href="javascript:;">系统管理</a>
@@ -72,7 +72,7 @@
             <td>{{menu.permissionDescription}}</td>
             <td>{{menu.permissionTypeId}}</td>
             <td>{{menu.permissionParentId}}</td>
-            <td>{{menu.createTime}}</td>
+            <td>{{menu.createTime| date:'yyyy-MM-dd HH:mm:ss'}}</td>
             <td><a  (click)="openClose(menu.permissionId,wordControl,i+1);menu.selected=true" *ngIf="!menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId==1" >展开</a>
               <a  (click)="openClose2(menu.permissionId,wordControl,i+1,menu.permissionId);menu.selected=false" *ngIf="menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId!=1&&(menu.subAdminPermission.length>0)" >展开</a>
               <a (click)="Close(menu.permissionId,wordControl,i+1,menu.permissionParentId);menu.selected=false" *ngIf="menu.selected&&menu.permissionTypeId==1&&menu.permissionParentId==1" >折叠</a>

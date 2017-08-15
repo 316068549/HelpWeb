@@ -69,6 +69,10 @@ export class GaodeMapComponent implements OnInit {
     function cc() {
       interval = setInterval(xunhuan,30000)
     }
+    function getLocalTime(nS) {
+    return new Date(parseInt(nS)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+    };
+
     // 地图初始化位置
     function init(){
       $.ajax({
@@ -478,12 +482,22 @@ export class GaodeMapComponent implements OnInit {
       for(var i = 0,marker,poiny;i<devicess;i++){
         lngX = volunteerList[i].longitude;
         latY = volunteerList[i].latitude;
-        if(i<(devicess-1)){
-          changgeUrl+= lngX+","+latY+";"
-        }
-        if (i==(devicess-1)){
-          changgeUrl+= lngX+","+latY
-        }
+        var myIcon = new BMap.Icon("markers.png");
+        var point = new BMap.Point(volunteerList[i].longitude, volunteerList[i].latitude);
+        var marker = new BMap.Marker(point,{title:'志愿者'});
+        var content = '<div class="personIcon">' +
+          '<img src="web/file/downloadFile?fileName='+volunteerList[i]['image_url']+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+          '<p style="margin: 15px 0 15px 0">志愿者:' +volunteerList[i].NAME+'</p>'+
+          '<div  class="rescuesta">定位时间：'+getLocalTime(volunteerList[i].locationTime)+'</div>'
+        '</div>';
+        map.addOverlay(marker);
+        addClickHandler(content,marker);
+        // if(i<(devicess-1)){
+        //   changgeUrl+= lngX+","+latY+";"
+        // }
+        // if (i==(devicess-1)){
+        //   changgeUrl+= lngX+","+latY
+        // }
         // lineArr.push(new BMap.Point(lngX,latY));
         // if(i==(devicess-1)){
         //   console.log(lineArr)
@@ -492,30 +506,30 @@ export class GaodeMapComponent implements OnInit {
         // }
       }
       // console.log(changgeUrl);
-      $.ajax({
-        type: "get",
-        url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
-        dataType: 'jsonp',
-        success: function(data){
-          if(data.status === 0) {
-            console.log(data.result)
-            for(var a = 0,marker;a<data.result.length;a++){
-              if(data.result.length == 0){
-                return;
-              }
-              var myIcon = new BMap.Icon("markers.png");
-              var point = new BMap.Point(data.result[a].x, data.result[a].y);
-              var marker = new BMap.Marker(point,{title:'志愿者'});
-              var content = '<div class="personIcon">' +
-                '<img src="'+volunteerList[a]['image_url']+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
-                '<p style="margin: 15px 0 15px 0">志愿者:' +volunteerList[a].NAME+'</p>'+
-                '<div  class="rescuesta">定位时间：'+volunteerList[a].locationTime+'</div>'
-              '</div>';
+      // $.ajax({
+      //   type: "get",
+      //   url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
+      //   dataType: 'jsonp',
+      //   success: function(data){
+      //     if(data.status === 0) {
+      //         console.log(data.result)
+      //       for(var a = 0,marker;a<data.result.length;a++){
+              // if(data.result.length == 0){
+              //   return;
+              // }
+              // var myIcon = new BMap.Icon("markers.png");
+              // var point = new BMap.Point(data.result[a].x, data.result[a].y);
+              // var marker = new BMap.Marker(point,{title:'志愿者'});
+              // var content = '<div class="personIcon">' +
+              //   '<img src="'+volunteerList[a]['image_url']+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+              //   '<p style="margin: 15px 0 15px 0">志愿者:' +volunteerList[a].NAME+'</p>'+
+              //   '<div  class="rescuesta">定位时间：'+volunteerList[a].locationTime+'</div>'
+              // '</div>';
               // var content = '<div style="margin:0;line-height:20px;padding:2px;height: auto;">志愿者:' +volunteerList[a].NAME+
               //   '<br/>定位时间：'+volunteerList[a].locationTime;
               // var iw = createInfoWindow(a);
-              map.addOverlay(marker);
-              addClickHandler(content,marker);
+              // map.addOverlay(marker);
+              // addClickHandler(content,marker);
               // (function () {
               //   var index = a;
               //   var _iw = createInfoWindow(a);
@@ -525,10 +539,10 @@ export class GaodeMapComponent implements OnInit {
               //
               //   });
               // })()
-            }
-          }
-        }
-      });
+            // }
+          // }
+        // }
+      // });
       for(var b = 0,marker;b<volunters;b++){
         lngX = deviceList[b].locationLongitude;
         latY = deviceList[b].locationLatitude;
@@ -648,7 +662,7 @@ export class GaodeMapComponent implements OnInit {
           }
         })
         var content = '<div class="personIcon">' +
-          '<img src="'+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+          '<img src="web/file/downloadFile?fileName='+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
           '<p style="margin: 15px 0 15px 0">需要救援人:' +name+'</p>'+
           // '<div  class="rescuesta">救援状态：<span></span></div>'+
           '</div>';
@@ -708,7 +722,7 @@ export class GaodeMapComponent implements OnInit {
           }
         })
         var content = '<div class="personIcon">' +
-          '<img src="'+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+          '<img src="web/file/downloadFile?fileName='+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
           '<p style="margin: 15px 0 15px 0">需要救援人:' +name+'</p>'+
           '<div style="display: none" class="rescuesta">救援状态：<span></span></div>'
           // '地址：'+deviceIMEI
@@ -918,7 +932,7 @@ export class GaodeMapComponent implements OnInit {
           }
         })
         var content = '<div class="personIcon">' +
-          '<img src="'+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+          '<img src="web/file/downloadFile?fileName='+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
           '<p style="margin: 15px 0 15px 0">设备使用者:' +name+'</p>'+
           // '<div  class="rescuesta">救援状态：<span></span></div>'+
           '</div>';

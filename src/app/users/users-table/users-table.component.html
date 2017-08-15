@@ -1,4 +1,4 @@
-<div id="page-wrapper" class="fadeInRight animated marg220">
+<div id="page-wrapper" class="animated marg220">
 <div class="page-t">
   <div class="page-nav">
     <a  href="javascript:;">系统管理</a>
@@ -64,7 +64,7 @@
           <td>{{user.userStatus}}</td>
           <td>{{user.roleList[0].roleName}}</td>
           <td>{{user.rescueTeamId}}</td>
-          <td>{{user.createTime}}</td>
+          <td>{{user.createTime| date:'yyyy-MM-dd HH:mm:ss'}}</td>
           <td><a (click)="searchParMenu2(user.userId);deletemenu=true; clicked=true;user === selectedUser" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
             <a   (click)="delete(user); $event.stopPropagation()">删除</a></td>
           <!--<td><a *ngIf="edit">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  *ngIf="del" (click)="delete(menu); $event.stopPropagation()">删除</a></td>-->

@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { AlertModule } from 'ng2-bootstrap';
 import {DataTableModule} from "angular2-datatable";
 import {CustomFormsModule} from "ng2-validation";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 // import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
@@ -34,6 +35,7 @@ import { TestComponent } from './test/test.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     HttpModule,
     RouterModule,

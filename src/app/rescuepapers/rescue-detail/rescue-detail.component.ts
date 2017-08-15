@@ -53,13 +53,12 @@ export class RescueDetailComponent implements OnInit {
         }
         console.log(this.imageList.length)
       });
+
     //播放视频
     for(var i=0;i<this.videoList.length;i++){
       videojs(document.getElementById('my-video'+i), {}, function() {
       });
     }
-
-
     // var myPlayer = videojs('my-video');
     // videojs("my-video").ready(function(){
     //   var myPlayer = this;

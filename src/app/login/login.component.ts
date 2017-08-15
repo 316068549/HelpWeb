@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,Input, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, ActivatedRouteSnapshot, RouterState, RouterStateSnapshot } from '@angular/router';
 import { UserLoginService } from './user-login.service';
 import { User } from '../models/user-model';
+import { fadeIn } from '../animations/fade-in';
 declare var $:any;
 
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  animations: [ fadeIn
+  ]
 })
 export class LoginComponent implements OnInit {
 

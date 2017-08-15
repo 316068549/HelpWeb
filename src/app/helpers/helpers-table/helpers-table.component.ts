@@ -15,13 +15,15 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import { Helpers } from '../../models/helpers';
 import { HelperService } from '../helpers-service';
 import { ActivatedRoute, Params }   from '@angular/router';
+import { fadeIn } from '../../animations/fade-in';
 declare var $:any;
 declare var layer:any;
 
 @Component({
   selector: 'app-helpers-table',
   templateUrl: './helpers-table.component.html',
-  styleUrls: ['./helpers-table.component.css']
+  styleUrls: ['./helpers-table.component.css'],
+  animations: [ fadeIn]
 })
 export class HelpersTableComponent implements OnInit {
   helpers: Helpers[];

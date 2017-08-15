@@ -1,4 +1,4 @@
-<div id="page-wrapper" class="fadeInRight animated marg220">
+<div id="page-wrapper" class="fadeIn animated marg220">
 <div class="page-t">
   <div class="page-nav">
     <a  href="javascript:;">系统管理</a>
@@ -56,7 +56,7 @@
           <td >{{role.roleName}}</td>
           <td ><span *ngFor="let user of role.userListserList;let a = index;let isFirst=first; let isLast=last;">{{user.nickName}}<span [hidden]="isLast">,</span></span>  </td>
           <td>{{role.roleDescription}}</td>
-          <td>{{role.createTime}}</td>
+          <td>{{role.createTime| date:'yyyy-MM-dd HH:mm:ss'}}</td>
           <td><a (click)="searchParMenu2(role.roleId);deletemenu=true; clicked=true;role === selectedRole" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
             <a   (click)="delete(role); $event.stopPropagation()">删除</a></td>
           <!--<td><a *ngIf="edit">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  *ngIf="del" (click)="delete(menu); $event.stopPropagation()">删除</a></td>-->
@@ -179,21 +179,21 @@
               <thead >
               <tr>
                 <th colspan="2" style="text-align:left;height: 20px">
-                  <input type="checkbox"  name="'status'+{{menu.permissionId}}"  [(ngModel)]="menu.selected"  (change)="ak(menu.selected,'status'+menu.permissionId,menu.permissionId)"
-                         [value]="menu.permissionId" />{{menu.permissionName}}
+                  <input type="checkbox"  name="'status'+{{menu.permissionId}}"    (change)="ak(menu.selected,'status'+menu.permissionId,menu.permissionId)"
+                         [value]="menu.permissionId" [checked]="menu.selected" />{{menu.permissionName}}
                 </th>
               </tr>
               </thead>
               <tbody  >
               <tr *ngFor="let subMenu of menu.subAdminPermission;let a=index" >
                 <td style="text-align:left;width:150px;height: 20px">
-                  <input type="checkbox" name="'subMenu_'+{{subMenu.permissionParentId}}" [(ngModel)]="subMenu.selected"  (change)="ak2(subMenu.selected,'subMenu_'+subMenu.permissionParentId,subMenu.permissionId)"
-                         [value]="subMenu.permissionId"  >{{subMenu.permissionName}}
+                  <input type="checkbox" name="'subMenu_'+{{subMenu.permissionParentId}}"   (change)="ak2(subMenu.selected,'subMenu_'+subMenu.permissionParentId,subMenu.permissionId,subMenu.permissionParentId)"
+                         [value]="subMenu.permissionId" [checked]="subMenu.selected" >{{subMenu.permissionName}}
                 </td>
                 <td style="text-align:left;width:350px;height: 20px" >
                 <span *ngFor="let buttonMenu of subMenu.subAdminPermission;">
-                  <input type="checkbox"  name="'buttonMenu_'+{{subMenu.permissionParentId}}+'_'+{{buttonMenu.permissionParentId}}" [(ngModel)]="buttonMenu.selected"  (change)="ak3(buttonMenu.selected,'buttonMenu_'+subMenu.permissionParentId+'_'+buttonMenu.permissionParentId,buttonMenu.permissionId)"
-                         [value]="buttonMenu.permissionId"  >{{buttonMenu.permissionName}}
+                  <input type="checkbox"  name="'buttonMenu_'+{{subMenu.permissionParentId}}+'_'+{{buttonMenu.permissionParentId}}"   (change)="ak3(buttonMenu.selected,'buttonMenu_'+subMenu.permissionParentId+'_'+buttonMenu.permissionParentId,buttonMenu.permissionId)"
+                         [value]="buttonMenu.permissionId" [checked]="buttonMenu.selected" >{{buttonMenu.permissionName}}
                 </span>
 
                 </td>

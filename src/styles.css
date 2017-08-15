@@ -251,8 +251,8 @@ body.canvas-menu .navbar-static-side, body.fixed-sidebar .navbar-static-side {
 }
 #page-wrapper{
   /*padding: 0 15px;*/
-  position: inherit;
-
+  /*position: inherit;*/
+  position: relative;
 }
 .marg220{
   margin: 0 0 0 220px;
@@ -547,6 +547,7 @@ nav.page-tabs .page-tabs-content{
   position: fixed;
   top: 110px;
   left: 220px;
+  z-index: 100;
 }
 .equipment .mask{
   left: 0;

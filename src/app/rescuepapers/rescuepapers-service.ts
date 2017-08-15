@@ -16,6 +16,7 @@ export class RescuePapersService {
   private menusUrl = 'web/query/allRescue';
   private rescueslistUrl = 'wwe/rescueTeam/find';
   private menusdetailUrl = 'web/query/allRescueUrl';
+  private downLoadUrl = 'web/file/downloadFile';
   private userId = localStorage.getItem("userId");
   private roleId = localStorage.getItem("roleId");
   private tokenId = localStorage.getItem("tokenId");
@@ -42,7 +43,6 @@ export class RescuePapersService {
       .then(response => response.json().data as rescueTeam[])
       .catch(this.handleError);
   }
-
 
   search2(term: number,current?:number,size?:number): Promise<object> {
     return this.http.get(this.menusUrl+'?rescueTeamId='+term+'&pageIndex='+current +'&pageSize='+size+'&tokenId='+this.tokenId)
