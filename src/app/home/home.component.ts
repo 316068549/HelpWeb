@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { fadeIn } from '../animations/fade-in';
+import { LeftNavComponent } from '../left-nav/left-nav.component';
 declare var $:any;
 
 @Component({
@@ -10,7 +11,10 @@ declare var $:any;
 
 })
 export class HomeComponent implements OnInit {
+  @ViewChild(LeftNavComponent)
+  private timerComponent2: LeftNavComponent;
   clicke:boolean = true;
+
   constructor() { }
 
   ngOnInit() {
@@ -19,7 +23,10 @@ export class HomeComponent implements OnInit {
     //   alert(1)
     // });
     // $('.dropdown-menu').show();
-
+  }
+  countChange($event) {
+   this.clicke=$event;
+    console.log(this.clicke)
   }
 
 }

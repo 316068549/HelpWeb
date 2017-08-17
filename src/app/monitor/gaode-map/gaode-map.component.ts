@@ -49,17 +49,17 @@ export class GaodeMapComponent implements OnInit {
     var myIcon3 = new BMap.Icon("assets/img/rescue.png", new BMap.Size(45,45));
     map.enableScrollWheelZoom();  //启用滚轮放大缩小
     // map.enableInertialDragging();
-    map.centerAndZoom(point,15);
+    // map.centerAndZoom(point,11);
     map.addControl(new BMap.NavigationControl());
 
     init();
     startRun();
      // var awp = setTimeout(xunhuan,5000);
-    var interval = setInterval(xunhuan,35000)
+    var interval = setInterval(xunhuan,60000)
     //打开气泡延迟20秒刷新
     function aa() {
       clearInterval(interval);
-      setTimeout(cc,30000);
+      setTimeout(cc,60000);
     }
     function xunhuan(){
       map.clearOverlays();
@@ -67,7 +67,7 @@ export class GaodeMapComponent implements OnInit {
       startRun();
     }
     function cc() {
-      interval = setInterval(xunhuan,30000)
+      interval = setInterval(xunhuan,60000)
     }
     function getLocalTime(nS) {
     return new Date(parseInt(nS)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
@@ -82,13 +82,15 @@ export class GaodeMapComponent implements OnInit {
         url: "admin/query/adminUserId?usersId="+userId+"&tokenId="+tokenId,
         success: function(data1){
           mapaddress=data1.data.rescueTeam.addr;
-          if(data1.data.rescueTeam.name.indexOf('总队')){
-            map.setMinZoom(9);
-          }else if(data1.data.rescueTeam.name.indexOf('大队')){
-            map.setMinZoom(11);
+          console.log(data1.data.rescueTeam.name)
+          if(data1.data.rescueTeam.rescueTeamId==0){
+            map.setMinZoom(8);
+          }else if(data1.data.rescueTeam.name.indexOf('大队')>-1){
+            map.setMinZoom(10);
             // map.setMaxZoom(9);
-          }else {
-            map.setMinZoom(13);
+          }
+          else {
+            map.setMinZoom(12);
           }
         }
       });
@@ -101,65 +103,65 @@ export class GaodeMapComponent implements OnInit {
         url: "indata?tokenId="+tokenId,
         success: function(data){
           console.log('success')
-           //resul=data.data;
-           resul ={
-              "deviceList":[
-                {
-                  "address":"西安莲湖区",
-                  "locationTime":"2017-08-05 12:01:37",
-                  "image_url":"liuwei.jpg",
-                  "mobile":"15662355564",
-                  "locationLatitude":34.2307,
-                  "locationType":1,
-                  "NAME":"刘位",
-                  "deviceStatus":"00000000000000000000000000010000",
-                  "is_alarm":1,
-                  "deviceIMEI":"123456",
-                  "locationLongitude":108.813,
-                  "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
-                  "onlineTime":1501745760000,
-                  "deviceMobile":"15002933699"
-                }
-              ],
-              "volunteerList":[
-                {
-                  "volunteer_id":"1",
-                  "address":null,
-                  "locationTime":1501914408000,
-                  "image_url":"http://localhost:8080/api/file/downloadFile",
-                  "sex":0,
-                  "latitude":"34.323985",
-                  "mobile":"15002933643",
-                  "rescue_team_id":1,
-                  "NAME":"lxx",
-                  "longitude":"109.049169"
-                },
-                {
-                  "volunteer_id":"111",
-                  "address":null,
-                  "locationTime":1501914594000,
-                  "image_url":"xw.jpg",
-                  "sex":0,
-                  "latitude":"34.324172",
-                  "mobile":"13072925248",
-                  "rescue_team_id":1,
-                  "NAME":"xw",
-                  "longitude":"109.049137"
-                }
-              ]
-              ,
-              "taskList":[
-                {
-                  "volunteer_id":"1",
-                  "receiveTime":1501911522000,
-                  "createTime":1501911522000,
-                  "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
-                  "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
-                  "status":1
-                }
-              ]
-
-          }
+           resul=data.data;
+          //  resul ={
+          //     "deviceList":[
+          //       {
+          //         "address":"西安莲湖区",
+          //         "locationTime":"2017-08-05 12:01:37",
+          //         "image_url":"liuwei.jpg",
+          //         "mobile":"15662355564",
+          //         "locationLatitude":34.2307,
+          //         "locationType":1,
+          //         "NAME":"刘位",
+          //         "deviceStatus":"00000000000000000000000000010000",
+          //         "is_alarm":1,
+          //         "deviceIMEI":"123456",
+          //         "locationLongitude":108.813,
+          //         "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+          //         "onlineTime":1501745760000,
+          //         "deviceMobile":"15002933699"
+          //       }
+          //     ],
+          //     "volunteerList":[
+          //       {
+          //         "volunteer_id":"1",
+          //         "address":null,
+          //         "locationTime":1501914408000,
+          //         "image_url":"http://localhost:8080/api/file/downloadFile",
+          //         "sex":0,
+          //         "latitude":"34.323985",
+          //         "mobile":"15002933643",
+          //         "rescue_team_id":1,
+          //         "NAME":"lxx",
+          //         "longitude":"109.049169"
+          //       },
+          //       {
+          //         "volunteer_id":"111",
+          //         "address":null,
+          //         "locationTime":1501914594000,
+          //         "image_url":"xw.jpg",
+          //         "sex":0,
+          //         "latitude":"34.324172",
+          //         "mobile":"13072925248",
+          //         "rescue_team_id":1,
+          //         "NAME":"xw",
+          //         "longitude":"109.049137"
+          //       }
+          //     ]
+          //     ,
+          //     "taskList":[
+          //       {
+          //         "volunteer_id":"1",
+          //         "receiveTime":1501911522000,
+          //         "createTime":1501911522000,
+          //         "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+          //         "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
+          //         "status":1
+          //       }
+          //     ]
+          //
+          // }
 
         }
       });
@@ -172,7 +174,7 @@ export class GaodeMapComponent implements OnInit {
       if(resul.deviceList){
         deviceList=resul.deviceList;
       }
-      if(resul.deviceList){
+      if(resul.taskList){
         taskList=resul.taskList;
       }
       if(deviceList){
@@ -190,7 +192,7 @@ export class GaodeMapComponent implements OnInit {
         if(taskList.length>0){
           $.each(taskList,function (i,n) {
             $.each(deviceList,function (a,obj) {
-              if(obj.alarmId==n.alarmId){
+              if(obj.deviceIMEI==n.deviceIMEI){
                 obj.isCreat = true;
               }
               // if(n.status==3){
@@ -210,30 +212,30 @@ export class GaodeMapComponent implements OnInit {
             // var html3 = "<span style='margin-left: 15px'>任务状态（已结束，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
             if(n.status==1){
               $.each(deviceList,function (a,obj) {
-                if(obj.alarmId==n.alarmId){
+                if(obj.deviceIMEI==n.deviceIMEI){
                   html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+obj.address+")</span></a></li>"
                 }
               })
             }else if(n.status==2){
               $.each(deviceList,function (a,obj) {
-                if(obj.alarmId==n.alarmId){
+                if(obj.deviceIMEI==n.deviceIMEI){
                   html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（救援中，接单人："
                 }
               })
               $.each(volunteerList,function (c,vol) {
                 if(vol['volunteer_id']==n['volunteer_id']){
-                  html+=vol.NAME+"，电话："+vol.mobile+")</span></a></li>"
+                  html+=vol.name+"，电话："+vol.mobile+")</span></a></li>"
                 }
               })
             }else {
               $.each(deviceList,function (a,obj) {
-                if(obj.alarmId==n.alarmId){
+                if(obj.deviceIMEI==n.deviceIMEI){
                   html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（已结束，接单人："
                 }
               })
               $.each(volunteerList,function (c,vol) {
                 if(vol['volunteer_id']==n['volunteer_id']){
-                  html+=vol.NAME+"，电话："+vol.mobile+")</span></a></li>"
+                  html+=vol.name+"，电话："+vol.mobile+")</span></a></li>"
                 }
               })
             }
@@ -277,7 +279,7 @@ export class GaodeMapComponent implements OnInit {
         type: "get",
         cache: false,
         async: false, //同步请求外面才能获取到*
-        url: "indata?tokenId="+tokenId,
+        url: "indata?tokenId=" +tokenId,
         success: function(data){
           console.log('success')
           if (data.code == 0) {
@@ -297,64 +299,64 @@ export class GaodeMapComponent implements OnInit {
               , content: data.error
             });
           }
-          //result=data.data;
-           result ={
-              "deviceList":[
-                {
-                  "address":"西安莲湖区",
-                  "locationTime":"2017-08-05 12:01:37",
-                  "image_url":"liuwei.jpg",
-                  "mobile":"15662355564",
-                  "locationLatitude":34.2307,
-                  "locationType":1,
-                  "NAME":"刘位",
-                  "deviceStatus":"00000000000000000000000000010000",
-                  "is_alarm":0,
-                  "deviceIMEI":"123456",
-                  "locationLongitude":108.813,
-                  "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
-                  "onlineTime":1501745760000,
-                  "deviceMobile":"15002933699"
-                }
-              ],
-              "volunteerList":[
-                {
-                  "volunteer_id":"1",
-                  "address":null,
-                  "locationTime":1501914408000,
-                  "image_url":"http://localhost:8080/api/file/downloadFile",
-                  "sex":0,
-                  "latitude":"34.323985",
-                  "mobile":"15002933643",
-                  "rescue_team_id":1,
-                  "NAME":"lxx",
-                  "longitude":"109.049169"
-                },
-                {
-                  "volunteer_id":"111",
-                  "address":null,
-                  "locationTime":1501914594000,
-                  "image_url":"xw.jpg",
-                  "sex":0,
-                  "latitude":"34.324172",
-                  "mobile":"13072925248",
-                  "rescue_team_id":1,
-                  "NAME":"xw",
-                  "longitude":"109.049137"
-                }
-              ],
-              "taskList":[
-                {
-                  "volunteer_id":"1",
-                  "receiveTime":1501911522000,
-                  "createTime":1501911522000,
-                  "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
-                  "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
-                  "status":1
-                }
-              ]
-
-          }
+          result=data.data;
+          //  result ={
+          //     "deviceList":[
+          //       {
+          //         "address":"西安莲湖区",
+          //         "locationTime":"2017-08-05 12:01:37",
+          //         "image_url":"liuwei.jpg",
+          //         "mobile":"15662355564",
+          //         "locationLatitude":34.2307,
+          //         "locationType":1,
+          //         "NAME":"刘位",
+          //         "deviceStatus":"00000000000000000000000000010000",
+          //         "is_alarm":0,
+          //         "deviceIMEI":"123456",
+          //         "locationLongitude":108.813,
+          //         "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+          //         "onlineTime":1501745760000,
+          //         "deviceMobile":"15002933699"
+          //       }
+          //     ],
+          //     "volunteerList":[
+          //       {
+          //         "volunteer_id":"1",
+          //         "address":null,
+          //         "locationTime":1501914408000,
+          //         "image_url":"http://localhost:8080/api/file/downloadFile",
+          //         "sex":0,
+          //         "latitude":"34.323985",
+          //         "mobile":"15002933643",
+          //         "rescue_team_id":1,
+          //         "NAME":"lxx",
+          //         "longitude":"109.049169"
+          //       },
+          //       {
+          //         "volunteer_id":"111",
+          //         "address":null,
+          //         "locationTime":1501914594000,
+          //         "image_url":"xw.jpg",
+          //         "sex":0,
+          //         "latitude":"34.324172",
+          //         "mobile":"13072925248",
+          //         "rescue_team_id":1,
+          //         "NAME":"xw",
+          //         "longitude":"109.049137"
+          //       }
+          //     ],
+          //     "taskList":[
+          //       {
+          //         "volunteer_id":"1",
+          //         "receiveTime":1501911522000,
+          //         "createTime":1501911522000,
+          //         "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+          //         "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
+          //         "status":1
+          //       }
+          //     ]
+          //
+          // }
         }
       });
       // volunteerList=result.volunteerList;
@@ -379,7 +381,7 @@ export class GaodeMapComponent implements OnInit {
           })
         }
       }
-      if(result.deviceList){
+      if(result.taskList){
         taskList=result.taskList;
       }
       // volunteerList=result.data.volunteerList;
@@ -390,7 +392,7 @@ export class GaodeMapComponent implements OnInit {
         if (taskList.length > 0) {
           $.each(taskList, function (i, n) {
             $.each(deviceList, function (a, obj) {
-              if (obj.alarmId == n.alarmId) {
+              if (obj.deviceIMEI == n.deviceIMEI) {
                 if (n.status == 1 || n.status == 2) {
                   obj.isCreat = true;
                 } else {
@@ -404,30 +406,30 @@ export class GaodeMapComponent implements OnInit {
             // var html2 = "<li><a href='javascript:;' id="+sss.task_id+" class=";
             if (sss.status == 1) {
               $.each(deviceList, function (aa, oobj) {
-                if (oobj.alarmId == sss.alarmId) {
+                if (oobj.deviceIMEI == sss.deviceIMEI) {
                   html += "等待接单，报警地址：" + oobj.address + ")</span>"
                 }
               })
             } else if (sss.status == 2) {
               $.each(deviceList, function (aa, oobj) {
-                if (oobj.alarmId == sss.alarmId) {
+                if (oobj.deviceIMEI == sss.deviceIMEI) {
                   html += "救援中，接单人："
                 }
               })
               $.each(volunteerList, function (c, vol) {
                 if (vol['volunteer_id'] == sss['volunteer_id']) {
-                  html += vol.NAME + "，电话：" + vol.mobile + ")</span>"
+                  html += vol.name + "，电话：" + vol.mobile + ")</span>"
                 }
               })
             } else {
               $.each(deviceList, function (aa, oobj) {
-                if (oobj.alarmId == sss.alarmId) {
+                if (oobj.deviceIMEI == sss.deviceIMEI) {
                   html += "已结束，接单人："
                 }
               })
               $.each(volunteerList, function (c, vol) {
                 if (vol['volunteer_id'] == sss['volunteer_id']) {
-                  html += vol.NAME + "，电话：" + vol.mobile + ")</span>"
+                  html += vol.name + "，电话：" + vol.mobile + ")</span>"
                 }
               })
             }
@@ -486,8 +488,8 @@ export class GaodeMapComponent implements OnInit {
         var point = new BMap.Point(volunteerList[i].longitude, volunteerList[i].latitude);
         var marker = new BMap.Marker(point,{title:'志愿者'});
         var content = '<div class="personIcon">' +
-          '<img src="web/file/downloadFile?fileName='+volunteerList[i]['image_url']+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
-          '<p style="margin: 15px 0 15px 0">志愿者:' +volunteerList[i].NAME+'</p>'+
+          '<img src="web/file/downloadFile/'+volunteerList[i]['image_url']+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+          '<p style="margin: 15px 0 15px 0">志愿者:' +volunteerList[i].name+'</p>'+
           '<div  class="rescuesta">定位时间：'+getLocalTime(volunteerList[i].locationTime)+'</div>'
         '</div>';
         map.addOverlay(marker);
@@ -544,8 +546,12 @@ export class GaodeMapComponent implements OnInit {
         // }
       // });
       for(var b = 0,marker;b<volunters;b++){
-        lngX = deviceList[b].locationLongitude;
-        latY = deviceList[b].locationLatitude;
+        if(deviceList[b].locationLongitude){
+          lngX = deviceList[b].locationLongitude;
+        }
+        if(deviceList[b].locationLatitude){
+          latY = deviceList[b].locationLatitude;
+        }
         if(b<(volunters-1)){
           changgeUrl2+= lngX+","+latY+";"
         }
@@ -579,10 +585,11 @@ export class GaodeMapComponent implements OnInit {
                  addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
                }
             }
-            var view = map.getViewport(points);
-            var mapZoom = view.zoom;
-            var centerPoint = view.center;
-            map.centerAndZoom(centerPoint,mapZoom);
+            //调整视野
+            // var view = map.getViewport(points);
+            // var mapZoom = view.zoom;
+            // var centerPoint = view.center;
+            // map.centerAndZoom(centerPoint,mapZoom);
           }
         }
       });
@@ -648,8 +655,8 @@ export class GaodeMapComponent implements OnInit {
 
     // 编写自定义函数,创建标注
     function addMarker(point,status,jiedan,deviceIMEI,name,alarmId){
-      console.log('addMarker是否接单'+jiedan)
-      console.log('addMarker是否报警'+status)
+      // console.log('addMarker是否接单'+jiedan)
+      // console.log('addMarker是否报警'+status)
       var infoWindow;
       var marker;
       if(jiedan&&status==0){
@@ -662,7 +669,7 @@ export class GaodeMapComponent implements OnInit {
           }
         })
         var content = '<div class="personIcon">' +
-          '<img src="web/file/downloadFile?fileName='+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+          '<img src="web/file/downloadFile/'+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
           '<p style="margin: 15px 0 15px 0">需要救援人:' +name+'</p>'+
           // '<div  class="rescuesta">救援状态：<span></span></div>'+
           '</div>';
@@ -722,7 +729,7 @@ export class GaodeMapComponent implements OnInit {
           }
         })
         var content = '<div class="personIcon">' +
-          '<img src="web/file/downloadFile?fileName='+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+          '<img src="web/file/downloadFile/'+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
           '<p style="margin: 15px 0 15px 0">需要救援人:' +name+'</p>'+
           '<div style="display: none" class="rescuesta">救援状态：<span></span></div>'
           // '地址：'+deviceIMEI
@@ -746,6 +753,8 @@ export class GaodeMapComponent implements OnInit {
                     title: '提示'
                     ,content: '救援任务已取消'
                   });
+                  $("#cancelRescue").attr("disabled", true);
+                  $("#startRescue").attr("disabled", true);
                 }else{
                   layer.open({
                     title: '提示'
@@ -780,6 +789,8 @@ export class GaodeMapComponent implements OnInit {
               var html2 = "<span>(已经创建任务，等待接单)</span>"
               $('.'+deviceIMEI).append(html2);
               $('.'+deviceIMEI).attr('id',taskId);
+              $("#cancelRescue").attr("disabled", true);
+              $("#startRescue").attr("disabled", true);
             }
             //推送app上报位置接口，代理前是web/query/voLocation
             $.ajax({
@@ -840,7 +851,7 @@ export class GaodeMapComponent implements OnInit {
                   var html = '附近无志愿者请值班人员指定<select id="volunter">'
                   html+= ' <option value="-1">请选择</option>';
                   $.each(volunteerList, function(index, obj){
-                        html+= '<option value="'+obj['volunteer_id']+'">'+obj.NAME+'</option>';
+                        html+= '<option value="'+obj['volunteer_id']+'">'+obj.name+'</option>';
                   });
                   html+= ' </select>去救援';
                   var ak = layer.open({
@@ -932,7 +943,7 @@ export class GaodeMapComponent implements OnInit {
           }
         })
         var content = '<div class="personIcon">' +
-          '<img src="web/file/downloadFile?fileName='+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+          '<img src="web/file/downloadFile/'+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
           '<p style="margin: 15px 0 15px 0">设备使用者:' +name+'</p>'+
           // '<div  class="rescuesta">救援状态：<span></span></div>'+
           '</div>';

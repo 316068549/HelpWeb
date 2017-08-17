@@ -101,7 +101,7 @@
 
 
 <div [hidden]="!tjmenu"  class="operate menu">
-  <form class="operate-form"  #tjmenuform="ngForm" (ngSubmit)="submied = false;tjmenuform.form.valid && add(helperName.value,menuSelected.value,password.value,
+  <form class="operate-form"  #tjmenuform="ngForm" enctype="multipart/form-data" (ngSubmit)="submied = false;tjmenuform.form.valid && add(helperName.value,menuSelected.value,password.value,
         phoneNumber.value, nationalId.value,rescueTeam.value,imageUrl.value);">
     <div class="operate-title">添加救助人员<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
     <div class="operate-content">
@@ -137,9 +137,10 @@
         </div>
       </div>
       <div class="operate-item fn-clear">
-        <label class="unmust">头像Url:</label>
+        <label >头像:</label>
         <div class="operate-group">
-          <input required  type="text"  id="imageUrl" name="imageUrl" class="form-box"  [(ngModel)]="Helpers.imageUrl" #imageUrl="ngModel">
+          <input required  type="file"  id="imageUrl" name="imageUrl" style="border: none"    (change)="onFileChanged($event.target.files)"
+                 accept="image/gif,image/jpeg,image/jpg,image/png,image/svg" #imageUrl>
         </div>
       </div>
       <div class="operate-item fn-clear">
@@ -204,12 +205,12 @@
           <!--<p class="text-danger sbd" *ngIf="password.errors?.rangeLength">输入字符长度在2-10之间</p>-->
         </div>
       </div>
-      <div class="operate-item fn-clear">
-        <label class="unmust">头像Url:</label>
-        <div class="operate-group">
-          <input required  type="text"  id="imageUrl2" name="imageUrl2" class="form-box"  [(ngModel)]="selectedHelper.imageUrl" #imageUrl2="ngModel">
-        </div>
-      </div>
+      <!--<div class="operate-item fn-clear">-->
+        <!--<label class="unmust">头像Url:</label>-->
+        <!--<div class="operate-group">-->
+          <!--<input required  type="text"  id="imageUrl2" name="imageUrl2" class="form-box"  [(ngModel)]="selectedHelper.imageUrl" #imageUrl2="ngModel">-->
+        <!--</div>-->
+      <!--</div>-->
       <div class="operate-item fn-clear">
         <label>电话:</label>
         <div class="operate-group">

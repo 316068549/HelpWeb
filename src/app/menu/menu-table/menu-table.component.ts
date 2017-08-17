@@ -153,8 +153,10 @@ export class MenuTableComponent implements OnInit {
   }
 
   resetPagingArr() {
+    for (var i = 0; i < this.pageList.length; i++) {
+      this.pageList[i].isActive = false;
+    }
     this.pageList[0].isActive = true;
-    this.curPage = 0;
   }
 
   changePage(page,index) {
@@ -365,6 +367,7 @@ export class MenuTableComponent implements OnInit {
             });
           }
           this.getMenus();
+          this.resetPagingArr();
           this.selectedMenu = null;
           $('#details').val('');
           this.tjmenu = false;
@@ -416,6 +419,7 @@ export class MenuTableComponent implements OnInit {
             }
             layer.close(ak);
             this.getMenus();
+            this.resetPagingArr();
             if (this.selectedMenu === menu) { this.selectedMenu = null; }
           });
 
@@ -447,6 +451,7 @@ export class MenuTableComponent implements OnInit {
           });
         }
         this.getMenus();
+        this.resetPagingArr();
         this.selectedMenu = null;
         $('#details').val('');
       });

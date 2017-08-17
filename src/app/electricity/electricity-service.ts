@@ -59,7 +59,7 @@ export class ElectricityService {
   }
 
   search(IMEI: string): Promise<object> {
-    return this.http.get(this.electricityUrl+'?deviceImei='+IMEI)
+    return this.http.get(this.electricityUrl+'?deviceImei='+IMEI+'&pageIndex=1&pageSize=5&tokenId='+this.tokenId)
       .toPromise()
       .then(response => response.json().data as object)
       .catch(this.handleError);

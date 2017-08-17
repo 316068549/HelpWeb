@@ -7,15 +7,15 @@
   </div>
   <router-outlet></router-outlet>
   <div class="search-box">
-    <span class="xt-search">
-               <input #searchBox type="text" id="search-box"  class="form-box" (keyup)="search(searchBox.value)"
-                      placeholder="请输入用户名">
-           <button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>
+    <!--<span class="xt-search">-->
+               <!--<input #searchBox type="text" id="search-box"  class="form-box" (keyup)="search(searchBox.value)"-->
+                      <!--placeholder="请输入用户名">-->
+           <!--<button class="btn-red btns" (click)="search2(searchBox.value)" type="submit">搜索</button>-->
   <!--<span>-->
           <!--<span *ngFor="let menu of menus | async"-->
                 <!--(click)="gotoDetail(menu)" class="search-result"  > {{menu.menuTitle}}</span>-->
         <!--</span>-->
-   </span>
+   <!--</span>-->
 
     <button (click)="searchParMenu();submied = true;tjmenu=true; clicked=true;tjmenuform.reset();" class="btn-blue btns" type="button">+添加角色</button>
   </div>

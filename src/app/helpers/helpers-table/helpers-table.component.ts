@@ -1,10 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 // 1. 引入forms中的组件
 import {FormGroup, FormControl} from '@angular/forms';
 // 2. 引入ng2-validation中的组件
 import {CustomValidators} from 'ng2-validation';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
+import { Http, Headers, Response } from '@angular/http';
 
 import 'rxjs/add/observable/of';
 // Observable operators
@@ -51,6 +54,7 @@ export class HelpersTableComponent implements OnInit {
   rescueTeams = [];
   pages: any;
   term={};
+  public imgg:File;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -116,8 +120,10 @@ export class HelpersTableComponent implements OnInit {
     }
 
   resetPagingArr() {
+    for (var i = 0; i < this.pageList.length; i++) {
+      this.pageList[i].isActive = false;
+    }
     this.pageList[0].isActive = true;
-      this.curPage = 0;
     }
 
   changePage(page,index) {
@@ -173,13 +179,43 @@ export class HelpersTableComponent implements OnInit {
             alert(res['error']);
           }
           layer.close(ak);
-          this.getElectricities();
+          this.getElectricities2();
+          this.resetPagingArr();
         })
       }
       , btn2: () => {
 
       }
     })
+  }
+
+  getElectricities2(): void {
+    this.userService.getMenuDatas(1,5).then( res => {
+      if(res['code'] == 0){
+        this.curPage = res['data']['pageNum'];
+        if(res['data']['list']){
+          this.helpers = res['data']['list'];
+        }else{
+          this.isEmpty=true;
+        }
+        this.totalNum   = res['data']['total'];
+        this.totalPage   = res['data']['pages'];
+      }else if(res['code'] == 5){
+        var ak = layer.open({
+          content: res['error']+'请重新登录'
+          , btn: ['确定']
+          , yes: () => {
+            this.router.navigate(['login']);
+            layer.close(ak);
+          }
+        })
+      }else{
+        layer.open({
+          title: '提示'
+          ,content: res['error']
+        });
+      }
+    });
   }
 
   getElectricities(): void {
@@ -244,19 +280,20 @@ export class HelpersTableComponent implements OnInit {
   }
 
   add(helperName: string, sex: string, password: string,phone: string,
-      nationalId: string, rescue: number,imageUrl:string ): void {
+      nationalId: string, rescue: number,file:File ): void {
     helperName = helperName.trim();
     phone = phone.trim();
     nationalId = nationalId.trim();
     if (!helperName && !sex  && !password && !phone && !nationalId && rescue ) { return; }
-    this.userService.create(helperName,sex,password,phone,nationalId,rescue,imageUrl)
+    this.userService.create(helperName,sex,password,phone,nationalId,rescue,this.imgg)
       .subscribe(res => {
         if(res["code"]==0){
           layer.open({
             title: '提示'
             ,content: '添加成功'
           });
-          this.getElectricities();
+          this.resetPagingArr();
+          this.getElectricities2();
           this.selectedHelper = null;
           this.tjmenu = false;
           this.clicked = false;
@@ -268,14 +305,33 @@ export class HelpersTableComponent implements OnInit {
               $('#helperName').focus();
             }
           });
-
         }
       });
   }
 
+  onFileChanged(fileList: FileList) {
+    if (fileList.length > 0) {
+      let file: File = fileList[0];
+      this.imgg = file;
+      // let formData: FormData = new FormData();
+      // formData.append('uploadFile', file, file.name);
+    //   let headers = new Headers({
+    //     "Accept": "application/json"
+    //   });
+    //   let options = new RequestOptions({ headers });
+    //   this.http.post("https://localhost:44372/api/uploadFile", formData, options)
+    //     .map(res => res.json())
+    //     .catch(error => Observable.throw(error))
+    //     .subscribe(
+    //       data => console.log('success' + data),
+    //       error => console.log(error)
+    //     )
+    }
+  }
+
   save(): void {
     this.userService.update(this.selectedHelper)
-      .then(() => {this.getElectricities();this.deletemenu = false;this.clicked = false;
+      .then(() => {this.getElectricities2();this.resetPagingArr();this.deletemenu = false;this.clicked = false;
         layer.open({
           title: '提示'
           ,content: '修改成功'

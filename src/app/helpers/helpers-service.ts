@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { Http, Headers, Response } from '@angular/http';
+import { Http, Headers, Response,ResponseOptions,RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import { Menu } from '../models/menu';
@@ -15,6 +15,7 @@ declare var layer:any;
 export class HelperService {
   private headers = new Headers({'Content-Type': 'application/json'});
   private headers2 = new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'});
+  private headers3 = new Headers({'Content-Type': 'multipart/form-data;'});
   private menusbtnUrl = 'adminPermission/query/adminPermissionButton';
   private rescueslistUrl = 'wwe/rescueTeam/find';
   private menusUrl2 = 'web/vo/findVos';
@@ -97,9 +98,29 @@ export class HelperService {
   // }
 
   create(helperName: string, sex: string, password: string,phone: string,
-         nationalId: string, rescue: number,imageUrl:string): Observable<Helpers> {
+         nationalId: string, rescue: number,file:File): Observable<Helpers> {
+    let formData: FormData = new FormData();
+    formData.append("name", helperName);
+    formData.append("sex", sex);
+    formData.append("password", password);
+    formData.append("mobile", phone);
+    formData.append("identityCard", nationalId);
+    formData.append("rescueTeamId", rescue);
+// fileInputElement中已经包含了用户所选择的文件
+//     formData.append("userfile", file);
+    formData.append('file', file);
+    formData.append('tokenId', this.tokenId);
+    let headers = new Headers({
+      "Accept": "application/json"
+    });
+    let options = new RequestOptions({ headers });
+    // let parment = 'name='+helperName+'&sex='+sex+'&password='+password+'&mobile='+phone+
+    //   '&identityCard='+nationalId+'&rescueTeamId='+rescue+'&file='+file+'&tokenId='+this.tokenId;
     return this.http
-      .post(this.menusaddUrl, JSON.stringify({name: helperName,sex:sex,password:password,mobile:phone,identityCard:nationalId,rescueTeamId:rescue,imageUrl:imageUrl}), {headers: this.headers})
+      .post(this.menusaddUrl, formData,options)
+    // return this.http
+    //   .post(this.menusaddUrl, JSON.stringify({name: helperName,sex:sex,password:password,mobile:phone,
+    //     identityCard:nationalId,rescueTeamId:rescue,imageUrl:imageUrl}), {headers: this.headers})
       .map(response => {
           let result=response.json();
           return result;
