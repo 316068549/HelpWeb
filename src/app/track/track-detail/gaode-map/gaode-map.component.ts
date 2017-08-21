@@ -127,54 +127,106 @@ export class GaodeMapComponent implements OnInit {
       var lngX ;
       var latY ;
       markers = [];
+      var changgeUrl = "http://api.map.baidu.com/geoconv/v1/?coords=";
       lineArr = new Array();
       lineArr=[];
+      var pointLen = pointList.length;
       console.log(pointList)
-      for(var i = 0,marker;i<pointList.length;i++){
-        lngX = pointList[i].longitude;
-        latY = pointList[i].latitude;
-        // lineArr.push(new AMap.LngLat(lngX,latY));
-        lineArr.push(new BMap.Point(lngX,latY));
-        var convertor = new BMap.Convertor();
-        convertor.translate(lineArr, 1, 5, translateCallback)
-        var  translateCallback = function (data){
-          if(data.status === 0) {
-            console.log(data.points)
-            for(var a = 0,marker;a<data.points.length;a++){
-              if(data.points.length == 0){
-                return;
-              }
-              if(a==0){
-                var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
-                var marker = new BMap.Marker(point,{icon:myIcon});
-                marker.setLabel('起');
-                map.addOverlay(marker);
-              }else if(a<data.points.length-1){
-                var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
-                var marker = new BMap.Marker(point);
-                map.addOverlay(marker);
-              }else{
-                var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
-                var marker = new BMap.Marker(point,{icon:myIcon2});
-                map.addOverlay(marker);
-              }
-
-            }
-            var view = map.getViewport(data.points);
-            var mapZoom = view.zoom;
-            var centerPoint = view.center;
-            map.centerAndZoom(centerPoint,mapZoom);
-            //绘制轨迹
-            polyline = new BMap.Polyline(data.points, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
-            map.addOverlay(polyline);
-
-            // var marker = new BMap.Marker(data.points[0]); lat:;lng:
-            // bm.addOverlay(marker);
-            // var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
-            // marker.setLabel(label); //添加百度label
-            // bm.setCenter(data.points[0]);
-          }
+      for(var i = 0,marker;i<pointLen;i++){
+        if(pointList[i].longitude){
+          lngX = pointList[i].longitude;
         }
+        if(pointList[i].latitude){
+          latY = pointList[i].latitude;
+        }
+        if(i<(pointLen-1)){
+          changgeUrl+= lngX+","+latY+";"
+        }
+        if (i==(pointLen-1)){
+          changgeUrl+= lngX+","+latY
+        }
+        //预留问题最多转100个
+        // var zhuanhuan = changgeUrl.split(';')
+        // if(zhuanhuan.length>100){
+        //
+        // }
+        //预留问题
+        $.ajax({
+          type: "get",
+          url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
+          dataType: 'jsonp',
+          success: function(data){
+            if(data.status === 0) {
+              console.log(data.result)
+              var points=[];
+              for(var c = 0,marker;c<data.result.length;c++){
+                if(data.result.length == 0){
+                  return;
+                }
+                if(c==0){
+                  var point = new BMap.Point(data.result[c].x, data.result[c].y);
+                  var marker = new BMap.Marker(point,{icon:myIcon});
+                  marker.setLabel('起');
+                  map.addOverlay(marker);
+                }else if(c<data.points.length-1){
+                  var point = new BMap.Point(data.result[c].x, data.result[c].y);
+                  var marker = new BMap.Marker(point);
+                  map.addOverlay(marker);
+                }else{
+                  var point = new BMap.Point(data.result[c].x, data.result[c].y);
+                  var marker = new BMap.Marker(point,{icon:myIcon2});
+                  map.addOverlay(marker);
+                }
+              }
+              var view = map.getViewport(data.points);
+              var mapZoom = view.zoom;
+              var centerPoint = view.center;
+              map.centerAndZoom(centerPoint,mapZoom);
+              //绘制轨迹
+              polyline = new BMap.Polyline(data.points, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
+              map.addOverlay(polyline);
+              //调整视野
+            }
+          }
+        });
+        // lngX = pointList[i].longitude;
+        // latY = pointList[i].latitude;
+        // lineArr.push(new BMap.Point(lngX,latY));
+
+        // var convertor = new BMap.Convertor();
+        // convertor.translate(lineArr, 1, 5, translateCallback)
+        // var  translateCallback = function (data){
+        //   if(data.status === 0) {
+        //     console.log(data.points)
+        //     for(var a = 0,marker;a<data.points.length;a++){
+        //       if(data.points.length == 0){
+        //         return;
+        //       }
+        //       if(a==0){
+        //         var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
+        //         var marker = new BMap.Marker(point,{icon:myIcon});
+        //         marker.setLabel('起');
+        //         map.addOverlay(marker);
+        //       }else if(a<data.points.length-1){
+        //         var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
+        //         var marker = new BMap.Marker(point);
+        //         map.addOverlay(marker);
+        //       }else{
+        //         var point = new BMap.Point(data.points[a].lng, data.points[a].lat);
+        //         var marker = new BMap.Marker(point,{icon:myIcon2});
+        //         map.addOverlay(marker);
+        //       }
+        //
+        //     }
+        //     var view = map.getViewport(data.points);
+        //     var mapZoom = view.zoom;
+        //     var centerPoint = view.center;
+        //     map.centerAndZoom(centerPoint,mapZoom);
+        //     //绘制轨迹
+        //     polyline = new BMap.Polyline(data.points, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
+        //     map.addOverlay(polyline);
+        //   }
+        // }
 
         //   if(pointList.length == 0){
         //     return;
@@ -223,7 +275,6 @@ export class GaodeMapComponent implements OnInit {
         //   // markers.push(marker)
         // }
       }
-      console.log(lineArr);
     }
 
     function changeX(){

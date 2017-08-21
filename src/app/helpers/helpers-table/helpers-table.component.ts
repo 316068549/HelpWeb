@@ -263,8 +263,9 @@ export class HelpersTableComponent implements OnInit {
       if(!menus){
         layer.open({
           title: '提示'
-          ,content: '错误'
+          ,content: '没有查询到数据'
         });
+        return
       }
       if(this.helpers.length==0){
         layer.open({

@@ -44,7 +44,7 @@
               </div>
               <div class="ibox-content" *ngIf="imageList.length>0">
                 <a class="fancybox" href="#" title="" *ngFor="let image of imageList">
-                  <img alt="image" [src]="'web/file/downloadFile/'+image.imageUrl" />
+                  <img alt="image" [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+image.imageUrl" />
                 </a>
                 <!--<a class="fancybox" href="#" title="图片2">-->
                   <!--<img alt="image" src="../../../assets/img/p_big1.jpg" />-->
@@ -120,7 +120,7 @@
                 <div class="player" *ngFor="let video of videoList; let i = index;">
                   <video id="my-video+{{i}}" class="video-js vjs-default-ski vjs-big-play-centered" controls preload="auto"
                   poster="MY_VIDEO_POSTER.jpg" >
-                  <source [src]="'web/file/downloadFile/'+video.videoUrl" type="video/mp4">
+                  <source [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+video.videoUrl" type="video/mp4">
                   <p class="vjs-no-js">
                   您的浏览器不支持HTML5视频播放，请下载或更换浏览器
                   <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>

@@ -76,7 +76,6 @@ export class LeftNavComponent implements OnInit {
           obj.selected = true;
         })
       });
-
   }
   getUser(): void{
     this.menuService.getMenuDetail2(this.userId).then(res => {

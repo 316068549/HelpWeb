@@ -102,6 +102,10 @@ export class TrackTableComponent implements OnInit {
   getElectricities(): void {
     this.electricityService.getElectricities(1).then( res => {
       if(res['code'] == 0){
+        if(!res['data']){
+          this.isEmpty=true;
+          return
+        }
         if(res['data']['list']){
           this.electricities = res['data']['list'];
         }else{

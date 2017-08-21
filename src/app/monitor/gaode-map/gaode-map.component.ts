@@ -181,7 +181,7 @@ export class GaodeMapComponent implements OnInit {
         $.each(deviceList,function (i,n) {
           if(n['is_alarm']==1){
             $('.panel').show();
-            var html = "<li><a href='javascript:;' class="+n.deviceIMEI+">"+n.NAME+"</a></li>"
+            var html = "<li><a href='javascript:;' class="+n.deviceIMEI+">"+n.NAME+"（正在报警）</a></li>"
             $('.panel ul').append(html)
             warningList.push(n.deviceIMEI);
           }
@@ -548,9 +548,13 @@ export class GaodeMapComponent implements OnInit {
       for(var b = 0,marker;b<volunters;b++){
         if(deviceList[b].locationLongitude){
           lngX = deviceList[b].locationLongitude;
+        }else{
+          lngX= 100.883;
         }
         if(deviceList[b].locationLatitude){
           latY = deviceList[b].locationLatitude;
+        }else{
+          latY=1.852;
         }
         if(b<(volunters-1)){
           changgeUrl2+= lngX+","+latY+";"
@@ -817,7 +821,7 @@ export class GaodeMapComponent implements OnInit {
               'geotable_id':172905,
               'coord_type':3,
               'location':''+mPoint.lng+','+mPoint.lat+'',
-              'radius':100000
+              'radius':10000
             };
             $.ajax({
               type: "get",
@@ -892,7 +896,7 @@ export class GaodeMapComponent implements OnInit {
         map.addOverlay(marker,{title:deviceIMEI});
         markers.push(marker);
         if($.inArray(deviceIMEI, warningList)==-1){
-          var html = "<li><a href='javascript:;' class="+deviceIMEI+">"+name+"</a></li>"
+          var html = "<li><a href='javascript:;' class="+deviceIMEI+">"+name+"（正在报警）</a></li>"
           $('.panel ul').prepend(html)
           warningList.push(deviceIMEI);
 

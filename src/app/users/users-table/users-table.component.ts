@@ -268,6 +268,13 @@ export class UsersTableComponent implements OnInit {
   }
   search2(term: number): void{
     this.userService.getMenuDetail(term).then( menus => {
+      if(!menus){
+        layer.open({
+          title: '提示'
+          ,content: '没有查询到数据'
+        });
+        return
+      }
       if(menus['adminUser']){
         menus['adminUser']['roleList'] = menus['adminRoleList'];
         this.users = [];
