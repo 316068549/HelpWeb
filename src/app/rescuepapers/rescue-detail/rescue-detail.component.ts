@@ -23,6 +23,7 @@ export class RescueDetailComponent implements OnInit {
   rescue: Rescue;
   imageList=[];
   videoList=[];
+  code:boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,6 +33,7 @@ export class RescueDetailComponent implements OnInit {
 
 
   ngOnInit() {
+    this.code = false;
     this.route.params
       .switchMap((params: Params) => this.rescueCountService.getMenuData(params['id']))
       .subscribe(menus => {
@@ -40,6 +42,8 @@ export class RescueDetailComponent implements OnInit {
             title: '提示'
             ,content: '错误'
           });
+        }else {
+          this.code = true;
         }
         if(menus['data']['imageList'].length>0&&menus['data']['imageList'][0]!=null){
           for(let i=0;i<menus['data']['imageList'].length;i++){

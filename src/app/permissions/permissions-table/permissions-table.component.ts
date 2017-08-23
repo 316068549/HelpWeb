@@ -40,7 +40,7 @@ export class PermissionTableComponent implements OnInit {
   public params; // 保存页面url参数
   public totalNum = 5 ; // 总数据条数
   public pageSize = 5;// 每页数据条数
-  public totalPage = 5 ;// 总页数
+  public totalPage = 2 ;// 总页数
   public curPage = 1;// 当前页码
   public usersLength;// 当前页码
   pages: any;
@@ -131,7 +131,7 @@ export class PermissionTableComponent implements OnInit {
   getPageList() {
     /*分页设置*/
     let pageList=[];
-    return [1,2,3,4,5];
+    return [1,2];
   }
 
   onSelect(user: Role): void {

@@ -247,6 +247,7 @@
 .fancybox img {
   margin-bottom: 5px;
   width: 24%;
+  height: 250px;
 }
 img {
   vertical-align: middle;

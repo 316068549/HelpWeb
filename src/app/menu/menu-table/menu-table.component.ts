@@ -164,11 +164,12 @@ export class MenuTableComponent implements OnInit {
       this.pageList[i].isActive = false;
     }
     this.pageList[index].isActive = true;
+    // lastPage = page;
     this.curPage = index;
     this.menuService.getMenuList(index+1,5).then( res => {
       if(res['code'] == 0){
         this.menus = res['data']['list'];
-        this.curPage = res['data']['page']['current'];
+        this.curPage = res['data']['pageNum'];
       }else if(res['code'] == 5){
         var ak = layer.open({
           content: res['error']+'请重新登录'

@@ -39,10 +39,10 @@
                   <!--</a>-->
                 <!--</div>-->
               </div>
-              <div class="ibox-content" *ngIf="imageList.length==0">
+              <div class="ibox-content" *ngIf="code&&imageList.length==0">
                 没有图片
               </div>
-              <div class="ibox-content" *ngIf="imageList.length>0">
+              <div class="ibox-content" *ngIf="code&&imageList.length>0">
                 <a class="fancybox" href="#" title="" *ngFor="let image of imageList">
                   <img alt="image" [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+image.imageUrl" />
                 </a>
@@ -113,10 +113,10 @@
                   <!--</a>-->
                 <!--</div>-->
               </div>
-              <div class="ibox-content" [hidden]="videoList.length>0">
+              <div class="ibox-content" [hidden]="code&&videoList.length>0">
                 没有视频
               </div>
-              <div class="ibox-content" [hidden]="videoList.length==0">
+              <div class="ibox-content" [hidden]="code&&videoList.length==0">
                 <div class="player" *ngFor="let video of videoList; let i = index;">
                   <video id="my-video+{{i}}" class="video-js vjs-default-ski vjs-big-play-centered" controls preload="auto"
                   poster="MY_VIDEO_POSTER.jpg" >

@@ -139,7 +139,7 @@ export class UsersTableComponent implements OnInit {
     //   ];
     // }
     // return pageList;
-    return [1,2,3,4,5];
+    return [1,2];
   }
 
   changePage(pageNo) {

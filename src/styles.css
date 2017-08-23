@@ -54,7 +54,7 @@ header{
   background-color: #C6E2FF;
   width: 100%;
   position: fixed;
-  /*z-index: 1000000;*/
+  z-index: 111;
 }
 .panel ul li a{
   color: #666;

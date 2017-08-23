@@ -100,7 +100,9 @@ export class GaodeMapComponent implements OnInit {
         type: "get",
         cache: false,
         async: false, //同步请求外面才能获取到*
-        url: "indata?tokenId="+tokenId,
+        url: "indata?tokenId="
+         +tokenId
+        ,
         success: function(data){
           console.log('success')
            resul=data.data;
@@ -181,7 +183,7 @@ export class GaodeMapComponent implements OnInit {
         $.each(deviceList,function (i,n) {
           if(n['is_alarm']==1){
             $('.panel').show();
-            var html = "<li><a href='javascript:;' class="+n.deviceIMEI+">"+n.NAME+"（正在报警）</a></li>"
+            var html = "<li><a href='javascript:;' class="+n.deviceIMEI+">"+n.NAME+"<span style='margin-left: 15px'>（正在报警）</span></a></li>"
             $('.panel ul').append(html)
             warningList.push(n.deviceIMEI);
           }
@@ -217,22 +219,26 @@ export class GaodeMapComponent implements OnInit {
                 }
               })
             }else if(n.status==2){
+              html+=obj.deviceIMEI+">";
               $.each(deviceList,function (a,obj) {
                 if(obj.deviceIMEI==n.deviceIMEI){
-                  html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（救援中，接单人："
+                  html+=obj.NAME;
                 }
               })
+              html+="<span style='margin-left: 15px'>任务状态（救援中，接单人：";
               $.each(volunteerList,function (c,vol) {
                 if(vol['volunteer_id']==n['volunteer_id']){
                   html+=vol.name+"，电话："+vol.mobile+")</span></a></li>"
                 }
               })
             }else {
+              html+=obj.deviceIMEI+">";
               $.each(deviceList,function (a,obj) {
                 if(obj.deviceIMEI==n.deviceIMEI){
-                  html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（已结束，接单人："
+                  html+=obj.NAME;
                 }
               })
+              html+="<span style='margin-left: 15px'>任务状态（已结束，接单人：";
               $.each(volunteerList,function (c,vol) {
                 if(vol['volunteer_id']==n['volunteer_id']){
                   html+=vol.name+"，电话："+vol.mobile+")</span></a></li>"
@@ -260,7 +266,7 @@ export class GaodeMapComponent implements OnInit {
               //    url: " api/query/messageAll",
               // contentType:"application/json",
               // dataType: "json",
-              data:'&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv&geotable_id=172905&coordType=1&lng='+obj.longitude+'&lat='+obj.latitude+'&tags='+obj.mobile,
+              data:'&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv&geotable_id=172905&coordType=3&lng='+obj.longitude+'&lat='+obj.latitude+'&tags='+obj.mobile,
               cache: false,
               success: function(data){
                 console.log('success')
@@ -279,7 +285,9 @@ export class GaodeMapComponent implements OnInit {
         type: "get",
         cache: false,
         async: false, //同步请求外面才能获取到*
-        url: "indata?tokenId=" +tokenId,
+        url: "indata?tokenId="
+         +tokenId
+        ,
         success: function(data){
           console.log('success')
           if (data.code == 0) {
@@ -289,7 +297,8 @@ export class GaodeMapComponent implements OnInit {
               content: data.error + '，请重新登录'
               , btn: ['确定']
               , yes: () => {
-                this.router.navigate(['login']);
+                // this.router.navigate(['login']);
+                loginFull(window.location);
                 layer.close(ak);
               }
             })
@@ -372,7 +381,7 @@ export class GaodeMapComponent implements OnInit {
             $.each(deviceList, function (a, obj) {
               if(n == obj.deviceIMEI){
                 if(obj.is_alarm==0){
-                  $('.'+ n).remove();
+                  $('.'+ n +' span').remove();
                   var index = warningList.indexOf(n);
                   warningList.splice(index, 1);
                 }
@@ -456,7 +465,7 @@ export class GaodeMapComponent implements OnInit {
               //    url: " api/query/messageAll",
               // contentType:"application/json",
               // dataType: "json",
-              data:'&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv&geotable_id=172905&coordType=1&lng='+obj.longitude+'&lat='+obj.latitude+'&tags='+obj.mobile,
+              data:'&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv&geotable_id=172905&coordType=3&lng='+obj.longitude+'&lat='+obj.latitude+'&tags='+obj.mobile,
               cache: false,
               success: function(data){
                 console.log('success')
@@ -790,9 +799,11 @@ export class GaodeMapComponent implements OnInit {
             //{"status":1,"msg":"创建任务单成功,成功返回任务单号",
             // "time":0,"objectbean":null,"code":0,"error":null,"data":{"taskId":"862ae897-f7d7-404f-bbd1-b1dfd086e883"}}
             if(taskId){
-              var html2 = "<span>(已经创建任务，等待接单)</span>"
-              $('.'+deviceIMEI).append(html2);
-              $('.'+deviceIMEI).attr('id',taskId);
+              if($('.'+deviceIMEI)){
+                var html2 = "<span>(已经创建任务，等待接单)</span>"
+                $('.'+deviceIMEI).append(html2);
+                $('.'+deviceIMEI).attr('id',taskId);
+              }
               $("#cancelRescue").attr("disabled", true);
               $("#startRescue").attr("disabled", true);
             }
@@ -863,6 +874,10 @@ export class GaodeMapComponent implements OnInit {
                     content: html,
                     yes: () => {
                       console.log($('#volunter option:selected').val())
+                      if(!$('#volunter').val()){
+                        alert('必须指定一个志愿者！')
+                        return
+                      }
                       var goUrl = 'web/task/receive?userId='+$('#volunter').val()+'&itemId='+result.taskId
                         $.ajax({
                           type: "get",
@@ -896,7 +911,7 @@ export class GaodeMapComponent implements OnInit {
         map.addOverlay(marker,{title:deviceIMEI});
         markers.push(marker);
         if($.inArray(deviceIMEI, warningList)==-1){
-          var html = "<li><a href='javascript:;' class="+deviceIMEI+">"+name+"（正在报警）</a></li>"
+          var html = "<li><a href='javascript:;' class="+deviceIMEI+">"+name+"<span style='margin-left: 15px'>（正在报警）</span></a></li>"
           $('.panel ul').prepend(html)
           warningList.push(deviceIMEI);
 
@@ -1080,6 +1095,20 @@ export class GaodeMapComponent implements OnInit {
       //   }
       // }
     }
+    //重新登录
+    function loginFull(element) {
+      //判断各种浏览器，找到正确的方法
+      if (element) {
+        element.href="http://60.205.4.247:9000";
+      }
+      // else if (typeof $(window).ActiveXObject !== "undefined") {//for Internet Explorer
+      //   var wscript = $(window).ActiveXObject("WScript.Shell");
+      //   if (wscript !== null) {
+      //     wscript.SendKeys("{F11}");
+      //   }
+      // }
+    }
+
 
 
 
