@@ -16,7 +16,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { UserLoginService } from './login/user-login.service';
 import { appRoutes } from './app.routes';
-import { TestComponent } from './test/test.component';
 
 
 
@@ -29,9 +28,7 @@ import { TestComponent } from './test/test.component';
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    TestComponent
-
+    LoginComponent
   ],
   imports: [
     BrowserModule,

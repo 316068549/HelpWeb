@@ -30,14 +30,7 @@ export class GaodeMapComponent implements OnInit {
     var deviceList;
     var changeXyList=[];
     var taskList ;
-    // alert(localStorage.getItem('address'));
-    var statuses =[];//是否报警
     var warningList=[];//报警列表
-    var obj={
-      deviceIMEI:'',
-      statuses:'',
-      warning:false
-    }
     var  markers,infoWindows = [];
     var map = new BMap.Map("container");            // 创建Map实例
     //获取下拉数据
@@ -55,11 +48,11 @@ export class GaodeMapComponent implements OnInit {
     init();
     startRun();
      // var awp = setTimeout(xunhuan,5000);
-    var interval = setInterval(xunhuan,60000)
+    var interval = setInterval(xunhuan,20000)
     //打开气泡延迟20秒刷新
     function aa() {
       clearInterval(interval);
-      setTimeout(cc,60000);
+      setTimeout(cc,30000);
     }
     function xunhuan(){
       map.clearOverlays();
@@ -67,7 +60,7 @@ export class GaodeMapComponent implements OnInit {
       startRun();
     }
     function cc() {
-      interval = setInterval(xunhuan,60000)
+      interval = setInterval(xunhuan,20000)
     }
     function getLocalTime(nS) {
     return new Date(parseInt(nS)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
@@ -100,11 +93,10 @@ export class GaodeMapComponent implements OnInit {
         type: "get",
         cache: false,
         async: false, //同步请求外面才能获取到*
-        url: "indata?tokenId="
-         +tokenId
+        url: "indata?tokenId=QyD6L9imthLx2vHRv/9fhg==77"
+         // +tokenId
         ,
         success: function(data){
-          console.log('success')
            resul=data.data;
           //  resul ={
           //     "deviceList":[
@@ -157,7 +149,7 @@ export class GaodeMapComponent implements OnInit {
           //         "volunteer_id":"1",
           //         "receiveTime":1501911522000,
           //         "createTime":1501911522000,
-          //         "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+          //         "deviceIMEI":"123456",
           //         "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
           //         "status":1
           //       }
@@ -179,23 +171,29 @@ export class GaodeMapComponent implements OnInit {
       if(resul.taskList){
         taskList=resul.taskList;
       }
-      if(deviceList){
-        $.each(deviceList,function (i,n) {
-          if(n['is_alarm']==1){
-            $('.panel').show();
-            var html = "<li><a href='javascript:;' class="+n.deviceIMEI+">"+n.NAME+"<span style='margin-left: 15px'>（正在报警）</span></a></li>"
-            $('.panel ul').append(html)
-            warningList.push(n.deviceIMEI);
-          }
-        })
-      }
+      // if(deviceList){
+      //   $.each(deviceList,function (i,n) {
+      //     if(n['is_alarm']==1){
+      //       $('.panel').show();
+      //       var html = "<li><a href='javascript:;' class="+n.deviceIMEI+">"+n.NAME+"<span class='warnings' style='margin-left: 15px'>（正在报警）</span></a></li>"
+      //       $('.panel ul').append(html)
+      //       warningList.push(n.deviceIMEI);
+      //     }
+      //   })
+      // }
       //任务状态表格
       if(taskList){
         if(taskList.length>0){
           $.each(taskList,function (i,n) {
             $.each(deviceList,function (a,obj) {
               if(obj.deviceIMEI==n.deviceIMEI){
-                obj.isCreat = true;
+                if(!obj.active){
+                  obj.status = n.status;
+                  obj.active = true;
+                }else {
+
+                }
+                // obj.isCreat = true;
               }
               // if(n.status==3){
               //   $.each(deviceList,function (a,obj) {
@@ -208,18 +206,18 @@ export class GaodeMapComponent implements OnInit {
           })
           $.each(taskList,function (i,n) {
             $('.panel').show();
-            var html = "<li><a href='javascript:;' id="+n.task_id+" class=";
+            var html = "<li><a href='javascript:;' id="+n.task_id+" class=" + n.deviceIMEI + ">";
             // var html2 = "<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+item.address+")</span>"
             // var html2 = "<span style='margin-left: 15px'>任务状态（救援中，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
             // var html3 = "<span style='margin-left: 15px'>任务状态（已结束，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
             if(n.status==1){
+              warningList.push(n.deviceIMEI);
               $.each(deviceList,function (a,obj) {
                 if(obj.deviceIMEI==n.deviceIMEI){
-                  html+=obj.deviceIMEI+">"+obj.NAME+"<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+obj.address+")</span></a></li>"
+                  html+=obj.NAME+"<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+obj.address+")</span></a></li>"
                 }
               })
             }else if(n.status==2){
-              html+=obj.deviceIMEI+">";
               $.each(deviceList,function (a,obj) {
                 if(obj.deviceIMEI==n.deviceIMEI){
                   html+=obj.NAME;
@@ -232,7 +230,6 @@ export class GaodeMapComponent implements OnInit {
                 }
               })
             }else {
-              html+=obj.deviceIMEI+">";
               $.each(deviceList,function (a,obj) {
                 if(obj.deviceIMEI==n.deviceIMEI){
                   html+=obj.NAME;
@@ -250,32 +247,6 @@ export class GaodeMapComponent implements OnInit {
         }
       }
 
-
-      //清空数据表
-      $.ajax({
-        type: "post",
-        url: 'wwe/lbs/delete',
-        cache: false,
-        success: function(data){
-          console.log('success')
-          //存入百度LBS(不支持批量，只能循环存)
-          $.each(volunteerList,function (i,obj) {
-            $.ajax({
-              type: "post",
-              url: 'wwe/lbs/create',
-              //    url: " api/query/messageAll",
-              // contentType:"application/json",
-              // dataType: "json",
-              data:'&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv&geotable_id=172905&coordType=3&lng='+obj.longitude+'&lat='+obj.latitude+'&tags='+obj.mobile,
-              cache: false,
-              success: function(data){
-                console.log('success')
-                // result=data.data.list;
-              }
-            });
-          })
-        }
-      });
     }
     // 地图刷新位置
     function changePlace(){
@@ -285,8 +256,8 @@ export class GaodeMapComponent implements OnInit {
         type: "get",
         cache: false,
         async: false, //同步请求外面才能获取到*
-        url: "indata?tokenId="
-         +tokenId
+        url: "indata?tokenId=QyD6L9imthLx2vHRv/9fhg==77"
+         // +tokenId
         ,
         success: function(data){
           console.log('success')
@@ -359,7 +330,7 @@ export class GaodeMapComponent implements OnInit {
           //         "volunteer_id":"1",
           //         "receiveTime":1501911522000,
           //         "createTime":1501911522000,
-          //         "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
+          //         "deviceIMEI":"123456",
           //         "task_id":"ba3ce39d-5169-4dfc-b1ee-9414ec8fd8ac",
           //         "status":1
           //       }
@@ -380,11 +351,11 @@ export class GaodeMapComponent implements OnInit {
           $.each(warningList, function (i, n) {
             $.each(deviceList, function (a, obj) {
               if(n == obj.deviceIMEI){
-                if(obj.is_alarm==0){
-                  $('.'+ n +' span').remove();
-                  var index = warningList.indexOf(n);
-                  warningList.splice(index, 1);
-                }
+                // if(obj.is_alarm==0){
+                //   $('.'+ n +' .warnings').remove();
+                //   var index = warningList.indexOf(n);
+                //   warningList.splice(index, 1);
+                // }
               }
             })
           })
@@ -402,24 +373,55 @@ export class GaodeMapComponent implements OnInit {
           $.each(taskList, function (i, n) {
             $.each(deviceList, function (a, obj) {
               if (obj.deviceIMEI == n.deviceIMEI) {
-                if (n.status == 1 || n.status == 2) {
-                  obj.isCreat = true;
-                } else {
-                  obj.isCreat = false;
+                if(!obj.active){
+                  obj.status = n.status;
+                  obj.active = true;
+                }else {
+
                 }
+                // if (n.status == 1 || n.status == 2) {
+                //   obj.isCreat = true;
+                // } else {
+                //   obj.isCreat = false;
+                // }
               }
             })
           })
           $.each(taskList, function (s, sss) {
             var html = "<span style='margin-left: 15px'>任务状态（";
-            // var html2 = "<li><a href='javascript:;' id="+sss.task_id+" class=";
+             var html2 = "<li><a href='javascript:;' id="+sss.task_id+" class="+ sss.deviceIMEI + "><span style='margin-left: 15px'>任务状态（";
             if (sss.status == 1) {
-              $.each(deviceList, function (aa, oobj) {
-                if (oobj.deviceIMEI == sss.deviceIMEI) {
-                  html += "等待接单，报警地址：" + oobj.address + ")</span>"
+              if(warningList.length==0){
+                $.each(deviceList, function (aa, oobj) {
+                  if (oobj.deviceIMEI == sss.deviceIMEI) {
+                    html2 += "等待接单，报警地址：" + oobj.address + ")</span></a></li>"
+                  }
+                })
+                $('.panel ul').append(html)
+              }
+              if(warningList.length>0){
+               if(warningList.indexOf(sss.deviceIMEI)>-1){
+
+               }
+                if(warningList.indexOf(sss.deviceIMEI)==-1){
+                  $.each(deviceList, function (aa, oobj) {
+                    if (oobj.deviceIMEI == sss.deviceIMEI) {
+                      html2 += "等待接单，报警地址：" + oobj.address + ")</span></a></li>"
+                    }
+                  })
+                  $('.panel ul').append(html)
                 }
-              })
+              }
+
             } else if (sss.status == 2) {
+              if(warningList.length>0){
+                $.each(warningList, function (i, n) {
+                    if(n == sss.deviceIMEI){
+                        var index = warningList.indexOf(n);
+                        warningList.splice(index, 1);
+                    }
+                })
+              }
               $.each(deviceList, function (aa, oobj) {
                 if (oobj.deviceIMEI == sss.deviceIMEI) {
                   html += "救援中，接单人："
@@ -430,7 +432,17 @@ export class GaodeMapComponent implements OnInit {
                   html += vol.name + "，电话：" + vol.mobile + ")</span>"
                 }
               })
+              $('#' + sss['task_id'] + ' span').remove();
+              $('#' + sss['task_id']).append(html);
             } else {
+              if(warningList.length>0){
+                $.each(warningList, function (i, n) {
+                  if(n == sss.deviceIMEI){
+                    var index = warningList.indexOf(n);
+                    warningList.splice(index, 1);
+                  }
+                })
+              }
               $.each(deviceList, function (aa, oobj) {
                 if (oobj.deviceIMEI == sss.deviceIMEI) {
                   html += "已结束，接单人："
@@ -441,40 +453,14 @@ export class GaodeMapComponent implements OnInit {
                   html += vol.name + "，电话：" + vol.mobile + ")</span>"
                 }
               })
+              $('#' + sss['task_id'] + ' span').remove();
+              $('#' + sss['task_id']).append(html);
             }
-            console.log(html)
-            $('#' + sss['task_id'] + ' span').remove();
-            $('#' + sss['task_id']).append(html);
+
           })
         }
       }
-      console.log(volunteerList)
-      console.log(deviceList)
-      //清空数据表
-      $.ajax({
-        type: "post",
-        url: 'wwe/lbs/delete',
-        cache: false,
-        success: function(data){
-          console.log('success')
-          //存入百度LBS(不支持批量，只能循环存)
-          $.each(volunteerList,function (i,obj) {
-            $.ajax({
-              type: "post",
-              url: 'wwe/lbs/create',
-              //    url: " api/query/messageAll",
-              // contentType:"application/json",
-              // dataType: "json",
-              data:'&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv&geotable_id=172905&coordType=3&lng='+obj.longitude+'&lat='+obj.latitude+'&tags='+obj.mobile,
-              cache: false,
-              success: function(data){
-                console.log('success')
-                // result=data.data.list;
-              }
-            });
-          })
-        }
-      });
+      console.log('报警列表'+warningList)
 
     }
     //地图坐标转换，添加marker
@@ -482,10 +468,8 @@ export class GaodeMapComponent implements OnInit {
       var lngX ;
       var latY ;
       markers = [];
-      statuses=[];
       var devicess = volunteerList.length;
       var volunters = deviceList.length;
-      console.log('报警数组'+warningList)
       $('#result .devicess').text(volunters);
       $('#result .volunters').text(devicess);
       var changgeUrl = "http://api.map.baidu.com/geoconv/v1/?coords=";
@@ -555,13 +539,13 @@ export class GaodeMapComponent implements OnInit {
         // }
       // });
       for(var b = 0,marker;b<volunters;b++){
-        if(deviceList[b].locationLongitude){
-          lngX = deviceList[b].locationLongitude;
+        if(deviceList[b].longitude){
+          lngX = deviceList[b].longitude;
         }else{
           lngX= 100.883;
         }
-        if(deviceList[b].locationLatitude){
-          latY = deviceList[b].locationLatitude;
+        if(deviceList[b].latitude){
+          latY = deviceList[b].latitude;
         }else{
           latY=1.852;
         }
@@ -572,9 +556,8 @@ export class GaodeMapComponent implements OnInit {
           changgeUrl2+= lngX+","+latY
         }
         changeXyList.push(deviceList[b]);
-        statuses.push(deviceList[b].is_alarm);
+        // statuses.push(deviceList[b].is_alarm);
       }
-      // console.log(changgeUrl2);
       // console.log(changeXyList);
       $.ajax({
         type: "get",
@@ -582,8 +565,7 @@ export class GaodeMapComponent implements OnInit {
         dataType: 'jsonp',
         success: function(data){
           if(data.status === 0) {
-            console.log(data.result)
-            console.log(statuses)
+            // console.log(data.result)
             var points=[];
             for(var c = 0,marker;c<data.result.length;c++){
               if(data.result.length == 0){
@@ -591,12 +573,13 @@ export class GaodeMapComponent implements OnInit {
               }
               var myIcon = new BMap.Icon("markers.png");
               var point = new BMap.Point(data.result[c].x, data.result[c].y);
+              addMarker(point,changeXyList[c].status,changeXyList[c].deviceIMEI,changeXyList[c].NAME);
               points.push(point)
-               if(changeXyList[c].isCreat){
-                 addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
-               }else {
-                 addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
-               }
+               // if(changeXyList[c].isCreat){
+               //   addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
+               // }else {
+               //   addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
+               // }
             }
             //调整视野
             // var view = map.getViewport(points);
@@ -627,52 +610,15 @@ export class GaodeMapComponent implements OnInit {
       map.openInfoWindow(infoWindow,point); //开启信息窗口
     }
 
-    // 全屏
-    $('.video_link').on('click',()=>{
-      alert(2)
-      this.router.navigate(['video']);
-    }
-    )
 
-    $('.seracch').on('click',function () {
-      var address = $("#address").val();
-      // getBoundary()
-      // searchControl.initMarker(108.924295,34.235939);
-
-    })
-    $('#BMapLib_sc_b0').on('click',function () {
-      var address = $("#BMapLib_PoiSearch").val();
-      // getBoundary()
-      // searchControl.initMarker(108.924295,34.235939);
-
-    })
-    $('.quanping').on('click',function () {
-      $(this).hide()
-      $('.back').show();
-      var showMap = document.getElementById("container");
-      $('#page-wrapper').removeClass('marg220').addClass('fullscreen');
-
-      showMap.style.width = screen.width + "px";
-      showMap.style.height = screen.height + "px";
-      requestFullScreen(document.documentElement);
-    })
-    $('.back').on('click',function () {
-      $(this).hide()
-      $('.quanping').show();
-      var showMap = document.getElementById("container");
-      $('#page-wrapper').addClass('marg220').removeClass('fullscreen');
-      showMap.style.width = X;
-      showMap.style.height = Y;
-      exitFull(document);
-    })
 
     // 编写自定义函数,创建标注
-    function addMarker(point,status,jiedan,deviceIMEI,name,alarmId){
-      // console.log('addMarker是否接单'+jiedan)
-      // console.log('addMarker是否报警'+status)
+    function addMarker(point,status,deviceIMEI,name){
       var infoWindow;
       var marker;
-      if(jiedan&&status==0){
+      console.log(point);
+      console.log(status);
+      if(status==2){
       // if(jiedan){
         $('.panel').show();
         var imgUrl;
@@ -744,178 +690,186 @@ export class GaodeMapComponent implements OnInit {
         var content = '<div class="personIcon">' +
           '<img src="web/file/downloadFile/'+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
           '<p style="margin: 15px 0 15px 0">需要救援人:' +name+'</p>'+
-          '<div style="display: none" class="rescuesta">救援状态：<span></span></div>'
-          // '地址：'+deviceIMEI
-          +'<button class="btn btn-red" id="startRescue">启动救援</button><button class="btn btn-red ml10" id="cancelRescue">取消救援</button>'+
           '</div>';
+        // var content = '<div class="personIcon">' +
+        //   '<img src="web/file/downloadFile/'+imgUrl+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+        //   '<p style="margin: 15px 0 15px 0">需要救援人:' +name+'</p>'+
+        //   '<div style="display: none" class="rescuesta">救援状态：<span></span></div>'
+        //   // '地址：'+deviceIMEI
+        //   +'<button class="btn btn-red" id="startRescue">启动救援</button><button class="btn btn-red ml10" id="cancelRescue">取消救援</button>'+
+        //   '</div>';
         //创建检索信息窗口对象
         var searchInfoWindow = null;
         infoWindow = new BMap.InfoWindow(content);
         infoWindow.addEventListener("open", function(e){
-          $('#cancelRescue').on("click", function(){
-            var creatUrl = "web/task/create?alarmId="+alarmId+"&rescueType=3&deviceIMEI="+deviceIMEI;
-            var result;
-            $.ajax({
-              type: "get",
-              url: creatUrl,
-              cache: false,
-              async: false,
-              success: function(data){
-                if(data.status==1){
-                  layer.open({
-                    title: '提示'
-                    ,content: '救援任务已取消'
-                  });
-                  $("#cancelRescue").attr("disabled", true);
-                  $("#startRescue").attr("disabled", true);
-                }else{
-                  layer.open({
-                    title: '提示'
-                    ,content: '任务取消失败'
-                  });
-                }
-              }
-            });
-
-        })
-          $('#startRescue').on("click", function(){
-            var creatUrl = "web/task/create?alarmId="+alarmId+"&rescueType=2&deviceIMEI="+deviceIMEI;
-            // var creatUrl = "web/task/create?alarmId=17248b69-e61e-4458-94cd-064c063bd235&rescueType=2&deviceIMEI="+deviceIMEI;
-            var result;
-            $.ajax({
-              type: "get",
-              url: creatUrl,
-              cache: false,
-              async: false,
-              success: function(data){
-                layer.open({
-                  title: '提示'
-                  ,content: data.msg
-                });
-                result = data.data;
-              }
-            });
-            var taskId = result.taskId;
-            //{"status":1,"msg":"创建任务单成功,成功返回任务单号",
-            // "time":0,"objectbean":null,"code":0,"error":null,"data":{"taskId":"862ae897-f7d7-404f-bbd1-b1dfd086e883"}}
-            if(taskId){
-              if($('.'+deviceIMEI)){
-                var html2 = "<span>(已经创建任务，等待接单)</span>"
-                $('.'+deviceIMEI).append(html2);
-                $('.'+deviceIMEI).attr('id',taskId);
-              }
-              $("#cancelRescue").attr("disabled", true);
-              $("#startRescue").attr("disabled", true);
-            }
-            //推送app上报位置接口，代理前是web/query/voLocation
-            $.ajax({
-              type: "get",
-              url: "send/query/voLocation",
-              cache: false,
-              async: false,
-              success: function(data){
-                console.log(data.data)
-              }
-            });
-            var mPoint = infoWindow.getPosition();
-            //圆形区域搜索
-            var circle = new BMap.Circle(mPoint, 10000, {
-              fillColor: "blue",
-              strokeWeight: 1,
-              fillOpacity: 0.3,
-              strokeOpacity: 0.3
-            });
-            map.addOverlay(circle);
-            //检索附近志愿者
-            var parment2={
-              'ak':'nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv',
-              'geotable_id':172905,
-              'coord_type':3,
-              'location':''+mPoint.lng+','+mPoint.lat+'',
-              'radius':10000
-            };
-            $.ajax({
-              type: "get",
-              url: 'http://api.map.baidu.com/geosearch/v3/nearby?callback=?',
-              contentType: 'application/json',
-              data:parment2,
-              dataType: 'json',
-              async: false,
-              cache: false,
-              success: function(data){
-                console.log(data.contents.length)
-                var arrObj=[];
-                if(data.contents.length>0){
-                  var person = '发现'+data.contents.length+'位志愿者，推送任务中...';
-                  $.each(data.contents,function (index,obj) {
-                    arrObj.push(obj.tags)
-                  })
-                  layer.msg(person,{
-                    time: 2000, //20s后自动关闭
-                  });
-                   var item = sendTask(result.taskId,arrObj);
-                   if(item.itemId){
-                     // var html2 = item.surname+'，报警地址：'+item.address
-                     var html2 = "<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+item.address+")</span>"
-                     $('.'+deviceIMEI+' span').remove();
-                     $('.'+deviceIMEI).append(html2)
-                   }
-                  map.removeOverlay(circle);
-                }else{
-                  map.removeOverlay(circle);
-                  var html = '附近无志愿者请值班人员指定<select id="volunter">'
-                  html+= ' <option value="-1">请选择</option>';
-                  $.each(volunteerList, function(index, obj){
-                        html+= '<option value="'+obj['volunteer_id']+'">'+obj.name+'</option>';
-                  });
-                  html+= ' </select>去救援';
-                  var ak = layer.open({
-                    title: '提示',
-                    content: html,
-                    yes: () => {
-                      console.log($('#volunter option:selected').val())
-                      if(!$('#volunter').val()){
-                        alert('必须指定一个志愿者！')
-                        return
-                      }
-                      var goUrl = 'web/task/receive?userId='+$('#volunter').val()+'&itemId='+result.taskId
-                        $.ajax({
-                          type: "get",
-                          url: goUrl,
-                          cache: false,
-                          async: false,
-                          success: function(data){
-                            if(data.status==1){
-                              layer.open({
-                                title: '提示'
-                                ,content: '指定成功'
-                              });
-                            }else{
-                              layer.open({
-                                title: '提示'
-                                ,content: '强制接单失败'
-                              });
-                            }
-                          }
-                        });
-                      layer.close(ak);
-                      }
-                  })
-                }
-              }
-            });
-
-          });
+        //   $('#cancelRescue').on("click", function(){
+        //     var creatUrl = "web/task/create?alarmId="+alarmId+"&rescueType=3&deviceIMEI="+deviceIMEI;
+        //     var result;
+        //     $.ajax({
+        //       type: "get",
+        //       url: creatUrl,
+        //       cache: false,
+        //       async: false,
+        //       success: function(data){
+        //         if(data.status==1){
+        //           layer.open({
+        //             title: '提示'
+        //             ,content: '救援任务已取消'
+        //           });
+        //           $('.'+ deviceIMEI).remove();
+        //           $("#cancelRescue").attr("disabled", true);
+        //           $("#startRescue").attr("disabled", true);
+        //         }else{
+        //           layer.open({
+        //             title: '提示'
+        //             ,content: '任务取消失败'
+        //           });
+        //
+        //         }
+        //       }
+        //     });
+        //
+        // })
+        //   $('#startRescue').on("click", function(){
+        //     var creatUrl = "web/task/create?alarmId="+alarmId+"&rescueType=2&deviceIMEI="+deviceIMEI;
+        //     // var creatUrl = "web/task/create?alarmId=17248b69-e61e-4458-94cd-064c063bd235&rescueType=2&deviceIMEI="+deviceIMEI;
+        //     var result;
+        //     $.ajax({
+        //       type: "get",
+        //       url: creatUrl,
+        //       cache: false,
+        //       async: false,
+        //       success: function(data){
+        //         layer.open({
+        //           title: '提示'
+        //           ,content: data.msg
+        //         });
+        //         result = data.data;
+        //       }
+        //     });
+        //     var taskId = result.taskId;
+        //     //{"status":1,"msg":"创建任务单成功,成功返回任务单号",
+        //     // "time":0,"objectbean":null,"code":0,"error":null,"data":{"taskId":"862ae897-f7d7-404f-bbd1-b1dfd086e883"}}
+        //     if(taskId){
+        //       if($('.'+deviceIMEI)){
+        //         var html2 = "<span>(已经创建任务，等待接单)</span>"
+        //         $('.'+deviceIMEI).append(html2);
+        //         $('.'+deviceIMEI).attr('id',taskId);
+        //       }
+        //       $("#cancelRescue").attr("disabled", true);
+        //       $("#startRescue").attr("disabled", true);
+        //     }
+        //     //推送app上报位置接口，代理前是web/query/voLocation
+        //     $.ajax({
+        //       type: "get",
+        //       url: "send/query/voLocation",
+        //       cache: false,
+        //       async: false,
+        //       success: function(data){
+        //         console.log(data.data)
+        //       }
+        //     });
+        //     var mPoint = infoWindow.getPosition();
+        //     //圆形区域搜索
+        //     var circle = new BMap.Circle(mPoint, 10000, {
+        //       fillColor: "blue",
+        //       strokeWeight: 1,
+        //       fillOpacity: 0.3,
+        //       strokeOpacity: 0.3
+        //     });
+        //     map.addOverlay(circle);
+        //     //检索附近志愿者
+        //     var parment2={
+        //       'ak':'nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv',
+        //       'geotable_id':172905,
+        //       'coord_type':3,
+        //       'location':''+mPoint.lng+','+mPoint.lat+'',
+        //       'radius':10000
+        //     };
+        //     $.ajax({
+        //       type: "get",
+        //       url: 'http://api.map.baidu.com/geosearch/v3/nearby?callback=?',
+        //       contentType: 'application/json',
+        //       data:parment2,
+        //       dataType: 'json',
+        //       async: false,
+        //       cache: false,
+        //       success: function(data){
+        //         console.log(data.contents.length)
+        //         var arrObj=[];
+        //         if(data.contents.length>0){
+        //           var person = '发现'+data.contents.length+'位志愿者，推送任务中...';
+        //           $.each(data.contents,function (index,obj) {
+        //             arrObj.push(obj.tags)
+        //           })
+        //           layer.msg(person,{
+        //             time: 2000, //20s后自动关闭
+        //           });
+        //            var item = sendTask(result.taskId,arrObj);
+        //            if(item.itemId){
+        //              // var html2 = item.surname+'，报警地址：'+item.address
+        //              var html2 = "<span style='margin-left: 15px'>任务状态（等待接单，报警地址："+item.address+")</span>"
+        //              $('.'+deviceIMEI+' span').remove();
+        //              $('.'+deviceIMEI).append(html2)
+        //            }
+        //           map.removeOverlay(circle);
+        //         }
+        //          强制接单
+        //          else{
+                //   map.removeOverlay(circle);
+                //   var html = '附近无志愿者请值班人员指定<select id="volunter">'
+                //   html+= ' <option value="-1">请选择</option>';
+                //   $.each(volunteerList, function(index, obj){
+                //         html+= '<option value="'+obj['volunteer_id']+'">'+obj.name+'</option>';
+                //   });
+                //   html+= ' </select>去救援';
+                //   var ak = layer.open({
+                //     title: '提示',
+                //     content: html,
+                //     yes: () => {
+                //       console.log($('#volunter option:selected').val())
+                //       if(!$('#volunter').val()){
+                //         alert('必须指定一个志愿者！')
+                //         return
+                //       }
+                //       var goUrl = 'web/task/receive?userId='+$('#volunter').val()+'&itemId='+result.taskId
+                //         $.ajax({
+                //           type: "get",
+                //           url: goUrl,
+                //           cache: false,
+                //           async: false,
+                //           success: function(data){
+                //             if(data.status==1){
+                //               layer.open({
+                //                 title: '提示'
+                //                 ,content: '指定成功'
+                //               });
+                //             }else{
+                //               layer.open({
+                //                 title: '提示'
+                //                 ,content: '强制接单失败'
+                //               });
+                //             }
+                //           }
+                //         });
+                //       layer.close(ak);
+                //       }
+                //   })
+                // }
+                // 强制接单end
+        //       }
+        //     });
+        //   });
         })
         marker = new BMap.Marker(point,{icon:myIcon,title:deviceIMEI});
         map.addOverlay(marker,{title:deviceIMEI});
         markers.push(marker);
-        if($.inArray(deviceIMEI, warningList)==-1){
-          var html = "<li><a href='javascript:;' class="+deviceIMEI+">"+name+"<span style='margin-left: 15px'>（正在报警）</span></a></li>"
-          $('.panel ul').prepend(html)
-          warningList.push(deviceIMEI);
+        // if($.inArray(deviceIMEI, warningList)==-1){
+        //   var html = "<li><a href='javascript:;' class="+deviceIMEI+">"+name+"<span class='warnings' style='margin-left: 15px'>（正在报警）</span></a></li>"
+        //   $('.panel ul').prepend(html)
+        //   warningList.push(deviceIMEI);
+        // }
 
-        }
         // else {
         //   // 查询接单壮态,如果接单传志愿者电话给后台  志愿者status 1 创建任务无人接单 2 救援中 3 结束
         //   $.each(volunteerList,function (index,obj) {
@@ -973,10 +927,6 @@ export class GaodeMapComponent implements OnInit {
       marker.addEventListener("click", function(e){
         this.openInfoWindow(infoWindow);
         aa();
-        // var circle = new BMap.Circle(point,100,{fillColor:"blue", strokeWeight: 1 ,fillOpacity: 0.2});
-        // map.addOverlay(circle);
-        // var local =  new BMap.LocalSearch(map, {renderOptions: {map: map, autoViewport: false,panel: "results"}});
-        // local.searchNearby('志愿者',point,100);
         //图片加载完毕重绘infowindow
         document.getElementById('imgDemo').onload = function (){
           infoWindow.redraw();   //防止在网速较慢，图片未加载时，生成的信息框高度比图片的总高度小，导致图片部分被隐藏
@@ -1003,37 +953,46 @@ export class GaodeMapComponent implements OnInit {
         }
       })
     }
-    //推送任务
-    function  sendTask(id,arrObj){
-      var result;
-      var taskurl = "send/query/task?taskId="+id+"&alias=";
-      $.each(arrObj,function (index,n) {
-        if(index<(arrObj.length-1)){
-          taskurl+=n+","
-        }else{
-          taskurl+=n
-        }
-      })
-      $.ajax({
-        type: "get",
-        url: taskurl,
-        cache: false,
-        async: false,
-        success: function(data){
-          if(data.data){
-            layer.msg('推送成功',{
-              time: 2000, //20s后自动关闭
-            });
-            result = data.data;
-          }
-        }
-      });
-      return result;
-      //无人接单
-      // if(deviceList[0].task){
-      //
-      // }
-    }
+
+
+    // 全屏
+    $('.video_link').on('click',()=>{
+        alert(2)
+        this.router.navigate(['video']);
+      }
+    )
+
+    $('.seracch').on('click',function () {
+      var address = $("#address").val();
+      // getBoundary()
+      // searchControl.initMarker(108.924295,34.235939);
+
+    })
+    $('#BMapLib_sc_b0').on('click',function () {
+      var address = $("#BMapLib_PoiSearch").val();
+      // getBoundary()
+      // searchControl.initMarker(108.924295,34.235939);
+
+    })
+    $('.quanping').on('click',function () {
+      $(this).hide()
+      $('.back').show();
+      var showMap = document.getElementById("container");
+      $('#page-wrapper').removeClass('marg220').addClass('fullscreen');
+
+      showMap.style.width = screen.width + "px";
+      showMap.style.height = screen.height + "px";
+      requestFullScreen(document.documentElement);
+    })
+    $('.back').on('click',function () {
+      $(this).hide()
+      $('.quanping').show();
+      var showMap = document.getElementById("container");
+      $('#page-wrapper').addClass('marg220').removeClass('fullscreen');
+      showMap.style.width = X;
+      showMap.style.height = Y;
+      exitFull(document);
+    })
     //区域标出
     function getBoundary(ak){
       var bdary = new BMap.Boundary();
@@ -1088,12 +1047,6 @@ export class GaodeMapComponent implements OnInit {
       if (exitMethod) {
         exitMethod.call(element);
       }
-      // else if (typeof $(window).ActiveXObject !== "undefined") {//for Internet Explorer
-      //   var wscript = $(window).ActiveXObject("WScript.Shell");
-      //   if (wscript !== null) {
-      //     wscript.SendKeys("{F11}");
-      //   }
-      // }
     }
     //重新登录
     function loginFull(element) {
@@ -1101,17 +1054,39 @@ export class GaodeMapComponent implements OnInit {
       if (element) {
         element.href="http://60.205.4.247:9000";
       }
-      // else if (typeof $(window).ActiveXObject !== "undefined") {//for Internet Explorer
-      //   var wscript = $(window).ActiveXObject("WScript.Shell");
-      //   if (wscript !== null) {
-      //     wscript.SendKeys("{F11}");
-      //   }
-      // }
     }
 
-
-
-
+    //推送任务
+    // function  sendTask(id,arrObj){
+    //   var result;
+    //   var taskurl = "send/query/task?taskId="+id+"&alias=";
+    //   $.each(arrObj,function (index,n) {
+    //     if(index<(arrObj.length-1)){
+    //       taskurl+=n+","
+    //     }else{
+    //       taskurl+=n
+    //     }
+    //   })
+    //   $.ajax({
+    //     type: "get",
+    //     url: taskurl,
+    //     cache: false,
+    //     async: false,
+    //     success: function(data){
+    //       if(data.data){
+    //         layer.msg('推送成功',{
+    //           time: 2000, //20s后自动关闭
+    //         });
+    //         result = data.data;
+    //       }
+    //     }
+    //   });
+    //   return result;
+    //   //无人接单
+    //   // if(deviceList[0].task){
+    //   //
+    //   // }
+    // }
 
 
 
@@ -1142,71 +1117,6 @@ export class GaodeMapComponent implements OnInit {
     //   var local =  new BMap.LocalSearch(map, {renderOptions: {map: map, autoViewport: false,panel: "results"}});
     //   local.searchNearby('志愿者',mPoint,100);
     // });
-    // volunteerList =
-    //   [
-    //     {
-    //       "deviceIMEI": "1123",
-    //       "locationTime": "2017-03-06 11:22:56",
-    //       "locationPower": "97%",
-    //       "longitude": 108.932575,
-    //       "latitude": 34.230698,
-    //       "locationType": "GPS"
-    //     },
-    //     {
-    //       "deviceIMEI": "1123456",
-    //       "locationTime": "2017-03-06 11:22:56",
-    //       "locationPower": "97%",
-    //       "longitude": 108.822575,
-    //       "latitude": 34.230688,
-    //       "locationType": "GPS"
-    //     },
-    //     {
-    //       "deviceIMEI": "1123456789",
-    //       "locationTime": "2017-03-06 11:22:56",
-    //       "locationPower": "97%",
-    //       "longitude": 108.812575,
-    //       "latitude": 34.230688,
-    //       "locationType": "GPS"
-    //     }
-    //     ]
-    // deviceList= [
-    //   {
-    //     "is_alarm": 0,
-    //     "address": "西安市雁塔区",
-    //     "deviceIMEI": "4545131654512",
-    //     "locationTime": "2017-08-01 14:23:46",
-    //     "mobile": "18699999999",
-    //     "locationLongitude": 108,
-    //     "locationLatitude": 36,
-    //     "onlineTime": 1501570011000,
-    //     "locationType": 1,
-    //     "deviceMobile": null,
-    //     "NAME": "张三",
-    //     "deviceStatus": null
-    //   },
-    //   {
-    //     "is_alarm": 1,
-    //     "address": "西安市莲湖区",
-    //     "deviceIMEI": "4545131654513",
-    //     "locationTime": "2017-08-31 14:25:35",
-    //     "mobile": "18699999999",
-    //     "locationLongitude": 108,
-    //     "locationLatitude": 36,
-    //     "onlineTime": 1501568591000,
-    //     "locationType": 1,
-    //     "deviceMobile": "",
-    //     "NAME": "李四",
-    //     "deviceStatus": ""
-    //   }
-    // ]
-
-
-
-
-
-
-
-
 
 
   }

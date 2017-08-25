@@ -51,7 +51,7 @@
           </template>
           <template ngSwitchDefault>
             <a >
-              <i class="fa" [ngClass]="{'fa-gear':(i==1),'fa-bars':i>1}"></i>
+              <i class="fa" [ngClass]="{'fa-gear':(i==0),'fa-bars':i>0}"></i>
               <span class="nav-label">{{menu.permissionName}}</span>
               <span class="fa arrow" (click)="menu.selected=!menu.selected" ></span>
             </a>

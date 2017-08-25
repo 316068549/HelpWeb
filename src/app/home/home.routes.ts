@@ -66,10 +66,6 @@ export const workspaceRoutes = [
       //   path: 'role',
       //   loadChildren: '../role/role.module#RoleModule'
       // },
-      // {
-      //   path: 'data',
-      //   loadChildren: '../data/data.module#DataModule'
-      // },
 
       {
         path: 'monitor',

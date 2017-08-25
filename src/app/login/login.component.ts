@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
 
   public user: User = new User();
 
+
   constructor(
 
 
@@ -25,7 +26,8 @@ export class LoginComponent implements OnInit {
     public activatedRoute: ActivatedRoute,
     public userLoginService: UserLoginService
   ) {
-
+    this.user.userName ='';
+    this.user.userPassword='';
   }
 
 
@@ -52,9 +54,11 @@ export class LoginComponent implements OnInit {
         localStorage.setItem("roleId", res.roleId);
         let userid = res.tokenId.split('==')[1]
         localStorage.setItem("userId", userid);
-
-
-        this.router.navigateByUrl("home");
+        if(res.roleId==3){
+          this.router.navigateByUrl("home/helpers/116");
+        }else{
+          this.router.navigateByUrl("home");
+        }
       }
       return false;
 

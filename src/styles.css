@@ -157,7 +157,7 @@ body.canvas-menu .navbar-static-side, body.fixed-sidebar .navbar-static-side {
 }
 .nav-header{
   padding: 33px 25px;
-  background: url(assets/img/header-profile.png) no-repeat;
+  /*background: url(assets/img/header-profile.png) no-repeat;*/
 }
 .nav-header a{
   color: #DFE4ED;

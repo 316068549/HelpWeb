@@ -1,6 +1,5 @@
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
-import { TestComponent } from './test/test.component';
 
 export const appRoutes = [
 	{
@@ -12,11 +11,6 @@ export const appRoutes = [
 		path: 'login',
 		component: LoginComponent
 	},
-
-  // {
-  //   path: 'home',
-  //   component: HomeComponent  TestComponent
-  // },
 	{
 		path: 'home',
 		loadChildren: './home/home.module#WorkspaceModule'

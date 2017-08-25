@@ -3,7 +3,7 @@ import { Role } from '../models/role';
   userId: number;
   userName: string;
   nickName: string;
-  userPassword:number;
+  userPassword:string;
   createTime:number;
   userStatus:boolean;
   departmentId:number;
