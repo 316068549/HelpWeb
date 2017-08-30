@@ -6,6 +6,7 @@ export class Helpers {
   password:string;
   mobile: string;
   identityCard:string;
+  personnelForm:string;
   rescueName: string;
   rescueTeamId:number;
 }

@@ -47,6 +47,9 @@
             电话
           </th>
           <th>
+            人员构成
+          </th>
+          <th>
             所属救援队
           </th>
           <th>
@@ -62,6 +65,7 @@
           <td>{{helper.password}}</td>
           <td>{{helper.identityCard}}</td>
           <td>{{helper.mobile}}</td>
+          <td>{{helper.personnelForm}}</td>
           <td>{{helper.rescueName}}</td>
           <!--<td>&nbsp;&nbsp;-->
             <!--<a  (click)="deletemenu=true; clicked=true;helper === selectedHelper" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;-->
@@ -102,7 +106,7 @@
 
 <div [hidden]="!tjmenu"  class="operate menu">
   <form class="operate-form"  #tjmenuform="ngForm" enctype="multipart/form-data" (ngSubmit)="submied = false;tjmenuform.form.valid && add(helperName.value,menuSelected.value,password.value,
-        phoneNumber.value, nationalId.value,rescueTeam.value,imageUrl.value);">
+        phoneNumber.value, nationalId.value,personnelForm.value,rescueTeam.value,imageUrl.value);">
     <div class="operate-title">添加救助人员<span (click)="clicked=false; tjmenu=false;" class="fa fa-close"></span></div>
     <div class="operate-content">
       <!--<div class="operate-item fn-clear">-->
@@ -159,6 +163,13 @@
                  pattern="/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/">
           <p *ngIf="tjmenuform.submitted && !nationalId.value && !submied"   class="text-danger">身份证号不能为空</p>
           <p *ngIf="nationalId.errors?.pattern && nationalId.touched && !submied"  class="text-danger">身份证格式错误</p>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>人员类型:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="personnelForm" name="personnelForm" class="form-box" [(ngModel)]="Helpers.personnelForm" #personnelForm="ngModel">
+          <p *ngIf="tjmenuform.submitted && !personnelForm.value && !submied"   class="text-danger">人员类型不能为空</p>
         </div>
       </div>
       <div class="operate-item fn-clear">

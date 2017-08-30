@@ -64,7 +64,7 @@ header{
 .panel ul li a:hover{
   color: #337ab7 !important;
 }
-.panel ul li .active{
+.panel ul .active a{
   color: #337ab7 !important;
 }
 .height100{
@@ -74,7 +74,11 @@ header{
 .personIcon{
   margin:0;line-height:20px;padding:2px;width:289px;height: auto;
 }
-
+#phoneBox{
+line-height: 22px;
+    padding-left: 5px;
+    margin-bottom: 10px;
+}
 header h1{
   float: left;
   text-align: center;

@@ -23,6 +23,7 @@ export class GaodeMapComponent implements OnInit {
 
   ngOnInit() {
     var pointList;
+    var points =[];
      var  markers,lineArr = [];
     var polyline;
     var imeicode = this.route.snapshot.params['deviceIMEI'];
@@ -53,7 +54,7 @@ export class GaodeMapComponent implements OnInit {
       var start= $('#start').val();
       var end = $('#end').val();
       var result;
-      var paramms = {imeiCode:imeicode,startTime:start,endTime:end}
+      var paramms = {deviceImei:imeicode,startTime:start,endTime:end}
 
       if(paramms.startTime==''){
         delete paramms['startTime'];
@@ -73,7 +74,7 @@ export class GaodeMapComponent implements OnInit {
         success: function(data){
           console.log('success')
           if(data.data){
-            result=data.data.list;
+            result=data.data;
           }else {
             layer.open({
               title: '提示'
@@ -115,8 +116,8 @@ export class GaodeMapComponent implements OnInit {
 
     function startRun(){  //开始绘制轨迹
       if(pointList){
-        var x=pointList[0].longitude;
-        var y=pointList[0].latitude;
+        var x=pointList[0].locationLongitude;
+        var y=pointList[0].locationLatitude;
         //坐标转换完之后的回调函数
         completeEventHandler(x,y);
       }
@@ -133,11 +134,11 @@ export class GaodeMapComponent implements OnInit {
       var pointLen = pointList.length;
       console.log(pointList)
       for(var i = 0,marker;i<pointLen;i++){
-        if(pointList[i].longitude){
-          lngX = pointList[i].longitude;
+        if(pointList[i].locationLongitude){
+          lngX = pointList[i].locationLongitude;
         }
-        if(pointList[i].latitude){
-          latY = pointList[i].latitude;
+        if(pointList[i].locationLatitude){
+          latY = pointList[i].locationLatitude;
         }
         if(i<(pointLen-1)){
           changgeUrl+= lngX+","+latY+";"
@@ -151,44 +152,7 @@ export class GaodeMapComponent implements OnInit {
         //
         // }
         //预留问题
-        $.ajax({
-          type: "get",
-          url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
-          dataType: 'jsonp',
-          success: function(data){
-            if(data.status === 0) {
-              console.log(data.result)
-              var points=[];
-              for(var c = 0,marker;c<data.result.length;c++){
-                if(data.result.length == 0){
-                  return;
-                }
-                if(c==0){
-                  var point = new BMap.Point(data.result[c].x, data.result[c].y);
-                  var marker = new BMap.Marker(point,{icon:myIcon});
-                  marker.setLabel('起');
-                  map.addOverlay(marker);
-                }else if(c<data.points.length-1){
-                  var point = new BMap.Point(data.result[c].x, data.result[c].y);
-                  var marker = new BMap.Marker(point);
-                  map.addOverlay(marker);
-                }else{
-                  var point = new BMap.Point(data.result[c].x, data.result[c].y);
-                  var marker = new BMap.Marker(point,{icon:myIcon2});
-                  map.addOverlay(marker);
-                }
-              }
-              var view = map.getViewport(data.points);
-              var mapZoom = view.zoom;
-              var centerPoint = view.center;
-              map.centerAndZoom(centerPoint,mapZoom);
-              //绘制轨迹
-              polyline = new BMap.Polyline(data.points, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
-              map.addOverlay(polyline);
-              //调整视野
-            }
-          }
-        });
+
         // lngX = pointList[i].longitude;
         // latY = pointList[i].latitude;
         // lineArr.push(new BMap.Point(lngX,latY));
@@ -275,6 +239,47 @@ export class GaodeMapComponent implements OnInit {
         //   // markers.push(marker)
         // }
       }
+      $.ajax({
+        type: "get",
+        url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
+        dataType: 'jsonp',
+        success: function(data){
+          if(data.status === 0) {
+            console.log(data.result)
+            var points=[];
+            for(var c = 0,marker;c<data.result.length;c++){
+              if(data.result.length == 0){
+                return;
+              }
+              if(c==0){
+                var point = new BMap.Point(data.result[c].x, data.result[c].y);
+                var marker = new BMap.Marker(point,{icon:myIcon});
+                marker.setLabel('起');
+                map.addOverlay(marker);
+                points.push(point);
+              }else if(c<data.result.length-1){
+                var point = new BMap.Point(data.result[c].x, data.result[c].y);
+                var marker = new BMap.Marker(point);
+                map.addOverlay(marker);
+                points.push(point);
+              }else{
+                var point = new BMap.Point(data.result[c].x, data.result[c].y);
+                var marker = new BMap.Marker(point,{icon:myIcon2});
+                map.addOverlay(marker);
+                points.push(point);
+              }
+            }
+            var view = map.getViewport(points);
+            var mapZoom = view.zoom;
+            var centerPoint = view.center;
+            map.centerAndZoom(centerPoint,mapZoom);
+            // //绘制轨迹
+            polyline = new BMap.Polyline(points, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
+            map.addOverlay(polyline);
+            //调整视野
+          }
+        }
+      });
     }
 
     function changeX(){

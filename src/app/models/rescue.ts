@@ -3,4 +3,5 @@ export class Rescue {
   rescueTeam: string;
   alarmNumber: number;
   rescueNumber:number;
+ volunteerName:string;
 }

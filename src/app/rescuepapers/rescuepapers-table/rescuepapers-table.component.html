@@ -69,7 +69,7 @@
         <tr *ngFor="let rescue of rescuePapers; let i = index;"  (click)="onSelect(rescue)">
           <td>{{rescue.taskId}}</td>
           <td >{{rescue.sosName}}</td>
-          <td >{{rescue.sosTime}}</td>
+          <td >{{rescue.sosTime| date:'yyyy-MM-dd HH:mm:ss'}}</td>
           <td>{{rescue.sosAddress}}</td>
           <td>{{rescue.sosReason}}</td>
           <td>{{rescue.voName}}</td>

@@ -43,6 +43,10 @@ export const workspaceRoutes = [
         loadChildren: '../helpers/helpers.module#HelpersModule'
       },
       {
+        path: 'wearer/:permissionId',
+        loadChildren: '../wearer/wearer.module#WearerModule'
+      },
+      {
         path: 'device/:permissionId',
         loadChildren: '../device/device.module#DeviceModule'
       },

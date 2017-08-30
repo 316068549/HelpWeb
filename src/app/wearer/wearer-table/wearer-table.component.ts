@@ -15,27 +15,28 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
-import { Helpers } from '../../models/helpers';
-import { HelperService } from '../helpers-service';
+import { Wearer } from '../../models/wearer';
+import { sexChangePipe } from './wearer.pipe';
+import { WearerService } from '../wearer-service';
 import { ActivatedRoute, Params }   from '@angular/router';
 import { fadeIn } from '../../animations/fade-in';
 declare var $:any;
 declare var layer:any;
 
 @Component({
-  selector: 'app-helpers-table',
-  templateUrl: './helpers-table.component.html',
-  styleUrls: ['./helpers-table.component.css'],
+  selector: 'app-wearer-table',
+  templateUrl: './wearer-table.component.html',
+  styleUrls: ['./wearer-table.component.css'],
   animations: [ fadeIn]
 })
-export class HelpersTableComponent implements OnInit {
-  helpers: Helpers[];
-  helper: Helpers;
-  selectedHelper: Helpers;
+export class WearerTableComponent implements OnInit {
+  wearers: Wearer[];
+  wearer: Wearer;
+  selectedWearer: Wearer;
   private tjmenu:boolean;
   private clicked:boolean;
   private deletemenu:boolean = false;
-  Helpers=new Helpers();
+  Wearer=new Wearer();
   parentNames = [];
   private submied:boolean = false;
   private addbtn:boolean = false;
@@ -58,7 +59,7 @@ export class HelpersTableComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private userService: HelperService,
+    private userService: WearerService,
     private location: Location
   ) {
     // // 4. 初始化表达组里面的内容
@@ -139,7 +140,7 @@ export class HelpersTableComponent implements OnInit {
     this.curPage = index;
     this.userService.getMenuDatas(index+1,5).then( res => {
       if(res['code'] == 0){
-        this.helpers = res['data']['list'];
+        this.wearers = res['data']['list'];
         this.curPage = res['data']['pageNum'];
       }else if(res['code'] == 5){
         var ak = layer.open({
@@ -162,12 +163,12 @@ export class HelpersTableComponent implements OnInit {
   }
 
 
-  delete(helper: Helpers): void{
+  delete(wearer: Wearer): void{
     var ak = layer.open({
       content: '确定删除？'
       , btn: ['确定', '取消']
       , yes: () => {
-        this.userService.delete(helper.volunteerId).then(res =>{
+        this.userService.delete(wearer.oldManId).then(res =>{
           if(res['code'] == 0){
           }else if(res['code'] == 5){
             alert(res['error']);
@@ -194,7 +195,7 @@ export class HelpersTableComponent implements OnInit {
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
-          this.helpers = res['data']['list'];
+          this.wearers = res['data']['list'];
         }else{
           this.isEmpty=true;
         }
@@ -223,7 +224,7 @@ export class HelpersTableComponent implements OnInit {
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
-          this.helpers = res['data']['list'];
+          this.wearers = res['data']['list'];
         }else{
           this.isEmpty=true;
         }
@@ -246,16 +247,11 @@ export class HelpersTableComponent implements OnInit {
         });
       }
     });
-    this.userService.getRescuesList().then( menus => {
-      for(let i=0;i<menus.length;i++){
-        this.rescueTeams.push(menus[i])
-      }
-    });
   }
 
-  onSelect(helper: Helpers): void {
-    this.selectedHelper = helper;
-    console.log(this.selectedHelper)
+  onSelect(wearer: Wearer): void {
+    this.selectedWearer = wearer;
+    console.log(this.selectedWearer)
   }
 
   search2(term: string): void{
@@ -267,26 +263,26 @@ export class HelpersTableComponent implements OnInit {
         });
         return
       }
-      if(this.helpers.length==0){
+      if(this.wearers.length==0){
         layer.open({
           title: '提示'
           ,content: '没有查询到数据！'
         });
       }
-      if(menus['volunteerId']){
-        this.helpers = [];
-        this.helpers.push(menus);
+      if(menus['oldManId']){
+        this.wearers = [];
+        this.wearers.push(menus);
       }
     });
   }
 
-  add(helperName: string, sex: string, password: string,phone: string,
-      nationalId: string, personnelForm:string ,rescue: number,file:File ): void {
-    helperName = helperName.trim();
+  add(imei:string,Name: string,lastName:string ,sex: string, age: number,phone: string,
+      address: string,file:File ): void {
+    Name = Name.trim();
+    lastName = lastName.trim();
     phone = phone.trim();
-    nationalId = nationalId.trim();
-    if (!helperName && !sex  && !password && !phone && !nationalId && rescue ) { return; }
-    this.userService.create(helperName,sex,password,phone,nationalId,personnelForm,rescue,this.imgg)
+    if (!imei && !Name && !lastName && !sex  && !age && !phone && !address ) { return; }
+    this.userService.create(imei,Name,lastName,sex,age,phone,address,this.imgg)
       .subscribe(res => {
         if(res["code"]==0){
           layer.open({
@@ -295,7 +291,7 @@ export class HelpersTableComponent implements OnInit {
           });
           this.resetPagingArr();
           this.getElectricities2();
-          this.selectedHelper = null;
+          this.selectedWearer = null;
           this.tjmenu = false;
           this.clicked = false;
         }else{
@@ -303,7 +299,7 @@ export class HelpersTableComponent implements OnInit {
             title: '提示'
             ,content: res["error"],
             end:function () {
-              $('#helperName').focus();
+              $('#deviceIMEI').focus();
             }
           });
         }
@@ -330,14 +326,29 @@ export class HelpersTableComponent implements OnInit {
     }
   }
 
-  save(): void {
-    this.userService.update(this.selectedHelper)
-      .then(() => {this.getElectricities2();this.resetPagingArr();this.deletemenu = false;this.clicked = false;
-        layer.open({
-          title: '提示'
-          ,content: '修改成功'
-        });
-
+  save(imei:string,Name: string,lastName:string ,sex: string, age: number,phone: string,
+       address: string ,file:File): void {
+    this.userService.update(imei,Name,lastName,sex,age,phone,address,this.imgg)
+      .subscribe(res => {
+        if(res["code"]==0){
+          layer.open({
+            title: '提示'
+            ,content: '修改成功'
+          });
+          this.resetPagingArr();
+          this.getElectricities2();
+          this.selectedWearer = null;
+          this.deletemenu = false;
+          this.clicked = false;
+        }else{
+          layer.open({
+            title: '提示'
+            ,content: res["error"],
+            end:function () {
+              $('#deviceIMEI2').focus();
+            }
+          });
+        }
     });
   }
   // gotoDetail(): void {
