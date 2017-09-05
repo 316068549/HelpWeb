@@ -31,16 +31,22 @@ export class UsersTableComponent implements OnInit {
   private del:boolean = false;
   private deletemenu:boolean = false;
   public params; // 保存页面url参数
-  public totalNum = 5 ; // 总数据条数
+  public totalNum; // 总数据条数
   public pageSize = 5;// 每页数据条数
-  public totalPage = 5 ;// 总页数
+  public totalPage ;// 总页数
+  public totalPages = 7 ;// 总页数
   public curPage = 1;// 当前页码
+  public isEmpty:boolean = false;
   public usersLength;// 当前页码
   User=new User();
   pages: any;
   parentNames = [];
   rescueTeams = [];
   parentNames2 = [];
+  public pageList= [{
+    isActive: true,
+    pageNum: '1'
+  }];
   originalRoleId:number;
   originalUserName:string;
   constructor(
@@ -75,9 +81,15 @@ export class UsersTableComponent implements OnInit {
   getElectricities(): void {
     this.userService.getMenuList(1,5).then( res => {
       if(res['code'] == 0){
-        this.users = res['data']['list'];
-        this.usersLength = res['data']['list'].length;
-        this.pages  = res['data']['page'];
+        this.curPage = res['data']['pageNum'];
+        if(res['data']['list']){
+          this.users = res['data']['list'];
+        }else{
+          this.isEmpty=true;
+        }
+        this.totalNum   = res['data']['total'];
+        this.totalPage   = res['data']['pages'];
+        this.setPagingArr();
       }else if(res['code'] == 5){
         var ak = layer.open({
           content: res['error']+'请重新登录'
@@ -99,54 +111,112 @@ export class UsersTableComponent implements OnInit {
     this.selectedUser = user;
   }
 
-  getPageList() {
-    /*分页设置*/
-    let pageList=[];
-    // if (pageParams.totalPage <= 5) {//如果总的页码数小于5（前五页），那么直接放进数组里显示
-    //   for (let i = 0; i < pageParams.totalPage; i++) {
-    //     pageList.push({
-    //       pageNo: i + 1
-    //     });
-    //   }
-    // } else if (pageParams.totalPage - pageParams.curPage < 5 && pageParams.curPage > 4) {//如果总的页码数减去当前页码数小于5（到达最后5页），那么直接计算出来显示
-    //   pageList = [
-    //     {
-    //       pageNo: pageParams.curPage - 4
-    //     }, {
-    //       pageNo: pageParams.curPage - 3
-    //     }, {
-    //       pageNo: pageParams.curPage - 2
-    //     }, {
-    //       pageNo: pageParams.curPage - 1
-    //     }, {
-    //       pageNo: pageParams.curPage
-    //     }
-    //   ];
-    // } else {//在中间的页码数
-    //   let cur = Math.floor((pageParams.curPage - 1) / 5) * 5 + 1;
-    //   pageList = [
-    //     {
-    //       pageNo: cur
-    //     }, {
-    //       pageNo: cur + 1
-    //     }, {
-    //       pageNo: cur + 2
-    //     }, {
-    //       pageNo: cur + 3
-    //     }, {
-    //       pageNo: cur + 4
-    //     },
-    //   ];
+  setPagingArr() {
+    console.log(this.curPage)
+    if ( this.totalPage == this.pageList.length) {
+      return
+    }
+    this.pageList = [{
+      isActive: true,
+      pageNum: '1'
+    }];
+    let offset = Math.floor(this.totalPages / 2) - 1;
+    if(this.totalPage <= this.totalPages){
+      for (let i=1;i < this.totalPage;i++){
+        this.pageList.push({
+          isActive:false,
+          pageNum: ''+(i + 1)
+        });
+      }
+    }else {
+      if (this.curPage < this.totalPages - offset) {
+        for (let i = 1; i < this.totalPages; i++) {
+          this.pageList.push({
+            isActive: false,
+            pageNum: '' + (i + 1)
+          });
+        }
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '' + this.totalPage
+        });
+        //右边没有'...'
+      }else if(this.curPage >= this.totalPage - offset - 1){
+        // this.pageList.push({
+        //   isActive: false,
+        //   pageNum: '2'
+        // });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        for(let i=this.totalPages - 2;i >= 0 ;i--){
+          this.pageList.push({
+            isActive: false,
+            pageNum: ''+(this.totalPage - i)
+          });
+        }
+        //两边都有'...'
+      }else {
+        // this.pageList.push({
+        //   isActive: false,
+        //   pageNum: '2'
+        // });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        for(let i= this.curPage - offset;i < this.curPage + offset; i++){
+          this.pageList.push({
+            isActive: false,
+            pageNum: '' + (i + 1)
+          });
+        }
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '' + this.totalPage
+        });
+      }
+    }
+    // for (var i = 1; i < this.totalPage; i++) {
+    //   this.pageList.push({
+    //     isActive:false,
+    //     pageNum: i + 1
+    //   });
     // }
-    // return pageList;
-    return [1,2];
   }
 
-  changePage(pageNo) {
-    this.userService.getMenuList(pageNo,5).then( res => {
+  resetPagingArr() {
+    for (var i = 0; i < this.pageList.length; i++) {
+      this.pageList[i].isActive = false;
+    }
+    this.pageList[0].isActive = true;
+  }
+
+
+  changePage(page,index) {
+
+    // lastPage = page;
+    // this.curPage = index;
+    this.userService.getMenuList(index,5).then( res => {
       if(res['code'] == 0){
         this.users = res['data']['list'];
-        this.curPage = res['data']['page']['current'];
+        this.curPage = res['data']['pageNum'];
+        this.setPagingArr();
+        for (var i = 0; i < this.pageList.length; i++) {
+          this.pageList[i].isActive = false;
+          if(this.pageList[i].pageNum==''+this.curPage){
+            this.pageList[i].isActive = true;
+          }
+        }
       }else if(res['code'] == 5){
         var ak = layer.open({
           content: res['error']+'请重新登录'
@@ -164,7 +234,7 @@ export class UsersTableComponent implements OnInit {
       }
 
     })
-    console.log('触发', pageNo);
+    console.log('触发', page.pageNum);
   }
 
   searchParMenu(): void{

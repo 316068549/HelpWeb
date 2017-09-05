@@ -38,14 +38,20 @@ export class PermissionTableComponent implements OnInit {
   addIDs = [];
   delIds = [];
   public params; // 保存页面url参数
-  public totalNum = 5 ; // 总数据条数
+  public totalNum; // 总数据条数
   public pageSize = 5;// 每页数据条数
-  public totalPage = 2 ;// 总页数
+  public totalPage ;// 总页数
+  public totalPages = 7 ;// 总页数
   public curPage = 1;// 当前页码
+  public isEmpty:boolean = false;
   public usersLength;// 当前页码
   pages: any;
   term={};
   parentNames = [];
+  public pageList= [{
+    isActive: true,
+    pageNum: '1'
+  }];
   addIDs2 = [];
   originalRoleId:number;
   originalUserName:string;
@@ -78,12 +84,102 @@ export class PermissionTableComponent implements OnInit {
     this.getElectricities();
   }
 
+  setPagingArr() {
+    console.log(this.curPage)
+    if ( this.totalPage == this.pageList.length) {
+      return
+    }
+    this.pageList = [{
+      isActive: true,
+      pageNum: '1'
+    }];
+    let offset = Math.floor(this.totalPages / 2) - 1;
+    if(this.totalPage <= this.totalPages){
+      for (let i=1;i < this.totalPage;i++){
+        this.pageList.push({
+          isActive:false,
+          pageNum: ''+(i + 1)
+        });
+      }
+    }else {
+      if (this.curPage < this.totalPages - offset) {
+        for (let i = 1; i < this.totalPages; i++) {
+          this.pageList.push({
+            isActive: false,
+            pageNum: '' + (i + 1)
+          });
+        }
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '' + this.totalPage
+        });
+        //右边没有'...'
+      }else if(this.curPage >= this.totalPage - offset - 1){
+        // this.pageList.push({
+        //   isActive: false,
+        //   pageNum: '2'
+        // });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        for(let i=this.totalPages - 2;i >= 0 ;i--){
+          this.pageList.push({
+            isActive: false,
+            pageNum: ''+(this.totalPage - i)
+          });
+        }
+        //两边都有'...'
+      }else {
+        // this.pageList.push({
+        //   isActive: false,
+        //   pageNum: '2'
+        // });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        for(let i= this.curPage - offset;i < this.curPage + offset; i++){
+          this.pageList.push({
+            isActive: false,
+            pageNum: '' + (i + 1)
+          });
+        }
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '' + this.totalPage
+        });
+      }
+    }
+  }
+
+  resetPagingArr() {
+    for (var i = 0; i < this.pageList.length; i++) {
+      this.pageList[i].isActive = false;
+    }
+    this.pageList[0].isActive = true;
+  }
+
   getElectricities(): void {
     this.userService.getMenuList(1,5).then( res => {
       if(res['code'] == 0){
-        this.roles = res['data']['list'];
-        this.usersLength = res['data']['list'].length;
-        this.pages  = res['data']['page'];
+        this.curPage = res['data']['pageNum'];
+        if(res['data']['list']){
+          this.roles = res['data']['list'];
+        }else{
+          this.isEmpty=true;
+        }
+        this.totalNum   = res['data']['total'];
+        this.totalPage   = res['data']['pages'];
+        this.setPagingArr();
       }else if(res['code'] == 5){
         var ak = layer.open({
           content: res['error']+'请重新登录'
@@ -102,12 +198,18 @@ export class PermissionTableComponent implements OnInit {
     });
   }
 
-  changePage(pageNo) {
-    this.userService.getMenuList(pageNo,5).then( res => {
+  changePage(page,index) {
+    this.userService.getMenuList(index,5).then( res => {
       if(res['code'] == 0){
         this.roles = res['data']['list'];
-        this.pages  = res['data']['page'];
-        this.curPage = res['data']['page']['current'];
+        this.curPage = res['data']['pageNum'];
+        this.setPagingArr();
+        for (var i = 0; i < this.pageList.length; i++) {
+          this.pageList[i].isActive = false;
+          if(this.pageList[i].pageNum==''+this.curPage){
+            this.pageList[i].isActive = true;
+          }
+        }
       }else if(res['code'] == 5){
         var ak = layer.open({
           content: res['error']+'请重新登录'
@@ -125,13 +227,7 @@ export class PermissionTableComponent implements OnInit {
       }
 
     })
-    console.log('触发', pageNo);
-  }
-
-  getPageList() {
-    /*分页设置*/
-    let pageList=[];
-    return [1,2];
+    console.log('触发', page.pageNum);
   }
 
   onSelect(user: Role): void {

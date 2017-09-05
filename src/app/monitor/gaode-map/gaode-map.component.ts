@@ -30,8 +30,9 @@ export class GaodeMapComponent implements OnInit {
     var deviceList;
     var changeXyList=[];
     var taskList ;
-    var warningList=[];//报警列表
-    var warningTaskList=[];//当前任务列表
+    // var warningList=[];//报警列表
+    // var warningTaskList=[];//当前任务列表
+    var warningDeviceList=[];
     var  markers,infoWindows = [];
     var map = new BMap.Map("container");            // 创建Map实例
     //获取下拉数据
@@ -53,7 +54,7 @@ export class GaodeMapComponent implements OnInit {
     //打开气泡延迟20秒刷新
     function aa() {
       clearInterval(interval);
-      setTimeout(cc,30000);
+      setTimeout(cc,45000);
     }
     function xunhuan(){
       map.clearOverlays();
@@ -94,8 +95,8 @@ export class GaodeMapComponent implements OnInit {
         type: "get",
         cache: false,
         async: false, //同步请求外面才能获取到*
-        url: "indata?tokenId=KAJZeeaGXbkHtXHleQ1/eA==41"
-         // +tokenId
+        url: "indata?tokenId="
+          +tokenId
         ,
         success: function(data){
             resul=data.data;
@@ -235,8 +236,12 @@ export class GaodeMapComponent implements OnInit {
             // var html2 = "<span style='margin-left: 15px'>任务状态（救援中，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
             // var html3 = "<span style='margin-left: 15px'>任务状态（已结束，接单人："+obj.NAME+"，电话："+obj.mobile+")</span>"
             if(n.status==1){
-              warningList.push(n.deviceIMEI);
-              warningTaskList.push(n.task_id);
+              // warningList.push(n.deviceIMEI);
+              // warningTaskList.push(n.task_id);
+              warningDeviceList.push({
+                deviceImei:n.deviceIMEI,
+                taskId:n.task_id
+              })
               $.each(deviceList,function (a,obj) {
                 if(obj.deviceIMEI==n.deviceIMEI){
                   html+=obj.NAME+"<span class='warningTask'>（等待接单，报警地址："+obj.address+")</span></a></li>"
@@ -282,8 +287,8 @@ export class GaodeMapComponent implements OnInit {
         type: "get",
         cache: false,
         async: false, //同步请求外面才能获取到*
-        url: "indata?tokenId=KAJZeeaGXbkHtXHleQ1/eA==41"
-          // +tokenId
+        url: "indata?tokenId="
+           +tokenId
         ,
         success: function(data){
           if (data.code == 0) {
@@ -410,10 +415,23 @@ export class GaodeMapComponent implements OnInit {
       }
       if(result.deviceList){
         deviceList=result.deviceList;
-        if(warningList.length>0){
-          $.each(warningList, function (i, n) {
+        // if(warningList.length>0){
+        //   $.each(warningList, function (i, n) {
+        //     $.each(deviceList, function (a, obj) {
+        //       if(n == obj.deviceIMEI){
+        //         // if(obj.is_alarm==0){
+        //         //   $('.'+ n +' .warnings').remove();
+        //         //   var index = warningList.indexOf(n);
+        //         //   warningList.splice(index, 1);
+        //         // }
+        //       }
+        //     })
+        //   })
+        // }
+        if(warningDeviceList.length>0){
+          $.each(warningDeviceList, function (i, n) {
             $.each(deviceList, function (a, obj) {
-              if(n == obj.deviceIMEI){
+              if(n.deviceImei == obj.deviceIMEI){
                 // if(obj.is_alarm==0){
                 //   $('.'+ n +' .warnings').remove();
                 //   var index = warningList.indexOf(n);
@@ -452,10 +470,11 @@ export class GaodeMapComponent implements OnInit {
           $.each(taskList, function (s, sss) {
             var html = "<span>（";
              var html2 = "<li><a href='javascript:;' id="+sss.task_id+" class="+ sss.deviceIMEI + ">";
+            var warningList=[];
             if (sss.status == 1) {
 
                  // warningList.push(sss.deviceIMEI);
-                // console.log('报警列表'+warningList)
+                 console.log('报警列表'+warningDeviceList)
                 // $.each(deviceList, function (aa, oobj) {
                 //   if (oobj.deviceIMEI == sss.deviceIMEI) {
                 //     html2 += oobj.NAME+"<span class='warningTask'>（等待接单，报警地址：" + oobj.address + ")</span></a></li>"
@@ -463,9 +482,21 @@ export class GaodeMapComponent implements OnInit {
                 // })
                 // $('.panel ul').append(html2)
                 //
-                if(warningList.indexOf(sss.deviceIMEI)==-1){
-                  warningList.push(sss.deviceIMEI);
-                  warningTaskList.push(sss.task_id);
+
+              if(warningDeviceList.length>=0){
+                warningList=[];
+                if(warningDeviceList.length>0){
+                  $.each(warningDeviceList,function (b,devicr) {
+                    warningList.push(devicr.deviceImei);
+                  })
+                }
+                  if(warningList.indexOf(sss.deviceIMEI)==-1){
+                  // warningList.push(sss.deviceIMEI);
+                  // warningTaskList.push(sss.task_id);
+                  warningDeviceList.push({
+                    deviceImei:sss.deviceIMEI,
+                    taskId:sss.task_id
+                  })
                   $.each(deviceList, function (aa, oobj) {
                     if (oobj.deviceIMEI == sss.deviceIMEI) {
                       html2 += oobj.NAME+"<span class='warningTask'>（等待接单，报警地址：" + oobj.address + ")</span></a></li>"
@@ -473,33 +504,58 @@ export class GaodeMapComponent implements OnInit {
                   })
                   $('.panel ul').prepend(html2)
                 }
-               if(warningList.indexOf(sss.deviceIMEI)>-1){
-                 var nowDate = new Date().getTime();
-                 if(nowDate-sss.createTime>300000){
-                   $.each(deviceList, function (aa, oobj) {
-                     if (oobj.deviceIMEI == sss.deviceIMEI) {
-                       // layer.open({
-                       //   title: '提示'
-                       //   ,content: oobj.NAME+' 救援任务长时间无人接单，请指定人员接单！'
-                       // });
-                     }
-                   })
-                 }
-               }
+                if(warningList.indexOf(sss.deviceIMEI)>-1){
+                  var nowDate = new Date().getTime();
+                  // console.log(nowDate-sss.createTime)
+                  if(nowDate-sss.createTime>300000){
+                    $.each(warningDeviceList,function (b,devicr) {
+                      if(devicr.deviceImei==sss.deviceIMEI){
+                        if(!devicr.alerted){
+                          $.each(deviceList, function (aa, oobj) {
+                            if (oobj.deviceIMEI == sss.deviceIMEI) {
+                              var ak = layer.open({
+                                content: '求救人'+oobj.NAME+' 救援任务长时间无人接单，请指定人员接单！'
+                                , btn: ['确定']
+                                , yes: () => {
 
+                                  layer.close(ak);
+                                }
+                              })
+                              devicr.alerted=true;
+                              clearInterval(interval);
+                              setTimeout(cc,45000);
+                              $('.'+sss.deviceIMEI).click();
+                            }
+                          })
 
-
-            } else if (sss.status == 2) {
-              if(warningList.indexOf(sss.deviceIMEI)>-1){
-                $.each(warningList, function (i, n) {
-                    if(n == sss.deviceIMEI){
-                        var index = warningList.indexOf(n);
-                        if(sss.task_id==warningTaskList[index]){
-                          warningList.splice(index, 1);
                         }
-                    }
-                })
+                      }
+                    })
+                  }
+                }
               }
+            } else if (sss.status == 2) {
+              if(warningDeviceList.length>=0) {
+                warningList = [];
+                if (warningDeviceList.length > 0) {
+                  $.each(warningDeviceList, function (b, devicr) {
+                    warningList.push(devicr.deviceImei);
+                  })
+                }
+                if(warningList.indexOf(sss.deviceIMEI)>-1){
+                  $.each(warningDeviceList, function (i, n) {
+                    if(n.taskId == sss.task_id){
+                      // var index = warningList.indexOf(n);
+                      // if(sss.task_id==warningTaskList[index]){
+                      //   warningList.splice(index, 1);
+                      //   warningTaskList.splice(index,1);
+                      // }
+                      warningDeviceList.splice(i,1);
+                    }
+                  })
+                }
+              }
+
               $.each(deviceList, function (aa, oobj) {
                 if (oobj.deviceIMEI == sss.deviceIMEI) {
                   html += "救援中，接单人："
@@ -513,16 +569,37 @@ export class GaodeMapComponent implements OnInit {
               $('#' + sss['task_id'] + ' span').remove();
               $('#' + sss['task_id']).append(html);
             } else {
-              if(warningList.indexOf(sss.deviceIMEI)>-1){
-                $.each(warningList, function (i, n) {
-                  if(n == sss.deviceIMEI){
-                    var index = warningList.indexOf(n);
-                    if(sss.task_id==warningTaskList[index]){
-                      warningList.splice(index, 1);
+              if(warningDeviceList.length>=0) {
+                warningList = [];
+                if (warningDeviceList.length > 0) {
+                  $.each(warningDeviceList, function (b, devicr) {
+                    warningList.push(devicr.deviceImei);
+                  })
+                }
+                if(warningList.indexOf(sss.deviceIMEI)>-1){
+                  $.each(warningDeviceList, function (i, n) {
+                    if(n.taskId == sss.task_id){
+                      // var index = warningList.indexOf(n);
+                      // if(sss.task_id==warningTaskList[index]){
+                      //   warningList.splice(index, 1);
+                      //   warningTaskList.splice(index,1);
+                      // }
+                      warningDeviceList.splice(i,1);
                     }
-                  }
-                })
+                  })
+                }
               }
+              // if(warningList.indexOf(sss.deviceIMEI)>-1){
+              //   $.each(warningList, function (i, n) {
+              //     if(n == sss.deviceIMEI){
+              //       var index = warningList.indexOf(n);
+              //       if(sss.task_id==warningTaskList[index]){
+              //         warningList.splice(index, 1);
+              //         warningTaskList.splice(index,1);
+              //       }
+              //     }
+              //   })
+              // }
               $.each(deviceList, function (aa, oobj) {
                 if (oobj.deviceIMEI == sss.deviceIMEI) {
                   // html += "已结束，接单人："
@@ -552,7 +629,6 @@ export class GaodeMapComponent implements OnInit {
       $('#result .devicess').text(volunters);
       $('#result .volunters').text(devicess);
       var changgeUrl = "http://api.map.baidu.com/geoconv/v1/?coords=";
-      var changgeUrl2 = "http://api.map.baidu.com/geoconv/v1/?coords=";
       for(var i = 0,marker,poiny;i<devicess;i++){
         lngX = volunteerList[i].longitude;
         latY = volunteerList[i].latitude;
@@ -617,57 +693,114 @@ export class GaodeMapComponent implements OnInit {
           // }
         // }
       // });
-      for(var b = 0,marker;b<volunters;b++){
-        if(deviceList[b].longitude){
-          lngX = deviceList[b].longitude;
-        }else{
-          lngX= 100.883;
-        }
-        if(deviceList[b].latitude){
-          latY = deviceList[b].latitude;
-        }else{
-          latY=1.852;
-        }
-        if(b<(volunters-1)){
-          changgeUrl2+= lngX+","+latY+";"
-        }
-        if (b==(volunters-1)){
-          changgeUrl2+= lngX+","+latY
-        }
-        changeXyList.push(deviceList[b]);
-        // statuses.push(deviceList[b].is_alarm);
-      }
-      // console.log(changeXyList);
-      $.ajax({
-        type: "get",
-        url: changgeUrl2+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
-        dataType: 'jsonp',
-        success: function(data){
-          if(data.status === 0) {
-            // console.log(data.result)
-            var points=[];
-            for(var c = 0,marker;c<data.result.length;c++){
-              if(data.result.length == 0){
-                return;
+      var userData={
+        resultList:[]
+      };
+      var yushu = volunters % 100;
+      var changeCount = Math.ceil(volunters / 100);
+      for (var j = 0; j < changeCount; j++) {
+        var changgeUrl = "http://api.map.baidu.com/geoconv/v1/?coords=";
+        for(var i = 0;i<100;i++){
+          if(deviceList[(j * 100) + i]&&deviceList[(j * 100) + i]){
+            lngX = deviceList[(j * 100) + i].longitude;
+            latY = deviceList[(j * 100) + i].latitude;
+            if(i<99){
+              if(j<(changeCount-1)){
+                changgeUrl+= lngX+","+latY+";"
+              }else{
+                if(i!=(yushu-1)){
+                  changgeUrl+= lngX+","+latY+";"
+                }
               }
-              var myIcon = new BMap.Icon("markers.png");
-              var point = new BMap.Point(data.result[c].x, data.result[c].y);
-              addMarker(point,changeXyList[c].status,changeXyList[c].deviceIMEI,changeXyList[c].NAME);
-              points.push(point)
-               // if(changeXyList[c].isCreat){
-               //   addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
-               // }else {
-               //   addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
-               // }
             }
-            //调整视野
-            // var view = map.getViewport(points);
-            // var mapZoom = view.zoom;
-            // var centerPoint = view.center;
-            // map.centerAndZoom(centerPoint,mapZoom);
+            if (i==99||j==(changeCount-1)&&i==(yushu-1)){
+              changgeUrl+= lngX+","+latY
+            }
+            changeXyList.push(deviceList[(j * 100) + i]);
           }
         }
-      });
+
+        $.ajax({
+          type: "get",
+          url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
+          dataType: 'jsonp',
+          cache: false,
+          async: false, //同步请求外面才能获取到*
+          success: function(data){
+            if(data.status === 0) {
+              console.log(data.result)
+              for(var c = 0,marker;c<data.result.length;c++) {
+                if (data.result.length == 0) {
+                  return;
+                }
+                userData.resultList.push(data.result[c])
+              }
+            }
+            localStorage.setItem('userDatas',JSON.stringify(userData))
+          }
+        });
+      }
+      var resultList2 = JSON.parse(localStorage.getItem('userDatas'));
+      var points=[];
+      for(var d = 0,marker;d<resultList2.resultList.length;d++) {
+        if (resultList2.resultList.length == 0) {
+          return;
+        }
+        var myIcon = new BMap.Icon("markers.png");
+        var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+        addMarker(point,changeXyList[d].status,changeXyList[d].deviceIMEI,changeXyList[d].NAME);
+        points.push(point)
+      }
+      // for(var b = 0,marker;b<volunters;b++){
+      //   if(deviceList[b].longitude){
+      //     lngX = deviceList[b].longitude;
+      //   }else{
+      //     lngX= 100.883;
+      //   }
+      //   if(deviceList[b].latitude){
+      //     latY = deviceList[b].latitude;
+      //   }else{
+      //     latY=1.852;
+      //   }
+      //   if(b<(volunters-1)){
+      //     changgeUrl2+= lngX+","+latY+";"
+      //   }
+      //   if (b==(volunters-1)){
+      //     changgeUrl2+= lngX+","+latY
+      //   }
+      //   changeXyList.push(deviceList[b]);
+      // }
+
+      // $.ajax({
+      //   type: "get",
+      //   url: changgeUrl2+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
+      //   dataType: 'jsonp',
+      //   success: function(data){
+      //     if(data.status === 0) {
+      //       // console.log(data.result)
+      //       var points=[];
+      //       for(var c = 0,marker;c<data.result.length;c++){
+      //         if(data.result.length == 0){
+      //           return;
+      //         }
+      //         var myIcon = new BMap.Icon("markers.png");
+      //         var point = new BMap.Point(data.result[c].x, data.result[c].y);
+      //         addMarker(point,changeXyList[c].status,changeXyList[c].deviceIMEI,changeXyList[c].NAME);
+      //         points.push(point)
+      //          // if(changeXyList[c].isCreat){
+      //          //   addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
+      //          // }else {
+      //          //   addMarker(point,statuses[c],changeXyList[c].isCreat,changeXyList[c].deviceIMEI,changeXyList[c].NAME,changeXyList[c].alarmId);
+      //          // }
+      //       }
+      //       //调整视野
+      //       // var view = map.getViewport(points);
+      //       // var mapZoom = view.zoom;
+      //       // var centerPoint = view.center;
+      //       // map.centerAndZoom(centerPoint,mapZoom);
+      //     }
+      //   }
+      // });
     }
     function startRun(){
       // if(volunteerList.length>1){
@@ -695,8 +828,8 @@ export class GaodeMapComponent implements OnInit {
     function addMarker(point,status,deviceIMEI,name){
       var infoWindow;
       var marker;
-      console.log(point);
-      console.log(status);
+      // console.log(point);
+      // console.log(status);
       if(status==2){
       // if(jiedan){
         $('.panel').show();

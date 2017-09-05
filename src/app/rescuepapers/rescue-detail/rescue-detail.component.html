@@ -118,8 +118,9 @@
               </div>
               <div class="ibox-content" [hidden]="code&&videoList.length==0">
                 <div class="player" *ngFor="let video of videoList; let i = index;">
-                  <video id="my-video+{{i}}" class="video-js vjs-default-ski vjs-big-play-centered" controls preload="auto"
+                  <video id="my-video+{{i}}" class="video-js" controls preload="auto"
                   poster="MY_VIDEO_POSTER.jpg" >
+                    <!--poster="../../../assets/img/fancybox_loading.gif" > -->
                   <source [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+video.videoUrl" type="video/mp4">
                   <p class="vjs-no-js">
                   您的浏览器不支持HTML5视频播放，请下载或更换浏览器

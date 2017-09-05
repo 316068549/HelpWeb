@@ -45,11 +45,12 @@ export class HelpersTableComponent implements OnInit {
   public totalNum; // 总数据条数
   public pageSize = 5;// 每页数据条数
   public totalPage ;// 总页数
+  public totalPages = 7 ;// 分页显示数目
   public curPage = 1;// 当前页码
   public isEmpty:boolean = false;
   public pageList= [{
     isActive: true,
-    pageNum: 1
+    pageNum: '1'
   }];
   rescueTeams = [];
   pages: any;
@@ -104,20 +105,72 @@ export class HelpersTableComponent implements OnInit {
 
 
   setPagingArr() {
-      if ( this.totalPage == this.pageList.length) {
-        return
-      }
-       this.pageList = [{
-        isActive: true,
-        pageNum: 1
-      }];
-      for (var i = 1; i < this.totalPage; i++) {
+    if ( this.totalPage == this.pageList.length) {
+      return
+    }
+    this.pageList = [{
+      isActive: true,
+      pageNum: '1'
+    }];
+    let offset = Math.floor(this.totalPages / 2) - 1;
+    if(this.totalPage <= this.totalPages){
+      for (let i=1;i < this.totalPage;i++){
         this.pageList.push({
           isActive:false,
-          pageNum: i + 1
+          pageNum: ''+(i + 1)
+        });
+      }
+    }else {
+      if (this.curPage < this.totalPages - offset) {
+        for (let i = 1; i < this.totalPages; i++) {
+          this.pageList.push({
+            isActive: false,
+            pageNum: '' + (i + 1)
+          });
+        }
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '' + this.totalPage
+        });
+        //右边没有'...'
+      }else if(this.curPage >= this.totalPage - offset - 1){
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        for(let i=this.totalPages - 2;i >= 0 ;i--){
+          this.pageList.push({
+            isActive: false,
+            pageNum: ''+(this.totalPage - i)
+          });
+        }
+        //两边都有'...'
+      }else {
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        for(let i= this.curPage - offset;i < this.curPage + offset; i++){
+          this.pageList.push({
+            isActive: false,
+            pageNum: '' + (i + 1)
+          });
+        }
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '' + this.totalPage
         });
       }
     }
+  }
 
   resetPagingArr() {
     for (var i = 0; i < this.pageList.length; i++) {
@@ -127,20 +180,17 @@ export class HelpersTableComponent implements OnInit {
     }
 
   changePage(page,index) {
-    // if (index == lastPage.pageNum - 1 || page.pageNum - (this.curPage + 1) == 2 && page.pageNum > 5 && page.pageNum != pagingArr.length || $scope.selectPageIndex - page.pageNum == 1 && page.pageNum != 1 && $scope.selectPageIndex > 3 || page.pageNum == 6 && $scope.selectPageIndex <= 3) {
-    //   return
-    // }
-    for (var i = 0; i < this.pageList.length; i++) {
-      this.pageList[i].isActive = false;
-    }
-
-    this.pageList[index].isActive = true;
-    // lastPage = page;
-    this.curPage = index;
-    this.userService.getMenuDatas(index+1,5).then( res => {
+    this.userService.getMenuDatas(index,5).then( res => {
       if(res['code'] == 0){
         this.helpers = res['data']['list'];
         this.curPage = res['data']['pageNum'];
+        this.setPagingArr();
+        for (var i = 0; i < this.pageList.length; i++) {
+          this.pageList[i].isActive = false;
+          if(this.pageList[i].pageNum==''+this.curPage){
+            this.pageList[i].isActive = true;
+          }
+        }
       }else if(res['code'] == 5){
         var ak = layer.open({
           content: res['error']+'请重新登录'
@@ -200,6 +250,7 @@ export class HelpersTableComponent implements OnInit {
         }
         this.totalNum   = res['data']['total'];
         this.totalPage   = res['data']['pages'];
+        this.setPagingArr();
       }else if(res['code'] == 5){
         var ak = layer.open({
           content: res['error']+'请重新登录'
@@ -288,12 +339,12 @@ export class HelpersTableComponent implements OnInit {
     if (!helperName && !sex  && !password && !phone && !nationalId && rescue ) { return; }
     this.userService.create(helperName,sex,password,phone,nationalId,personnelForm,rescue,this.imgg)
       .subscribe(res => {
-        if(res["code"]==0){
+        if(res["status"]==1){
           layer.open({
             title: '提示'
             ,content: '添加成功'
           });
-          this.resetPagingArr();
+          // this.resetPagingArr();
           this.getElectricities2();
           this.selectedHelper = null;
           this.tjmenu = false;
@@ -301,7 +352,7 @@ export class HelpersTableComponent implements OnInit {
         }else{
           layer.open({
             title: '提示'
-            ,content: res["error"],
+            ,content: '添加失败'+res["msg"],
             end:function () {
               $('#helperName').focus();
             }
@@ -332,12 +383,25 @@ export class HelpersTableComponent implements OnInit {
 
   save(): void {
     this.userService.update(this.selectedHelper)
-      .then(() => {this.getElectricities2();this.resetPagingArr();this.deletemenu = false;this.clicked = false;
-        layer.open({
-          title: '提示'
-          ,content: '修改成功'
-        });
-
+      .then(res => {
+        if(res["status"]==1){
+          layer.open({
+            title: '提示'
+            ,content: '修改成功'
+          });
+          this.getElectricities2();
+          this.selectedHelper = null;
+          this.deletemenu = false;
+          this.clicked = false;
+        }else{
+          layer.open({
+            title: '提示'
+            ,content: '修改失败'+res["msg"],
+            end:function () {
+              $('#helperName2').focus();
+            }
+          });
+        }
     });
   }
   // gotoDetail(): void {

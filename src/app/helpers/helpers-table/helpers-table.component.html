@@ -85,14 +85,12 @@
 
         <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-2)"
                 [disabled]="curPage==1">上一页</button>
-        <button class="btn btn-default"  [disabled]="curPage==x.pageNum" [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
-                [hidden]="x.pageNum<curPage-1&&curPage>3&&x.pageNum!=1"
-                (click)="changePage(x,i)"  *ngFor="let x of pageList;let i = index;">
-          {{x.pageNum-(curPage+1)==2&&x.pageNum>5&&x.pageNum!=pageList.length||
-          curPage-x.pageNum==1&&x.pageNum!=1&&curPage>3||x.pageNum==6&&curPage<=3?'...':x.pageNum}}
+        <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
+                (click)="changePage(x,x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+          {{x.pageNum}}
         </button>
         <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage)"
-                [disabled]="curPage==pageList.length">下一页</button>
+                [disabled]="curPage==totalPage">下一页</button>
       </div>
       <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">
       没有查询到数据
@@ -238,6 +236,13 @@
                  pattern="/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/">
           <p *ngIf="deletemenuform.submitted && !nationalId2.value"   class="text-danger">身份证号不能为空</p>
           <div *ngIf="nationalId2.errors?.pattern && nationalId2.touched"  class="text-danger">身份证格式错误</div>
+        </div>
+      </div>
+      <div class="operate-item fn-clear">
+        <label>人员类型:</label>
+        <div class="operate-group">
+          <input required  type="text"  id="personnelForm2" name="personnelForm2" class="form-box" [(ngModel)]="selectedHelper.personnelForm" #personnelForm2="ngModel">
+          <p *ngIf="deletemenuform.submitted && !personnelForm2.valid"   class="text-danger">人员类型不能为空</p>
         </div>
       </div>
       <div class="operate-item fn-clear">

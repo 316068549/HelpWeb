@@ -61,6 +61,8 @@ export class RescueDetailComponent implements OnInit {
     //播放视频
     for(var i=0;i<this.videoList.length;i++){
       videojs(document.getElementById('my-video'+i), {}, function() {
+        var myPlayer = this;
+        myPlayer.play();
       });
     }
     // var myPlayer = videojs('my-video');

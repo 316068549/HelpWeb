@@ -27,12 +27,13 @@ export class StatusTableComponent implements OnInit {
   public totalNum ; // 总数据条数
   public pageSize = 5;// 每页数据条数
   public totalPage;// 总页数
+  public totalPages = 7 ;// 分页显示数目
   public curPage = 1;// 当前页码
   public isEmpty:boolean = false;
   pages: any;
   public pageList= [{
     isActive: true,
-    pageNum: 1
+    pageNum: '1'
   }];
 
   constructor(
@@ -49,13 +50,65 @@ export class StatusTableComponent implements OnInit {
     }
     this.pageList = [{
       isActive: true,
-      pageNum: 1
+      pageNum: '1'
     }];
-    for (var i = 1; i < this.totalPage; i++) {
-      this.pageList.push({
-        isActive:false,
-        pageNum: i + 1
-      });
+    let offset = Math.floor(this.totalPages / 2) - 1;
+    if(this.totalPage <= this.totalPages){
+      for (let i=1;i < this.totalPage;i++){
+        this.pageList.push({
+          isActive:false,
+          pageNum: ''+(i + 1)
+        });
+      }
+    }else {
+      if (this.curPage < this.totalPages - offset) {
+        for (let i = 1; i < this.totalPages; i++) {
+          this.pageList.push({
+            isActive: false,
+            pageNum: '' + (i + 1)
+          });
+        }
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '' + this.totalPage
+        });
+        //右边没有'...'
+      }else if(this.curPage >= this.totalPage - offset - 1){
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        for(let i=this.totalPages - 2;i >= 0 ;i--){
+          this.pageList.push({
+            isActive: false,
+            pageNum: ''+(this.totalPage - i)
+          });
+        }
+        //两边都有'...'
+      }else {
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        for(let i= this.curPage - offset;i < this.curPage + offset; i++){
+          this.pageList.push({
+            isActive: false,
+            pageNum: '' + (i + 1)
+          });
+        }
+        this.pageList.push({
+          isActive: false,
+          pageNum: '...'
+        });
+        this.pageList.push({
+          isActive: false,
+          pageNum: '' + this.totalPage
+        });
+      }
     }
   }
 
@@ -65,20 +118,21 @@ export class StatusTableComponent implements OnInit {
   }
 
   changePage(page,index) {
-    for (var i = 0; i < this.pageList.length; i++) {
-      this.pageList[i].isActive = false;
-    }
 
-    this.pageList[index].isActive = true;
-    // lastPage = page;
-    this.curPage = index;
     if(this.onActive) {
-      this.statusService.getStatuses(index + 1, 5).then(res => {
+      this.statusService.getStatuses(index, 5).then(res => {
         if (res['code'] == 0) {
           if (res['data']['list']) {
             this.statuses = res['data']['list'];
           }
           this.curPage = res['data']['pageNum'];
+          this.setPagingArr();
+          for (var i = 0; i < this.pageList.length; i++) {
+            this.pageList[i].isActive = false;
+            if(this.pageList[i].pageNum==''+this.curPage){
+              this.pageList[i].isActive = true;
+            }
+          }
         } else if (res['code'] == 5) {
           var ak = layer.open({
             content: res['error'] + '请重新登录'
@@ -103,6 +157,13 @@ export class StatusTableComponent implements OnInit {
             this.statuses = res['data']['list'];
           }
           this.curPage = res['data']['pageNum'];
+          this.setPagingArr();
+          for (var i = 0; i < this.pageList.length; i++) {
+            this.pageList[i].isActive = false;
+            if(this.pageList[i].pageNum==''+this.curPage){
+              this.pageList[i].isActive = true;
+            }
+          }
         } else if (res['code'] == 5) {
           var ak = layer.open({
             content: res['error'] + '请重新登录'

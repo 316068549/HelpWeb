@@ -19,7 +19,8 @@ export class WearerService {
   private menusbtnUrl = 'adminPermission/query/adminPermissionButton';
   private rescueslistUrl = 'wwe/rescueTeam/find';
   private menusUrl2 = 'web/oldman/findOldMan';
-  private menusaddUrl = 'web/oldman/oldManConfig';
+  private menusaddUrl = 'web/oldman/addOldMan';
+  private menuseditUrl = 'web/oldman/updateOldMan';
   private menusdeleteUrl = 'web/oldman/deleteOldMan';
   private userId = localStorage.getItem("userId");
   private roleId = localStorage.getItem("roleId");
@@ -151,13 +152,15 @@ export class WearerService {
           formData.append("age", age);
           formData.append("phone", phone);
           formData.append("address", address);
-          formData.append('avatar', file);
+          if(file){
+            formData.append('avatar', file);
+          }
           formData.append('tokenId', this.tokenId);
           let headers = new Headers({
             "Accept": "application/json"
           });
           let options = new RequestOptions({ headers });
-          return this.http.post(this.menusaddUrl, formData,options)
+          return this.http.post(this.menuseditUrl, formData,options)
             .map(response => {
               let result=response.json();
               return result;

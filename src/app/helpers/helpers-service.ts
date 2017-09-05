@@ -146,7 +146,7 @@ export class HelperService {
       .catch(this.handleError);
   }
 
-  update(user: Helpers): Promise<Helpers> {
+  update(user: Helpers): Promise<object> {
     // const url = `${this.menusUrl}/${user.helperId}`;
     // return this.http
     //   .post(url, JSON.stringify(user), {headers: this.headers})
@@ -156,7 +156,7 @@ export class HelperService {
     return this.http
       .post(this.menusmodifyUrl, JSON.stringify(user), {headers: this.headers})
       .toPromise()
-      .then(() => user)
+      .then(res => res.json() as object)
       .catch(this.handleError);
   }
 
