@@ -183,42 +183,49 @@ export class GaodeMapComponent implements OnInit {
           }
         });
       }
-      var resultList2 = JSON.parse(localStorage.getItem('resultList'));
-      console.log(resultList2.resultList.length)
-      var points=[];
-      for(var d = 0,marker;d<resultList2.resultList.length;d++){
-        if(resultList2.resultList.length == 0){
-          return;
+      var getDataJson = setInterval(function () {
+        var resultList2 = JSON.parse(localStorage.getItem('resultList'));
+        if(resultList2){
+          if(resultList2.hasOwnProperty('resultList')){
+            if(resultList2.resultList.length==pointLen){
+              clearInterval(getDataJson);
+              var points=[];
+              for(var d = 0,marker;d<resultList2.resultList.length;d++){
+                if(resultList2.resultList.length == 0){
+                  return;
+                }
+                if(d==0){
+                  var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+                  var marker = new BMap.Marker(point,{icon:myIcon});
+                  marker.setLabel('起');
+                  marker.setZIndex(99)
+                  map.addOverlay(marker);
+                  points.push(point);
+                }else if(d<resultList2.resultList.length-1){
+                  var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+                  var marker = new BMap.Marker(point,{icon:myIcon3});
+                  map.addOverlay(marker);
+                  points.push(point);
+                }else{
+                  var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+                  var marker = new BMap.Marker(point,{icon:myIcon2});
+                  map.addOverlay(marker);
+                  marker.setZIndex(99)
+                  points.push(point);
+                }
+              }
+              var view = map.getViewport(points);
+              var mapZoom = view.zoom;
+              var centerPoint = view.center;
+              map.centerAndZoom(centerPoint,mapZoom);
+              // //绘制轨迹
+              polyline = new BMap.Polyline(points, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
+              map.addOverlay(polyline);
+              //调整视野
+            }
+          }
         }
-        if(d==0){
-          var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-          var marker = new BMap.Marker(point,{icon:myIcon});
-          marker.setLabel('起');
-          marker.setZIndex(99)
-          map.addOverlay(marker);
-          points.push(point);
-        }else if(d<resultList2.resultList.length-1){
-          var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-          var marker = new BMap.Marker(point,{icon:myIcon3});
-          map.addOverlay(marker);
-          points.push(point);
-        }else{
-          var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-          var marker = new BMap.Marker(point,{icon:myIcon2});
-          map.addOverlay(marker);
-          marker.setZIndex(99)
-          points.push(point);
-        }
-      }
-      var view = map.getViewport(points);
-      var mapZoom = view.zoom;
-      var centerPoint = view.center;
-      map.centerAndZoom(centerPoint,mapZoom);
-      // //绘制轨迹
-      polyline = new BMap.Polyline(points, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
-      map.addOverlay(polyline);
-      //调整视野
-
+      },200)
 
       // $.ajax({
       //   type: "get",

@@ -1,8 +1,8 @@
 <div id="page-wrapper" class="animated marg220">
 <div class="page-t">
   <div class="page-nav">
-    <a  href="javascript:;">设备管理</a>
-    <a  routerLinkActive="active" >设备信息</a>
+    <a  href="javascript:;">救援管理</a>
+    <a  routerLinkActive="active" >救援报告</a>
   </div>
   <router-outlet></router-outlet>
   <div class="search-box">
@@ -69,11 +69,11 @@
         <tr *ngFor="let rescue of rescuePapers; let i = index;"  (click)="onSelect(rescue)">
           <td>{{rescue.taskId}}</td>
           <td >{{rescue.sosName}}</td>
-          <td >{{rescue.sosTime| date:'yyyy-MM-dd HH:mm:ss'}}</td>
+          <td >{{rescue.sosTime|timeChange}}</td>
           <td>{{rescue.sosAddress}}</td>
           <td>{{rescue.sosReason}}</td>
           <td>{{rescue.voName}}</td>
-          <td>{{rescue.receiveTime| date:'yyyy-MM-dd HH:mm:ss'}}</td>
+          <td>{{rescue.receiveTime|timeChange}}</td>
           <td>{{rescue.rescueTeam}}</td>
           <td>{{rescue.dealResult}}</td>
           <td>{{rescue.remark}}</td>
@@ -90,13 +90,13 @@
     <div class="col-md-12 text-right margin-bottom mt25" *ngIf="rescuePapers">
       <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
 
-      <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-2)"
+      <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-1)"
               [disabled]="curPage==1">上一页</button>
       <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
               (click)="changePage(x,x.pageNum)"  *ngFor="let x of pageList;let i = index;">
         {{x.pageNum}}
       </button>
-      <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage)"
+      <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage+1)"
               [disabled]="curPage==totalPage">下一页</button>
     </div>
     <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">

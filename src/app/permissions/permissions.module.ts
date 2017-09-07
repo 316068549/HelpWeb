@@ -10,8 +10,7 @@ import { PermissionService } from '../permissions/permissions-service';
 import { permissionRoutes } from './permissions.routes';
 import { PermissionComponent } from './permissions.component';
 import { PermissionTableComponent } from './permissions-table/permissions-table.component';
-
-
+import { timeChangePipe } from './permissions-table/time.pipe';
 
 @NgModule({
   imports: [
@@ -23,7 +22,8 @@ import { PermissionTableComponent } from './permissions-table/permissions-table.
   ],
   declarations: [
     PermissionTableComponent,
-    PermissionComponent
+    PermissionComponent,
+    timeChangePipe
   ],
   providers: [ PermissionService ]
 })

@@ -37,6 +37,9 @@ a,ins{text-decoration:none}a,a:active,a:hover,ins,ins:active,ins:hover{outline:0
 .block{display:block}.none{display:none}.dis-inline{display:inline}.dis-inblock{display:inline-block}.txt-center{text-align:center}
 . txt-right{text-align:right}.txt-left{text-align:left}.fz12{font-size:12px}
 .fz14{font-size:14px}
+.xt-list{
+  margin-top: 20px;
+}
 .fz16{font-size:16px}.fz18{font-size:18px}.fz20{font-size:20px}
 .fz24{font-size:24px}.fw-b{font-weight:700}.fw-n{font-weight:400}.m15{ margin: 15px;}.ml0{margin-left:0}.mt5{margin-top:5px}.mt10{margin-top:10px}.mt15{margin-top:15px}.mr15{margin-right: 15px}
 .mt20{margin-top:20px}.mt25{margin-top:25px}.mt30{margin-top:30px}.mt35{margin-top:35px}.mt40{margin-top:40px}.mr10{margin-right:10px}
@@ -529,9 +532,7 @@ nav.page-tabs .page-tabs-content{
   border-color: #998;
 }
 
-.xt-list{
-  margin-top: 20px;
-}
+
 .xt-list5{
   margin-top: 5px !important;
 }

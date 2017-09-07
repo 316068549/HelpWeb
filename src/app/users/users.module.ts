@@ -10,6 +10,7 @@ import { UserService } from '../users/users-service';
 import { userRoutes } from './users.routes';
 import { UserComponent } from './users.component';
 import { UsersTableComponent } from './users-table/users-table.component';
+import { timeChangePipe } from './users-table/time.pipe';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { UsersTableComponent } from './users-table/users-table.component';
   ],
   declarations: [
     UsersTableComponent,
-    UserComponent
+    UserComponent,
+    timeChangePipe
   ],
   providers: [ UserService ]
 })

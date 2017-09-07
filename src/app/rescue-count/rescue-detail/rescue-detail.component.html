@@ -7,7 +7,7 @@
       <a  routerLinkActive="active" >救助报告</a>
     </div>
     <router-outlet></router-outlet>
-    <div class="search-box col-sm-12 mt10 mb10">
+    <div class="search-box col-sm-12 mt10">
       <button (click)="goBack()" class="btn btn-sm btn-primary fn-right" >返回</button>
     </div>
 
@@ -15,7 +15,7 @@
   <div class="J_mainContent" id="content-main">
     <div class="wrapper wrapper-content">
       <!--<track-map></track-map>-->
-      <div class="xt-list">
+      <div class="mt10 xt-list">
         <table class="table table-striped" >
           <thead>
           <tr>
@@ -48,13 +48,13 @@
       <div class="col-md-12 text-right margin-bottom mt25" *ngIf="rescues">
         <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
 
-        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-2)"
+        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-1)"
                 [disabled]="curPage==1">上一页</button>
         <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
                 (click)="changePage(x,x.pageNum)"  *ngFor="let x of pageList;let i = index;">
           {{x.pageNum}}
         </button>
-        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage)"
+        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage+1)"
                 [disabled]="curPage==totalPage">下一页</button>
       </div>
       <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">

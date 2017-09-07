@@ -212,7 +212,7 @@ export class MenuTableComponent implements OnInit {
     this.pageList[0].isActive = true;
   }
 
-  changePage(page,index) {
+  changePage(index) {
     this.menuService.getMenuList(index,5).then( res => {
       if(res['code'] == 0){
         this.menus = res['data']['list'];
@@ -260,7 +260,7 @@ export class MenuTableComponent implements OnInit {
 
         }
       });
-    this.getMenus();
+    this.getMenus(1);
 
     console.log(this.pages)
     // $('input[name="address"],#parentName').change(function(){
@@ -341,9 +341,9 @@ export class MenuTableComponent implements OnInit {
     $(".subTr3"+ id2).show();
   }
 
-  getMenus() {
+  getMenus(index:number) {
     var self = this;
-    this.menuService.getMenuList(1).then( res => {
+    this.menuService.getMenuList(index).then( res => {
       if(res['code'] == 0){
         if(res['data']['list']){
           this.menus = res['data']['list'];
@@ -421,7 +421,7 @@ export class MenuTableComponent implements OnInit {
               ,content: menu
             });
           }
-          this.getMenus();
+          this.getMenus(this.curPage);
           this.resetPagingArr();
           this.selectedMenu = null;
           $('#details').val('');
@@ -473,7 +473,7 @@ export class MenuTableComponent implements OnInit {
               alert(res['error']);
             }
             layer.close(ak);
-            this.getMenus();
+            this.getMenus(this.curPage);
             this.resetPagingArr();
             if (this.selectedMenu === menu) { this.selectedMenu = null; }
           });
@@ -505,7 +505,7 @@ export class MenuTableComponent implements OnInit {
             ,content: menu
           });
         }
-        this.getMenus();
+        this.getMenus(this.curPage);
         this.resetPagingArr();
         this.selectedMenu = null;
         $('#details').val('');

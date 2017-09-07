@@ -117,7 +117,7 @@ export class StatusTableComponent implements OnInit {
     this.curPage = 0;
   }
 
-  changePage(page,index) {
+  changePage(index) {
 
     if(this.onActive) {
       this.statusService.getStatuses(index, 5).then(res => {

@@ -81,6 +81,7 @@ export class HelpersTableComponent implements OnInit {
   }
   // 编辑选择数据初始化
   searchParMenu2(){
+
   }
   ngOnInit(): void {
     // var imeicode = this.route.snapshot.params['deviceIMEI'];
@@ -179,7 +180,7 @@ export class HelpersTableComponent implements OnInit {
     this.pageList[0].isActive = true;
     }
 
-  changePage(page,index) {
+  changePage(index) {
     this.userService.getMenuDatas(index,5).then( res => {
       if(res['code'] == 0){
         this.helpers = res['data']['list'];
@@ -208,7 +209,6 @@ export class HelpersTableComponent implements OnInit {
       }
 
     })
-    console.log('触发', page.pageNum);
   }
 
 
@@ -229,7 +229,7 @@ export class HelpersTableComponent implements OnInit {
             alert(res['error']);
           }
           layer.close(ak);
-          this.getElectricities2();
+          this.getElectricities2(this.curPage);
           this.resetPagingArr();
         })
       }
@@ -239,8 +239,8 @@ export class HelpersTableComponent implements OnInit {
     })
   }
 
-  getElectricities2(): void {
-    this.userService.getMenuDatas(1,5).then( res => {
+  getElectricities2(index:number): void {
+    this.userService.getMenuDatas(index,5).then( res => {
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
@@ -309,6 +309,10 @@ export class HelpersTableComponent implements OnInit {
     console.log(this.selectedHelper)
   }
 
+  cancel(){
+    this.getElectricities2(this.curPage);
+  }
+
   search2(term: string): void{
     this.userService.search2(term).then( menus => {
       if(!menus){
@@ -337,15 +341,17 @@ export class HelpersTableComponent implements OnInit {
     phone = phone.trim();
     nationalId = nationalId.trim();
     if (!helperName && !sex  && !password && !phone && !nationalId && rescue ) { return; }
+    $("#addWear").attr({"disabled":"disabled"});
     this.userService.create(helperName,sex,password,phone,nationalId,personnelForm,rescue,this.imgg)
       .subscribe(res => {
+        $("#addWear").removeAttr("disabled");
         if(res["status"]==1){
           layer.open({
             title: '提示'
             ,content: '添加成功'
           });
           // this.resetPagingArr();
-          this.getElectricities2();
+          this.getElectricities2(this.curPage);
           this.selectedHelper = null;
           this.tjmenu = false;
           this.clicked = false;
@@ -382,14 +388,16 @@ export class HelpersTableComponent implements OnInit {
   }
 
   save(): void {
+    $("#saveWear").attr({"disabled":"disabled"});
     this.userService.update(this.selectedHelper)
       .then(res => {
+        $("#saveWear").removeAttr("disabled");
         if(res["status"]==1){
           layer.open({
             title: '提示'
             ,content: '修改成功'
           });
-          this.getElectricities2();
+          this.getElectricities2(this.curPage);
           this.selectedHelper = null;
           this.deletemenu = false;
           this.clicked = false;

@@ -120,7 +120,7 @@ export class DeviceTableComponent implements OnInit {
     this.curPage = 0;
   }
 
-  changePage(page,index) {
+  changePage(index) {
     this.userService.getMenuDatas(index,5).then( res => {
       if(res['code'] == 0){
         this.devices = res['data']['list'];

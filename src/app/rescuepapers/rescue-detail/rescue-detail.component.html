@@ -43,7 +43,7 @@
                 没有图片
               </div>
               <div class="ibox-content" *ngIf="code&&imageList.length>0">
-                <a class="fancybox" href="#" title="" *ngFor="let image of imageList">
+                <a class="fancybox" href="javascript:;" title="" *ngFor="let image of imageList">
                   <img alt="image" [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+image.imageUrl" />
                 </a>
                 <!--<a class="fancybox" href="#" title="图片2">-->

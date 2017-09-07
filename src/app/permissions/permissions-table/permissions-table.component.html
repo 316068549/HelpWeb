@@ -56,7 +56,7 @@
           <td >{{role.roleName}}</td>
           <td ><span *ngFor="let user of role.userListserList;let a = index;let isFirst=first; let isLast=last;">{{user.nickName}}<span [hidden]="isLast">,</span></span>  </td>
           <td>{{role.roleDescription}}</td>
-          <td>{{role.createTime| date:'yyyy-MM-dd HH:mm:ss'}}</td>
+          <td>{{role.createTime|timeChange}}</td>
           <td><a (click)="searchParMenu2(role.roleId);deletemenu=true; clicked=true;role === selectedRole" >修改</a>&nbsp;&nbsp;&nbsp;&nbsp;
             <a   (click)="delete(role); $event.stopPropagation()">删除</a></td>
           <!--<td><a *ngIf="edit">修改</a>&nbsp;&nbsp;&nbsp;&nbsp;<a  *ngIf="del" (click)="delete(menu); $event.stopPropagation()">删除</a></td>-->
@@ -72,13 +72,13 @@
       <div class="col-md-12 text-right margin-bottom mt25" *ngIf="roles">
         <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
 
-        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-2)"
+        <button class="btn btn-default next"  (click)="changePage(curPage-1)"
                 [disabled]="curPage==1">上一页</button>
         <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
-                (click)="changePage(x,x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+                (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
           {{x.pageNum}}
         </button>
-        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage)"
+        <button class="btn btn-default next"  (click)="changePage(curPage+1)"
                 [disabled]="curPage==totalPage">下一页</button>
       </div>
       <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">

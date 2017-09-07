@@ -180,7 +180,7 @@ export class WearerTableComponent implements OnInit {
     this.pageList[0].isActive = true;
     }
 
-  changePage(page,index) {
+  changePage(index) {
 
     this.userService.getMenuDatas(index,5).then( res => {
       if(res['code'] == 0){
@@ -210,7 +210,6 @@ export class WearerTableComponent implements OnInit {
       }
 
     })
-    console.log('触发', page.pageNum);
   }
 
 
@@ -231,8 +230,7 @@ export class WearerTableComponent implements OnInit {
             alert(res['error']);
           }
           layer.close(ak);
-          this.getElectricities2();
-
+          this.getElectricities2(this.curPage);
         })
       }
       , btn2: () => {
@@ -241,8 +239,8 @@ export class WearerTableComponent implements OnInit {
     })
   }
 
-  getElectricities2(): void {
-    this.userService.getMenuDatas(1,5).then( res => {
+  getElectricities2(index:number): void {
+    this.userService.getMenuDatas(index,5).then( res => {
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
@@ -306,6 +304,10 @@ export class WearerTableComponent implements OnInit {
     console.log(this.selectedWearer)
   }
 
+  cancel(){
+    this.getElectricities2(this.curPage);
+  }
+
   search2(term: string): void{
     this.userService.search2(term).then( menus => {
       if(!menus){
@@ -339,14 +341,16 @@ export class WearerTableComponent implements OnInit {
     lastName = lastName.trim();
     phone = phone.trim();
     if (!imei && !Name && !lastName && !sex  && !age && !phone && !address ) { return; }
+    $("#addWear").attr({"disabled":"disabled"});
     this.userService.create(imei,Name,lastName,sex,age,phone,address,this.imgg)
       .subscribe(res => {
+        $("#addWear").removeAttr("disabled");
         if(res["status"]==1){
           layer.open({
             title: '提示'
             ,content: '添加成功'
           });
-          this.getElectricities2();
+          this.getElectricities2(this.curPage);
           this.selectedWearer = null;
           this.tjmenu = false;
           this.clicked = false;
@@ -384,15 +388,17 @@ export class WearerTableComponent implements OnInit {
 
   save(imei:string,Name: string,lastName:string ,sex: string, age: number,phone: string,
        address: string ,file:File): void {
+    $("#saveWear").attr({"disabled":"disabled"});
     this.userService.update(imei,Name,lastName,sex,age,phone,address,this.imgg)
       .subscribe(res => {
+        $('#saveWear').removeAttr('disabled');
         if(res["status"]==1){
           layer.open({
             title: '提示'
             ,content: '修改成功'
           });
           // this.resetPagingArr();
-          this.getElectricities2();
+          this.getElectricities2(this.curPage);;
           this.selectedWearer = null;
           this.deletemenu = false;
           this.clicked = false;

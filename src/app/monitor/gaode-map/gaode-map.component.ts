@@ -2,6 +2,7 @@ import { Component, OnInit, DoCheck, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { LeftNavComponent } from '../../left-nav/left-nav.component';
+import {isNullOrUndefined} from "util";
 declare var BMap: any;
 declare var $:any;
 declare var BMapLib:any;
@@ -30,8 +31,8 @@ export class GaodeMapComponent implements OnInit {
     var deviceList;
     var changeXyList=[];
     var taskList ;
+
     // var warningList=[];//报警列表
-    // var warningTaskList=[];//当前任务列表
     var warningDeviceList=[];
     var  markers,infoWindows = [];
     var map = new BMap.Map("container");            // 创建Map实例
@@ -47,29 +48,24 @@ export class GaodeMapComponent implements OnInit {
     // map.centerAndZoom(point,11);
     map.addControl(new BMap.NavigationControl());
 
+    drawMap()
     init();
     startRun();
      // var awp = setTimeout(xunhuan,5000);
-    var interval = setInterval(xunhuan,20000)
+    var interval = setInterval(xunhuan,20000);
+    var xuanhuanobj = true;
     //打开气泡延迟20秒刷新
-    function aa() {
-      clearInterval(interval);
-      setTimeout(cc,45000);
-    }
+
     function xunhuan(){
       map.clearOverlays();
       changePlace();
       startRun();
     }
-    function cc() {
-      interval = setInterval(xunhuan,20000)
-    }
     function getLocalTime(nS) {
     return new Date(parseInt(nS)).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
     };
-
-    // 地图初始化位置
-    function init(){
+     //初始化画框
+    function drawMap(){
       $.ajax({
         type: "get",
         cache: false,
@@ -90,6 +86,9 @@ export class GaodeMapComponent implements OnInit {
         }
       });
       getBoundary(mapaddress);
+    }
+    // 地图初始化位置
+    function init(){
       var resul;
       $.ajax({
         type: "get",
@@ -244,7 +243,7 @@ export class GaodeMapComponent implements OnInit {
               })
               $.each(deviceList,function (a,obj) {
                 if(obj.deviceIMEI==n.deviceIMEI){
-                  html+=obj.NAME+"<span class='warningTask'>（等待接单，报警地址："+obj.address+")</span></a></li>"
+                  html+=obj.NAME+"<span class='warningTask'>（等待接单，报警地址："+n.address+")</span></a></li>"
                 }
               })
             }else if(n.status==2){
@@ -474,7 +473,7 @@ export class GaodeMapComponent implements OnInit {
             if (sss.status == 1) {
 
                  // warningList.push(sss.deviceIMEI);
-                 console.log('报警列表'+warningDeviceList)
+                 console.log('报警列表'+warningDeviceList.length)
                 // $.each(deviceList, function (aa, oobj) {
                 //   if (oobj.deviceIMEI == sss.deviceIMEI) {
                 //     html2 += oobj.NAME+"<span class='warningTask'>（等待接单，报警地址：" + oobj.address + ")</span></a></li>"
@@ -482,24 +481,28 @@ export class GaodeMapComponent implements OnInit {
                 // })
                 // $('.panel ul').append(html2)
                 //
-
-              if(warningDeviceList.length>=0){
+              if(warningDeviceList){
                 warningList=[];
                 if(warningDeviceList.length>0){
                   $.each(warningDeviceList,function (b,devicr) {
                     warningList.push(devicr.deviceImei);
                   })
                 }
+                console.log('报警列表'+warningDeviceList.length)
+                console.log(warningList)
                   if(warningList.indexOf(sss.deviceIMEI)==-1){
+
                   // warningList.push(sss.deviceIMEI);
                   // warningTaskList.push(sss.task_id);
                   warningDeviceList.push({
                     deviceImei:sss.deviceIMEI,
                     taskId:sss.task_id
                   })
+                    console.log('报警列表'+warningDeviceList.length)
+                    console.log(warningList)
                   $.each(deviceList, function (aa, oobj) {
                     if (oobj.deviceIMEI == sss.deviceIMEI) {
-                      html2 += oobj.NAME+"<span class='warningTask'>（等待接单，报警地址：" + oobj.address + ")</span></a></li>"
+                      html2 += oobj.NAME+"<span class='warningTask'>（等待接单，报警地址：" + sss.address + ")</span></a></li>"
                     }
                   })
                   $('.panel ul').prepend(html2)
@@ -522,8 +525,15 @@ export class GaodeMapComponent implements OnInit {
                                 }
                               })
                               devicr.alerted=true;
-                              clearInterval(interval);
-                              setTimeout(cc,45000);
+                              console.log(xuanhuanobj);
+                              if(xuanhuanobj){
+                                window.clearInterval(interval);
+                                xuanhuanobj=false;
+                                setTimeout(() => {
+                                  interval = setInterval(xunhuan,20000);
+                                  xuanhuanobj=true;
+                                },10000);
+                              }
                               $('.'+sss.deviceIMEI).click();
                             }
                           })
@@ -728,7 +738,6 @@ export class GaodeMapComponent implements OnInit {
           async: false, //同步请求外面才能获取到*
           success: function(data){
             if(data.status === 0) {
-              console.log(data.result)
               for(var c = 0,marker;c<data.result.length;c++) {
                 if (data.result.length == 0) {
                   return;
@@ -740,17 +749,27 @@ export class GaodeMapComponent implements OnInit {
           }
         });
       }
-      var resultList2 = JSON.parse(localStorage.getItem('userDatas'));
+
       var points=[];
-      for(var d = 0,marker;d<resultList2.resultList.length;d++) {
-        if (resultList2.resultList.length == 0) {
-          return;
+      var getDataJson = setInterval(function () {
+        var resultList2 = JSON.parse(localStorage.getItem('userDatas'));
+        if(resultList2){
+          if(resultList2.hasOwnProperty('resultList')){
+            if(resultList2.resultList.length==volunters){
+              clearInterval(getDataJson);
+              for(var d = 0,marker;d<resultList2.resultList.length;d++) {
+                if (resultList2.resultList.length == 0) {
+                  return;
+                }
+                var myIcon = new BMap.Icon("markers.png");
+                var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+                addMarker(point,changeXyList[d].status,changeXyList[d].deviceIMEI,changeXyList[d].NAME);
+                points.push(point)
+              }
+            }
+          }
         }
-        var myIcon = new BMap.Icon("markers.png");
-        var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-        addMarker(point,changeXyList[d].status,changeXyList[d].deviceIMEI,changeXyList[d].NAME);
-        points.push(point)
-      }
+      },200)
       // for(var b = 0,marker;b<volunters;b++){
       //   if(deviceList[b].longitude){
       //     lngX = deviceList[b].longitude;
@@ -811,7 +830,14 @@ export class GaodeMapComponent implements OnInit {
     }
     function addClickHandler(content,marker){
       marker.addEventListener("click",function(e){
-        aa();
+        if(xuanhuanobj){
+          window.clearInterval(interval);
+          xuanhuanobj=false;
+          setTimeout(() => {
+            interval = setInterval(xunhuan,20000);
+            xuanhuanobj=true;
+          },10000);
+        }
         openInfo(content,e)}
       );
     }
@@ -1152,6 +1178,7 @@ export class GaodeMapComponent implements OnInit {
 
       }
       else {
+        var imgUrl;
         marker = new BMap.Marker(point,{icon:myIcon2,title:deviceIMEI});
         map.addOverlay(marker,{title:deviceIMEI});
         markers.push(marker);
@@ -1171,7 +1198,15 @@ export class GaodeMapComponent implements OnInit {
       }
       marker.addEventListener("click", function(e){
         this.openInfoWindow(infoWindow);
-        aa();
+        console.log(xuanhuanobj)
+        if(xuanhuanobj){
+          window.clearInterval(interval);
+          xuanhuanobj=false;
+          setTimeout(() => {
+            interval = setInterval(xunhuan,20000);
+            xuanhuanobj=true;
+          },10000);
+        }
         //图片加载完毕重绘infowindow
         document.getElementById('imgDemo').onload = function (){
           infoWindow.redraw();   //防止在网速较慢，图片未加载时，生成的信息框高度比图片的总高度小，导致图片部分被隐藏
@@ -1250,8 +1285,9 @@ export class GaodeMapComponent implements OnInit {
         }
         var pointArray = [];
         for (var i = 0; i < count; i++) {
-          var ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 2, strokeColor: "#ff0000",fillColor:"#F7AD9E",fillOpacity:"0.3"}); //建立多边形覆盖物
+          var ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 2, strokeColor: "#ff0000",fillColor:"#F7AD9E",fillOpacity:"0.02"}); //建立多边形覆盖物
           map.addOverlay(ply);  //添加覆盖物
+          ply.disableMassClear();
           pointArray = pointArray.concat(ply.getPath());
         }
         map.setViewport(pointArray);    //调整视野

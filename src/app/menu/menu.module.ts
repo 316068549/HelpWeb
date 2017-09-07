@@ -10,6 +10,8 @@ import { MenuComponent } from './menu.component';
 import { MenuDetailComponent } from './menu-detail/menu-detail.component';
 import { MenuTableComponent } from './menu-table/menu-table.component';
 import { MenuSearchComponent } from './menu-search/menu-search.component';
+import { timeChangePipe } from './menu-table/time.pipe';
+
 
 @NgModule({
   imports: [
@@ -23,7 +25,8 @@ import { MenuSearchComponent } from './menu-search/menu-search.component';
     MenuComponent,
     MenuDetailComponent,
     MenuTableComponent,
-    MenuSearchComponent
+    MenuSearchComponent,
+    timeChangePipe
   ]
 })
 export class MenuModule { }

@@ -78,13 +78,13 @@
       <div class="col-md-12 text-right margin-bottom mt25" *ngIf="statuses">
         <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
 
-        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-2)"
+        <button class="btn btn-default next"  (click)="changePage(curPage-1)"
                 [disabled]="curPage==1">上一页</button>
         <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
-                (click)="changePage(x,x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+                (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
           {{x.pageNum}}
         </button>
-        <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage)"
+        <button class="btn btn-default next"  (click)="changePage(curPage+1)"
                 [disabled]="curPage==totalPage">下一页</button>
       </div>
       <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">

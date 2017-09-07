@@ -81,7 +81,7 @@ export class PermissionTableComponent implements OnInit {
 
         }
       });
-    this.getElectricities();
+    this.getElectricities(1);
   }
 
   setPagingArr() {
@@ -168,8 +168,8 @@ export class PermissionTableComponent implements OnInit {
     this.pageList[0].isActive = true;
   }
 
-  getElectricities(): void {
-    this.userService.getMenuList(1,5).then( res => {
+  getElectricities(index:number): void {
+    this.userService.getMenuList(index,5).then( res => {
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
@@ -198,7 +198,7 @@ export class PermissionTableComponent implements OnInit {
     });
   }
 
-  changePage(page,index) {
+  changePage(index) {
     this.userService.getMenuList(index,5).then( res => {
       if(res['code'] == 0){
         this.roles = res['data']['list'];
@@ -227,7 +227,6 @@ export class PermissionTableComponent implements OnInit {
       }
 
     })
-    console.log('触发', page.pageNum);
   }
 
   onSelect(user: Role): void {
@@ -397,7 +396,7 @@ export class PermissionTableComponent implements OnInit {
             ,content: '添加成功'
           });
         }
-        this.getElectricities();
+        this.getElectricities(this.curPage);
         this.selectedRole = null;
         $('#details').val('');
         this.submied = true;
@@ -469,7 +468,7 @@ export class PermissionTableComponent implements OnInit {
       , yes: () => {
         this.userService.delete(role.roleId).then(res =>{
           if(res['code'] == 0){
-            this.getElectricities();
+            this.getElectricities(this.curPage);
           }else if(res['code'] == 5){
             alert(res['error']);
             this.router.navigate(['login']);
@@ -557,7 +556,7 @@ export class PermissionTableComponent implements OnInit {
           return
         }
         this.selectedRole = null;
-        this.getElectricities();
+        this.getElectricities(this.curPage);
         this.deletemenu = false;
         this.clicked = false;
     });

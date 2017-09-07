@@ -75,11 +75,11 @@ export class UsersTableComponent implements OnInit {
 
         }
       });
-    this.getElectricities();
+    this.getElectricities(1);
   }
 
-  getElectricities(): void {
-    this.userService.getMenuList(1,5).then( res => {
+  getElectricities(index:number): void {
+    this.userService.getMenuList(index,5).then( res => {
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
@@ -202,7 +202,7 @@ export class UsersTableComponent implements OnInit {
   }
 
 
-  changePage(page,index) {
+  changePage(index) {
 
     // lastPage = page;
     // this.curPage = index;
@@ -234,7 +234,6 @@ export class UsersTableComponent implements OnInit {
       }
 
     })
-    console.log('触发', page.pageNum);
   }
 
   searchParMenu(): void{
@@ -290,7 +289,7 @@ export class UsersTableComponent implements OnInit {
       , yes: () => {
         this.userService.delete(user.userId).then(res =>{
           if(res['code'] == 0){
-            this.getElectricities();
+            this.getElectricities(this.curPage);
           }else if(res['code'] == 5){
             alert(res['error']);
             this.router.navigate(['login']);
@@ -327,7 +326,7 @@ export class UsersTableComponent implements OnInit {
           return
         }
         this.selectedUser = null;
-        this.getElectricities();
+        this.getElectricities(this.curPage);
         this.deletemenu = false;
         this.clicked = false;
     });
@@ -381,7 +380,7 @@ export class UsersTableComponent implements OnInit {
               ,content: menu
             });
           }
-          this.getElectricities();
+          this.getElectricities(this.curPage);
           this.selectedUser = null;
           $('#details').val('');
           this.submied = true;
