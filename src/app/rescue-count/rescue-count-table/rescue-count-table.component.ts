@@ -153,7 +153,9 @@ export class RescueCountTableComponent implements OnInit {
   }
 
   getElectricities(): void {
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.rescueCountService.getMenuDatas(1,5).then(res => {
+      layer.close(index);
       if(res['code'] == 0){
         if(res['data']['list']){
           this.rescues = res['data']['list'];

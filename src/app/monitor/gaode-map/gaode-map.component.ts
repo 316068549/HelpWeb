@@ -99,88 +99,6 @@ export class GaodeMapComponent implements OnInit {
         ,
         success: function(data){
             resul=data.data;
-          //  resul ={
-          //     "deviceList":[
-          //       {
-          //         "address":"西安莲湖区",
-          //         "locationTime":"2017-08-05 12:01:37",
-          //         "image_url":"liuwei.jpg",
-          //         "mobile":"15662355564",
-          //         "latitude":34.2307,
-          //         "locationType":1,
-          //         "NAME":"刘位",
-          //         "deviceStatus":"00000000000000000000000000010000",
-          //         "is_alarm":1,
-          //         "deviceIMEI":"123456",
-          //         "longitude":108.813,
-          //         "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
-          //         "onlineTime":1501745760000,
-          //         "deviceMobile":"15002933699"
-          //       },
-          //       {
-          //         "address": "陕西省西安市大寨路",
-          //         "deviceIMEI": "4700572735",
-          //         "locationTime": 1503648153000,
-          //         "image_url": "6ff94ebb-36d0-41ca-accb-429082460bd0.jpg",
-          //         "latitude": 34.2316,
-          //         "mobile": "13266666666",
-          //         "onlineTime": 1503493993000,
-          //         "locationType": 1,
-          //         "deviceMobile": "15002933646",
-          //         "deviceId": 8,
-          //         "NAME": "德华",
-          //         "longitude": 108.913
-          //       }
-          //     ],
-          //     "volunteerList":[
-          //       {
-          //         "volunteer_id":"1",
-          //         "address":null,
-          //         "locationTime":1501914408000,
-          //         "image_url":"http://localhost:8080/api/file/downloadFile",
-          //         "sex":0,
-          //         "latitude":"34.323985",
-          //         "mobile":"15002933643",
-          //         "rescue_team_id":1,
-          //         "NAME":"lxx",
-          //         "longitude":"109.049169"
-          //       },
-          //       {
-          //         "volunteer_id":"111",
-          //         "address":null,
-          //         "locationTime":1501914594000,
-          //         "image_url":"xw.jpg",
-          //         "sex":0,
-          //         "latitude":"34.324172",
-          //         "mobile":"13072925248",
-          //         "rescue_team_id":1,
-          //         "NAME":"xw",
-          //         "longitude":"109.049137"
-          //       }
-          //     ]
-          //     ,
-          //     "taskList":[
-          //       {
-          //         "receiveTime": 1503887538000,
-          //         "volunteer_id": "1",
-          //         "deviceIMEI": "4700572735",
-          //         "createTime": 1503887538000,
-          //         "task_id": "7d4452d0-e2c1-4d46-8799-a8dda5846f67",
-          //         "status": 4
-          //       }
-          //       ,
-          //       {
-          //         "receiveTime": 1503887538000,
-          //         "volunteer_id": "1",
-          //         "deviceIMEI": "123456",
-          //         "createTime": 1503887538000,
-          //         "task_id": "7d4452d0-e2c1-4d46-8799-a8dda5846f61",
-          //         "status": 3
-          //       }
-          //     ]
-          //
-          // }
-
         }
       });
       // volunteerList=resul.volunteerList;
@@ -309,101 +227,6 @@ export class GaodeMapComponent implements OnInit {
             });
           }
            result=data.data;
-          //  result ={
-          //     "deviceList":[
-          //       {
-          //         "address":"西安莲湖区",
-          //         "locationTime":"2017-08-05 12:01:37",
-          //         "image_url":"liuwei.jpg",
-          //         "mobile":"15662355564",
-          //         "latitude":34.2307,
-          //         "locationType":1,
-          //         "NAME":"刘位",
-          //         "deviceStatus":"00000000000000000000000000010000",
-          //         "is_alarm":0,
-          //         "deviceIMEI":"123456",
-          //         "longitude":108.813,
-          //         "alarmId":"deadf2f3-32c0-4a51-9721-3efa3e6b26a7",
-          //         "onlineTime":1501745760000,
-          //         "deviceMobile":"15002933699"
-          //       },
-          //       {
-          //         "address": "陕西省西安市大寨路",
-          //         "deviceIMEI": "4700572735",
-          //         "locationTime": 1503648153000,
-          //         "image_url": "6ff94ebb-36d0-41ca-accb-429082460bd0.jpg",
-          //         "latitude": 34.2316,
-          //         "mobile": "13266666666",
-          //         "onlineTime": 1503493993000,
-          //         "locationType": 1,
-          //         "deviceMobile": "15002933646",
-          //         "deviceId": 8,
-          //         "NAME": "德华",
-          //         "longitude": 108.913
-          //       }
-          //     ],
-          //     "volunteerList":[
-          //       {
-          //         "volunteer_id":"1",
-          //         "address":null,
-          //         "locationTime":1501914408000,
-          //         "image_url":"http://localhost:8080/api/file/downloadFile",
-          //         "sex":0,
-          //         "latitude":"34.323985",
-          //         "mobile":"15002933643",
-          //         "rescue_team_id":1,
-          //         "NAME":"lxx",
-          //         "longitude":"109.049169"
-          //       },
-          //       {
-          //         "volunteer_id":"111",
-          //         "address":null,
-          //         "locationTime":1501914594000,
-          //         "image_url":"xw.jpg",
-          //         "sex":0,
-          //         "latitude":"34.324172",
-          //         "mobile":"13072925248",
-          //         "rescue_team_id":1,
-          //         "NAME":"xw",
-          //         "longitude":"109.049137"
-          //       }
-          //     ],
-          //     "taskList":[
-          //       {
-          //         "receiveTime": 1503887538000,
-          //         "volunteer_id": "1",
-          //         "deviceIMEI": "4700572735",
-          //         "createTime": 1503887538000,
-          //         "task_id": "7d4452d0-e2c1-4d46-8799-a8dda5846f62",
-          //         "status": 1
-          //       },
-          //       {
-          //         "receiveTime": 1503887538000,
-          //         "volunteer_id": "1",
-          //         "deviceIMEI": "123456",
-          //         "createTime": 1503887538000,
-          //         "task_id": "7d4452d0-e2c1-4d46-8799-a8dda5846f63",
-          //         "status": 1
-          //       },
-          //       {
-          //         "receiveTime": 1503887538000,
-          //         "volunteer_id": "1",
-          //         "deviceIMEI": "4700572735",
-          //         "createTime": 1503887538000,
-          //         "task_id": "7d4452d0-e2c1-4d46-8799-a8dda5846f67",
-          //         "status": 4
-          //       },
-          //       {
-          //         "receiveTime": 1503887538000,
-          //         "volunteer_id": "1",
-          //         "deviceIMEI": "123456",
-          //         "createTime": 1503887538000,
-          //         "task_id": "7d4452d0-e2c1-4d46-8799-a8dda5846f61",
-          //         "status": 3
-          //       }
-          //     ]
-          //
-          // }
         }
       });
       // volunteerList=result.volunteerList;
@@ -473,7 +296,7 @@ export class GaodeMapComponent implements OnInit {
             if (sss.status == 1) {
 
                  // warningList.push(sss.deviceIMEI);
-                 console.log('报警列表'+warningDeviceList.length)
+                 console.log('开始：报警列表'+warningDeviceList.length)
                 // $.each(deviceList, function (aa, oobj) {
                 //   if (oobj.deviceIMEI == sss.deviceIMEI) {
                 //     html2 += oobj.NAME+"<span class='warningTask'>（等待接单，报警地址：" + oobj.address + ")</span></a></li>"
@@ -482,6 +305,7 @@ export class GaodeMapComponent implements OnInit {
                 // $('.panel ul').append(html2)
                 //
               if(warningDeviceList){
+
                 warningList=[];
                 if(warningDeviceList.length>0){
                   $.each(warningDeviceList,function (b,devicr) {
@@ -498,14 +322,17 @@ export class GaodeMapComponent implements OnInit {
                     deviceImei:sss.deviceIMEI,
                     taskId:sss.task_id
                   })
-                    console.log('报警列表'+warningDeviceList.length)
+                    console.log('结束：报警列表'+warningDeviceList.length)
                     console.log(warningList)
                   $.each(deviceList, function (aa, oobj) {
                     if (oobj.deviceIMEI == sss.deviceIMEI) {
                       html2 += oobj.NAME+"<span class='warningTask'>（等待接单，报警地址：" + sss.address + ")</span></a></li>"
                     }
                   })
-                  $('.panel ul').prepend(html2)
+                    console.log('生成'+$('.panel ul #'+sss.task_id).length)
+                    if($('.panel ul #'+sss.task_id).length==0){
+                      $('.panel ul').prepend(html2)
+                    }
                 }
                 if(warningList.indexOf(sss.deviceIMEI)>-1){
                   var nowDate = new Date().getTime();
@@ -585,19 +412,20 @@ export class GaodeMapComponent implements OnInit {
                   $.each(warningDeviceList, function (b, devicr) {
                     warningList.push(devicr.deviceImei);
                   })
+                  if(warningList.indexOf(sss.deviceIMEI)>-1){
+                    $.each(warningDeviceList, function (i, n) {
+                      if(n.taskId == sss.task_id){
+                        // var index = warningList.indexOf(n);
+                        // if(sss.task_id==warningTaskList[index]){
+                        //   warningList.splice(index, 1);
+                        //   warningTaskList.splice(index,1);
+                        // }
+                        warningDeviceList.splice(i,1);
+                      }
+                    })
+                  }
                 }
-                if(warningList.indexOf(sss.deviceIMEI)>-1){
-                  $.each(warningDeviceList, function (i, n) {
-                    if(n.taskId == sss.task_id){
-                      // var index = warningList.indexOf(n);
-                      // if(sss.task_id==warningTaskList[index]){
-                      //   warningList.splice(index, 1);
-                      //   warningTaskList.splice(index,1);
-                      // }
-                      warningDeviceList.splice(i,1);
-                    }
-                  })
-                }
+
               }
               // if(warningList.indexOf(sss.deviceIMEI)>-1){
               //   $.each(warningList, function (i, n) {
@@ -732,7 +560,7 @@ export class GaodeMapComponent implements OnInit {
 
         $.ajax({
           type: "get",
-          url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
+          url: changgeUrl+"&from=1&to=5&ak=PeF7fa3g436cNdspCytr4ogR8VdoUsXa",
           dataType: 'jsonp',
           cache: false,
           async: false, //同步请求外面才能获取到*
@@ -745,7 +573,9 @@ export class GaodeMapComponent implements OnInit {
                 userData.resultList.push(data.result[c])
               }
             }
-            localStorage.setItem('userDatas',JSON.stringify(userData))
+            if(userData.resultList.length==volunters){
+              localStorage.setItem('userDatas',JSON.stringify(userData))
+            }
           }
         });
       }
@@ -1285,7 +1115,7 @@ export class GaodeMapComponent implements OnInit {
         }
         var pointArray = [];
         for (var i = 0; i < count; i++) {
-          var ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 2, strokeColor: "#ff0000",fillColor:"#F7AD9E",fillOpacity:"0.02"}); //建立多边形覆盖物
+          var ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 2, strokeColor: "#ff0000",fillColor:"#F7AD9E",fillOpacity:"0.05"}); //建立多边形覆盖物
           map.addOverlay(ply);  //添加覆盖物
           ply.disableMassClear();
           pointArray = pointArray.concat(ply.getPath());

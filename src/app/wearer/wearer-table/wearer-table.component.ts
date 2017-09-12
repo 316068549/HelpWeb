@@ -270,7 +270,9 @@ export class WearerTableComponent implements OnInit {
   }
 
   getElectricities(): void {
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.userService.getMenuDatas(1,5).then( res => {
+      layer.close(index);
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
@@ -341,15 +343,18 @@ export class WearerTableComponent implements OnInit {
     lastName = lastName.trim();
     phone = phone.trim();
     if (!imei && !Name && !lastName && !sex  && !age && !phone && !address ) { return; }
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     $("#addWear").attr({"disabled":"disabled"});
     this.userService.create(imei,Name,lastName,sex,age,phone,address,this.imgg)
       .subscribe(res => {
+        layer.close(index);
         $("#addWear").removeAttr("disabled");
         if(res["status"]==1){
           layer.open({
             title: '提示'
             ,content: '添加成功'
           });
+          $('#imageUrl').val('');
           this.getElectricities2(this.curPage);
           this.selectedWearer = null;
           this.tjmenu = false;
@@ -398,7 +403,7 @@ export class WearerTableComponent implements OnInit {
             ,content: '修改成功'
           });
           // this.resetPagingArr();
-          this.getElectricities2(this.curPage);;
+          this.getElectricities2(this.curPage);
           this.selectedWearer = null;
           this.deletemenu = false;
           this.clicked = false;

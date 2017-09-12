@@ -5,6 +5,7 @@ import { UserLoginService } from './user-login.service';
 import { User } from '../models/user-model';
 import { fadeIn } from '../animations/fade-in';
 declare var $:any;
+declare var layer:any;
 
 @Component({
   selector: 'login',
@@ -28,10 +29,12 @@ export class LoginComponent implements OnInit {
   ) {
     this.user.userName ='';
     this.user.userPassword='';
+
   }
 
 
   ngOnInit() {
+    let index = layer.load(0, {shade: false,offset: '30%'}); //0代表加载的风格，支持0-2
     console.log("--- user-login-component ---");
     console.log(this.router);
     console.log(this.activatedRoute);
@@ -42,13 +45,15 @@ export class LoginComponent implements OnInit {
     console.log(activatedRouteSnapshot);
     console.log(routerState);
     console.log(routerStateSnapshot);
+    layer.close(index);
   }
 
 
   public login():void{
     console.log(this.user);
+    let index = layer.load(1, {shade: false,offset: '30%'}); //0代表加载的风格，支持0-2
     this.userLoginService.login(this.user).subscribe(res => {
-      console.log(res)
+      layer.close(index);
       if(res){
         localStorage.setItem("tokenId", res.tokenId);
         localStorage.setItem("roleId", res.roleId);

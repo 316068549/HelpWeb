@@ -82,6 +82,17 @@ export class RescueDetailComponent implements OnInit {
     // });
   }
 
+  setImg(obj,i){
+   let box = $('.ibox-content').width()*(24/100)
+    // console.log(obj.width)
+    // console.log(obj.height)
+    // if(obj.width/obj.height>1){
+    //  obj.style.transform = 'rotate(-90deg)';
+    //   $('.img'+i).height(box+'px')
+    // }
+    // console.log(obj.width+','+obj.height)
+  }
+
   goBack(): void {
     this.location.back();
   }

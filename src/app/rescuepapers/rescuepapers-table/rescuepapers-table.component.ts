@@ -153,7 +153,9 @@ export class RescuepapersTableComponent implements OnInit {
 
 
   getElectricities(): void {
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.userService.getMenuDatas(1).then( res => {
+      layer.close(index);
       if(res['code'] == 0){
         if(res['data']['list']){
           this.rescuePapers = res['data']['list'];
@@ -203,8 +205,10 @@ export class RescuepapersTableComponent implements OnInit {
           return
         }
         this.rescuePapers = res['data']['list'];
-        this.pages  = res['data']['total'];
         this.curPage = res['data']['pageNum'];
+        this.totalNum   = res['data']['total'];
+        this.totalPage   = res['data']['pages'];
+        this.setPagingArr();
       }else if(res['code'] == 5){
         var ak = layer.open({
           content: res['error']+'请重新登录'

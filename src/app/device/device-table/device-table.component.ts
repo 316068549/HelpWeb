@@ -32,6 +32,7 @@ export class DeviceTableComponent implements OnInit {
   public totalPages = 7 ;// 分页显示数目
   public curPage = 1;// 当前页码
   public isEmpty:boolean = false;
+  public isSearch:boolean = false;
   public pageList= [{
     isActive: true,
     pageNum: '1'
@@ -157,7 +158,9 @@ export class DeviceTableComponent implements OnInit {
 
 
   getElectricities(): void {
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.userService.getMenuDatas(1,5).then( res => {
+      layer.close(index);
       if(res['code'] == 0){
         if(res['data']['list']){
           this.devices = res['data']['list'];
@@ -208,6 +211,7 @@ export class DeviceTableComponent implements OnInit {
       }
       if(menus['list'].length>0){
         this.devices = menus['list'];
+        this.isSearch = true;
       }
     });
   }

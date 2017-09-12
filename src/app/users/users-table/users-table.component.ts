@@ -79,7 +79,9 @@ export class UsersTableComponent implements OnInit {
   }
 
   getElectricities(index:number): void {
+    let loadingIcon = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.userService.getMenuList(index,5).then( res => {
+      layer.close(loadingIcon);
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
@@ -300,6 +302,7 @@ export class UsersTableComponent implements OnInit {
             alert(res['error']);
           }
           layer.close(ak);
+          this.getElectricities(this.curPage);
         })
       }
       , btn2: () => {

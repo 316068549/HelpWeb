@@ -270,7 +270,9 @@ export class HelpersTableComponent implements OnInit {
   }
 
   getElectricities(): void {
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.userService.getMenuDatas(1,5).then( res => {
+       layer.close(index);
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
@@ -342,15 +344,18 @@ export class HelpersTableComponent implements OnInit {
     nationalId = nationalId.trim();
     if (!helperName && !sex  && !password && !phone && !nationalId && rescue ) { return; }
     $("#addWear").attr({"disabled":"disabled"});
+    let index = layer.load(1, {shade: false,offset: '30%'});
     this.userService.create(helperName,sex,password,phone,nationalId,personnelForm,rescue,this.imgg)
       .subscribe(res => {
         $("#addWear").removeAttr("disabled");
+        layer.close(index);
         if(res["status"]==1){
           layer.open({
             title: '提示'
             ,content: '添加成功'
           });
           // this.resetPagingArr();
+          $('#imageUrl').val('');
           this.getElectricities2(this.curPage);
           this.selectedHelper = null;
           this.tjmenu = false;

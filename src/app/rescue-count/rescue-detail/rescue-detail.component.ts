@@ -118,9 +118,11 @@ export class RescueDetailComponent implements OnInit {
 
 
   ngOnInit() {
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.route.params
       .switchMap((params: Params) => this.rescueCountService.getMenuDatas2(params['rescueTeamId'],1,5))
       .subscribe(res =>{
+        layer.close(index);
         if(res['code'] == 0){
           if(res['data']['list']){
             this.rescues = res['data']['list'];

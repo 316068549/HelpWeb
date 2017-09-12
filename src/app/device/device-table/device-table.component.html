@@ -74,7 +74,7 @@
     </div>
     <div style="position:relative;padding:0 30px;top:0">
       <!--分页组件-->
-      <div class="col-md-12 text-right margin-bottom mt25" *ngIf="devices">
+      <div class="col-md-12 text-right margin-bottom mt25" *ngIf="devices&&!isSearch">
         <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
 
         <button class="btn btn-default next"  (click)="changePage(curPage-1)"

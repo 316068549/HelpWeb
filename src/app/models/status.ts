@@ -4,5 +4,5 @@ export class Status {
   ownerName: string;
   mobile:string;
   onlineTime:number;
-  guardian:string;
+  rescuePerson:string;
 }

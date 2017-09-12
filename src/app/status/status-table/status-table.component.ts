@@ -118,7 +118,6 @@ export class StatusTableComponent implements OnInit {
   }
 
   changePage(index) {
-
     if(this.onActive) {
       this.statusService.getStatuses(index, 5).then(res => {
         if (res['code'] == 0) {
@@ -207,7 +206,9 @@ export class StatusTableComponent implements OnInit {
   }
 
   getStatuses(): void {
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.statusService.getStatuses(1,5).then( res => {
+      layer.close(index);
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
@@ -237,7 +238,9 @@ export class StatusTableComponent implements OnInit {
   }
 
   getStatuses2(): void {
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.statusService.getStatuses2(1,5).then( res => {
+      layer.close(index);
       if(res['code'] == 0){
         if(res['data']['list']){
           this.statuses = res['data']['list'];

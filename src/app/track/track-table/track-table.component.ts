@@ -30,6 +30,7 @@ export class TrackTableComponent implements OnInit {
   public totalPages = 7 ;// 分页显示数目
   public curPage = 1;// 当前页码
   public isEmpty:boolean = false;
+  public isSearch:boolean = false;
   public pageList= [{
     isActive: true,
     pageNum: '1'
@@ -153,7 +154,9 @@ export class TrackTableComponent implements OnInit {
     this.getElectricities();
   }
   getElectricities(): void {
+    let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     this.electricityService.getElectricities(1).then( res => {
+      layer.close(index);
       if(res['code'] == 0){
         if(!res['data']){
           this.isEmpty=true;
@@ -199,17 +202,19 @@ export class TrackTableComponent implements OnInit {
         if(!menus['list']){
           layer.open({
             title: '提示'
-            ,content: '错误'
+            ,content: '没有查询到数据'
           });
+          return
         }
-        if(menus['list'].length==0){
-          layer.open({
-            title: '提示'
-            ,content: '没有查询到数据！'
-          });
-        }
+        // if(menus['list'].length==0){
+        //   layer.open({
+        //     title: '提示'
+        //     ,content: '没有查询到数据！'
+        //   });
+        // }
         if(menus['list'].length>0){
           this.electricities = menus['list'];
+          this.isSearch = true
         }
 
     // this.router.navigate(['/detail', deviceIMEI])

@@ -342,8 +342,10 @@ export class MenuTableComponent implements OnInit {
   }
 
   getMenus(index:number) {
+    let loadingIcon = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     var self = this;
     this.menuService.getMenuList(index).then( res => {
+      layer.close(loadingIcon);
       if(res['code'] == 0){
         if(res['data']['list']){
           this.menus = res['data']['list'];

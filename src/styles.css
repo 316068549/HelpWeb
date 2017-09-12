@@ -53,16 +53,32 @@ a,ins{text-decoration:none}a,a:active,a:hover,ins,ins:active,ins:hover{outline:0
 a:focus, a:hover{text-decoration: none;}
 /*头部*/
 header{
-  padding: 40px 80px 40px 10px;
-  background-color: #C6E2FF;
+  padding: 15px 80px 15px 10px;
+  background-color: #fff;
   width: 100%;
   position: fixed;
   z-index: 111;
+  border-bottom: 1px solid #cfd8dc;
+}
+.btn-login{
+  background-color: #1ab394;
+  border-color: #1ab394;
+  color: #FFF;
+}
+.btn-login:hover,.btn-login:focus{
+  background-color: #18a689;
+  border-color: #18a689;
+  color: #FFF;
 }
 .panel ul li a{
   color: #666;
   line-height: 28px;
   font-size: 13px;
+}
+.load-box{
+  width: 25px !important;
+  height: 25px !important;
+  display: inline-block;
 }
 .panel ul li a:hover{
   color: #337ab7 !important;
@@ -90,18 +106,19 @@ header h1{
   font-size: 28px;
   font-family: '华文行楷';
   font-weight: 700;
+  margin-left: 20px;
 }
 header .switch{
   float: right;
 }
 header .switch span{
-  font-family: '华文中宋';
+  /*font-family: '华文中宋';*/
   color: #5b5b5b;
-  font-size: 16px;
+  font-size: 14px;
 }
 header .switch a{
   font-family: '隶书';
-  color: #333;
+  color: #5b5b5b;
   font-size: 16px;
 }
 header .switch a.active,header .switch a:hover{
@@ -118,8 +135,8 @@ header .switch i{
 }
 #wrapper{
   width:100%;
-  height: calc(100% - 110px);
-  margin-top: 110px;
+  height: calc(100% - 60px);
+  margin-top: 60px;
 }
 .wordHei{
   color: #333;
@@ -373,16 +390,15 @@ nav.page-tabs .page-tabs-content{
 }
 /*内页顶部部分*/
 .page-t{
-  background-color: #E1ECFE;
+  background-color: #f3f3f4;
   padding: 0 15px;
 }
 .search-box{
   padding: 6px 0;
 }
 .page-nav{
-  padding: 10px 0;
-
-  border-bottom: 1px solid #fff;
+  padding: 10px 0px;
+  background: #f3f3f4;
 }
 .page-nav .message-nav{
   border-bottom: none;
@@ -430,7 +446,7 @@ nav.page-tabs .page-tabs-content{
 }
 .xt-search{
   display: inline-block;
-  margin: 0 10px 0 14px;
+  margin: 0 10px 0 0px;
   position: relative;
 }
 .xt-search>span{

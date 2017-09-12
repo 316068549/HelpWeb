@@ -162,10 +162,9 @@ export class GaodeMapComponent implements OnInit {
             }
           }
         }
-
         $.ajax({
           type: "get",
-          url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
+          url: changgeUrl+"&from=1&to=5&ak=PeF7fa3g436cNdspCytr4ogR8VdoUsXa",
           dataType: 'jsonp',
           cache: false,
           async: false, //同步请求外面才能获取到*
@@ -179,7 +178,9 @@ export class GaodeMapComponent implements OnInit {
                 userData.resultList.push(data.result[c])
               }
             }
-            localStorage.setItem('resultList',JSON.stringify(userData))
+            if(userData.resultList.length==pointLen){
+              localStorage.setItem('resultList',JSON.stringify(userData))
+            }
           }
         });
       }
@@ -382,7 +383,7 @@ export class GaodeMapComponent implements OnInit {
           }
         },
         error: function () {
-          alert(1)
+
         }
         // ,
         // complete: function (data) {

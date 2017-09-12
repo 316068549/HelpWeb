@@ -1,19 +1,19 @@
 <div class="container" style="height: 100%" [@fadeIn]>
   <h1 class="mt40 text-center nav-head">陕西省曙光应急救援协会易走失人群紧急救援管理系统</h1>
   <div class="loginbox">
-    <form (ngSubmit)="heroForm.form.valid && login()" #heroForm="ngForm">
+    <form (ngSubmit)="heroForm.form.valid && login()" #heroForm="ngForm" novalidate>
 
       <div class="form-group">
-        <label for="name">用户名</label>
-        <input type="text" class="form-control" id="name" required [(ngModel)]="user.userName" name="name" #name="ngModel">
+        <!--<label for="name">用户名</label>-->
+        <input type="text" class="form-control" placeholder="用户名" id="name"  [(ngModel)]="user.userName" name="name" #name="ngModel"  >
         <div *ngIf="heroForm.submitted && !name.valid"  class="alert alert-danger">用户名不能为空</div>
       </div>
-      <div class="form-group">
-        <label for="alterEgo">密码</label>
-        <input type="password" class="form-control" id="alterEgo" required [(ngModel)]="user.userPassword" name="alterEgo" #alterEgo="ngModel">
-        <div *ngIf="heroForm.submitted && !alterEgo.valid" class="alert alert-danger">密码不能为空</div>
+      <div class="form-group" >
+        <!--<label for="userPassword">密码</label>-->
+        <input type="password" class="form-control ng-touched" placeholder="密码" id="userPassword" [(ngModel)]="user.userPassword" name="userPassword" #userPassword="ngModel"  >
+        <div *ngIf="heroForm.submitted && !userPassword.valid" class="alert alert-danger">密码不能为空</div>
       </div>
-      <button type="submit" class="btn btn-success" style="width: 100%;" >登录</button>
+      <button type="submit" class="btn btn-login" style="width: 100%;" >登录</button>
     </form>
   </div>
 

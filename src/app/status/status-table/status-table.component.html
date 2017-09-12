@@ -28,7 +28,7 @@
 <div class="J_mainContent" id="content-main">
 
   <div class="wrapper wrapper-content">
-    <div class="btn-group btn-group-justified mt25" role="group" >
+    <div class="btn-group btn-group-justified mt5" role="group" >
       <div class="btn-group" role="group">
         <button type="button" [ngClass]="{'btn-primary':onActive,'btn-default':!onActive}" class="btn btn-primary btn-sm circle"  (click)="searchOn()">在线</button>
       </div>
@@ -51,9 +51,6 @@
             设备使用者
           </th>
           <th>
-            电话
-          </th>
-          <th>
             在线时间
           </th>
           <th>
@@ -66,9 +63,8 @@
           <td>{{i+1}}</td>
           <td >{{status.deviceImei}}</td>
           <td >{{status.ownerName}}</td>
-          <td >{{status.mobile}}</td>
           <td >{{status.onlineTime}}</td>
-          <td >{{status.guardian}}</td>
+          <td >{{status.rescuePerson}}</td>
         </tr>
         </tbody>
       </table>
