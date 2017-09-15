@@ -24,10 +24,11 @@ export class RescueDetailComponent implements OnInit {
   rescue: Rescue;
   public params; // 保存页面url参数 2012-10-20 11:11:11
   public totalNum ; // 总数据条数
-  public pageSize = 5;// 每页数据条数
+  public pageSize = 10;// 每页数据条数
   public totalPage;// 总页数
   public totalPages = 7 ;// 分页显示数目
   public curPage = 1;// 当前页码
+  public curId = 1;// 存储当前救援队id，供分页传参
   public isEmpty:boolean = false;
   public pageList= [{
     isActive: true,
@@ -119,8 +120,9 @@ export class RescueDetailComponent implements OnInit {
 
   ngOnInit() {
     let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
+    this.curId=this.route.snapshot.params['rescueTeamId'];
     this.route.params
-      .switchMap((params: Params) => this.rescueCountService.getMenuDatas2(params['rescueTeamId'],1,5))
+      .switchMap((params: Params) => this.rescueCountService.getMenuDatas2(params['rescueTeamId'],1,10))
       .subscribe(res =>{
         layer.close(index);
         if(res['code'] == 0){
@@ -154,7 +156,8 @@ export class RescueDetailComponent implements OnInit {
 
 
   changePage(page,index) {
-    this.rescueCountService.getMenuDatas2(index+1,5).then( res => {
+    console.log(this.curId)
+    this.rescueCountService.getMenuDatas2(this.curId,index,10).then( res => {
       if(res['code'] == 0){
         this.rescues = res['data']['list'];
         this.curPage = res['data']['pageNum'];

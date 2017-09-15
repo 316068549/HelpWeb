@@ -49,7 +49,7 @@
             救援人
           </th>
           <th>
-            接单时间
+            完成时间
           </th>
           <th>
             所属救援大队
@@ -67,7 +67,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let rescue of rescuePapers; let i = index;"  (click)="onSelect(rescue)">
-          <td>{{rescue.taskId}}</td>
+          <td>{{(curPage-1)*5+i+1}}</td>
           <td >{{rescue.sosName}}</td>
           <td >{{rescue.sosTime|timeChange}}</td>
           <td>{{rescue.sosAddress}}</td>

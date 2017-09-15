@@ -44,7 +44,7 @@ export class WearerTableComponent implements OnInit {
   private del:boolean = false;
   public params; // 保存页面url参数
   public totalNum; // 总数据条数
-  public pageSize = 5;// 每页数据条数
+  public pageSize = 10;// 每页数据条数
   public totalPage ;// 总页数
   public totalPages = 7 ;// 总页数
   public curPage = 1;// 当前页码
@@ -182,7 +182,7 @@ export class WearerTableComponent implements OnInit {
 
   changePage(index) {
 
-    this.userService.getMenuDatas(index,5).then( res => {
+    this.userService.getMenuDatas(index,10).then( res => {
       if(res['code'] == 0){
         this.wearers = res['data']['list'];
         this.curPage = res['data']['pageNum'];
@@ -240,7 +240,7 @@ export class WearerTableComponent implements OnInit {
   }
 
   getElectricities2(index:number): void {
-    this.userService.getMenuDatas(index,5).then( res => {
+    this.userService.getMenuDatas(index,10).then( res => {
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
         if(res['data']['list']){
@@ -271,7 +271,7 @@ export class WearerTableComponent implements OnInit {
 
   getElectricities(): void {
     let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
-    this.userService.getMenuDatas(1,5).then( res => {
+    this.userService.getMenuDatas(1,10).then( res => {
       layer.close(index);
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];

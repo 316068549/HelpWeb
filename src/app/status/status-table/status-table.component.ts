@@ -25,7 +25,7 @@ export class StatusTableComponent implements OnInit {
   onActive:boolean = true;
   public params; // 保存页面url参数 2012-10-20 11:11:11
   public totalNum ; // 总数据条数
-  public pageSize = 5;// 每页数据条数
+  public pageSize = 10;// 每页数据条数
   public totalPage;// 总页数
   public totalPages = 7 ;// 分页显示数目
   public curPage = 1;// 当前页码
@@ -119,7 +119,7 @@ export class StatusTableComponent implements OnInit {
 
   changePage(index) {
     if(this.onActive) {
-      this.statusService.getStatuses(index, 5).then(res => {
+      this.statusService.getStatuses(index, 10).then(res => {
         if (res['code'] == 0) {
           if (res['data']['list']) {
             this.statuses = res['data']['list'];
@@ -150,7 +150,7 @@ export class StatusTableComponent implements OnInit {
 
       })
     }else {
-      this.statusService.getStatuses2(index + 1, 5).then(res => {
+      this.statusService.getStatuses2(index + 1, 10).then(res => {
         if (res['code'] == 0) {
           if (res['data']['list']) {
             this.statuses = res['data']['list'];
@@ -207,7 +207,7 @@ export class StatusTableComponent implements OnInit {
 
   getStatuses(): void {
     let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
-    this.statusService.getStatuses(1,5).then( res => {
+    this.statusService.getStatuses(1,10).then( res => {
       layer.close(index);
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
@@ -239,7 +239,7 @@ export class StatusTableComponent implements OnInit {
 
   getStatuses2(): void {
     let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
-    this.statusService.getStatuses2(1,5).then( res => {
+    this.statusService.getStatuses2(1,10).then( res => {
       layer.close(index);
       if(res['code'] == 0){
         if(res['data']['list']){

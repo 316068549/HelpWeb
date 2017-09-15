@@ -4,7 +4,7 @@
       <a  href="javascript:;">救援管理</a>
       <!--<a  href="javascript:;">用户管理</a>-->
       <a  routerLinkActive="active" routerLink="/rescuecount">救助统计</a>
-      <a  routerLinkActive="active" >救助报告</a>
+      <a  routerLinkActive="active" >人员统计</a>
     </div>
     <router-outlet></router-outlet>
     <div class="search-box col-sm-12">
@@ -35,7 +35,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let rescue of rescues; let i = index;"  (click)="onSelect(rescue)">
-            <td>{{i+1}}</td>
+            <td>{{(curPage-1)*5+i+1}}</td>
             <td >{{rescue.volunteerName}}</td>
             <td>{{rescue.rescueNumber}}</td>
             <td >{{rescue.rescueTeam}}</td>

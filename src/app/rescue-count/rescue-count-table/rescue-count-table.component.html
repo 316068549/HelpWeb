@@ -38,7 +38,7 @@
           </thead>
           <tbody>
           <tr *ngFor="let rescue of rescues; let i = index;"  (click)="onSelect(rescue)">
-            <td>{{i+1}}</td>
+            <td>{{(curPage-1)*5+i+1}}</td>
             <td >{{rescue.rescueTeam}}</td>
             <td>{{rescue.alarmNumber}}</td>
             <td >{{rescue.rescueNumber}}</td>

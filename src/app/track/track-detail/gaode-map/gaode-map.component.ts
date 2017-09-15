@@ -26,6 +26,7 @@ export class GaodeMapComponent implements OnInit {
     var points =[];
      var  markers,lineArr = [];
     var polyline;
+
     var imeicode = this.route.snapshot.params['deviceIMEI'];
     var map = new BMap.Map("container");            // 创建Map实例
     var point = new BMap.Point(108.924295,34.235939); // 创建点坐标  width: 437px; height: 267px; top: -3px; left: -9px;
@@ -88,190 +89,121 @@ export class GaodeMapComponent implements OnInit {
           }
         }
       });
-      // pointList =
-      //   [
-      //     {
-      //       "deviceIMEI": "1234567890123456",
-      //       "locationTime": "2017-03-06 11:22:56",
-      //       "locationPower": "97%",
-      //       "longitude": 108.912575,
-      //       "latitude": 34.230698,
-      //       "locationType": "GPS"
-      //     },
-      //     {
-      //       "deviceIMEI": "1234567890123456",
-      //       "locationTime": "2017-03-06 11:22:56",
-      //       "locationPower": "97%",
-      //       "longitude": 108.712575,
-      //       "latitude": 34.130698,
-      //       "locationType": "GPS"
-      //     },
-      //     {
-      //       "deviceIMEI": "1234567890123456",
-      //       "locationTime": "2017-03-06 11:22:56",
-      //       "locationPower": "97%",
-      //       "longitude": 108.812575,
-      //       "latitude": 34.230688,
-      //       "locationType": "GPS"
-      //     }]
       pointList=result;
-      startRun();
+      completeEventHandler();
     }
 
-    function startRun(){  //开始绘制轨迹
-      if(pointList){
-        var x=pointList[0].locationLongitude;
-        var y=pointList[0].locationLatitude;
-        //坐标转换完之后的回调函数
-        completeEventHandler(x,y);
+
+    //转换代码
+    function getPoints(pointList){
+       var points =[];
+       for(var i=0;i<pointList.length;i++){
+         var pt = new BMap.Point(pointList[i].locationLongitude,pointList[i].locationLatitude);
+         points.push(pt);
+       }
+       return points;
+    }
+    function fengzhuang(gpsPouints){
+      var pointsArray = new Array();
+      var times = Math.floor(gpsPouints.length/10)
+      var k = 0;
+      for(var i=0;i<times;i++){
+        pointsArray[i]=new Array();
+        for(var j=0;j<10;j++,k++){
+          pointsArray[i][j] = gpsPouints[k]
+        }
       }
-      // marker.moveAlong(lineArr,80);     //开始轨迹回放
+      if(k<gpsPouints.length){
+        var j=0;var i = times;
+        pointsArray[i]=new Array();
+        while (k<gpsPouints.length){
+          pointsArray[i][j] = gpsPouints[k];
+          k++;
+          j++;
+        }
+      }
+      return pointsArray;
     }
+    //转换end
 
-    function completeEventHandler(x,y){
+    function completeEventHandler(){
       var lngX ;
       var latY ;
       markers = [];
-      lineArr = new Array();
-      lineArr=[];
+      var lineArr=[];
       var pointLen = pointList.length;
-      var changeCount = 0;
-      var userData={
-        resultList:[]
-     };
-      console.log(pointList)
-      var yushu = pointLen % 100;
-      changeCount = Math.ceil(pointLen / 100);
-      for (var j = 0; j < changeCount; j++) {
-        var changgeUrl = "http://api.map.baidu.com/geoconv/v1/?coords=";
-        for(var i = 0,marker;i<100;i++){
-          if(pointList[(j * 100) + i]&&pointList[(j * 100) + i]){
-            lngX = pointList[(j * 100) + i].locationLongitude;
-            latY = pointList[(j * 100) + i].locationLatitude;
-            if(i<99){
-              if(j<(changeCount-1)){
-                changgeUrl+= lngX+","+latY+";"
-              }else{
-                if(i!=(yushu-1)){
-                  changgeUrl+= lngX+","+latY+";"
-                }
-              }
-            }
-            if (i==99||j==(changeCount-1)&&i==(yushu-1)){
-              changgeUrl+= lngX+","+latY
-            }
-          }
+      var posIndex = 0;
+      var pointsArray = new Array();
+      var maxCnt = 10;
+      var gpsPouints = getPoints(pointList);
+      pointsArray = fengzhuang(gpsPouints);
+      console.log(pointList);
+      console.log(pointsArray);
+      var convertor = new BMap.Convertor();
+      var translateCallback = function (data){
+        if(data.status!=0){
+          alert("转换出错");
+          return
         }
-        $.ajax({
-          type: "get",
-          url: changgeUrl+"&from=1&to=5&ak=PeF7fa3g436cNdspCytr4ogR8VdoUsXa",
-          dataType: 'jsonp',
-          cache: false,
-          async: false, //同步请求外面才能获取到*
-          success: function(data){
-            if(data.status === 0) {
-              console.log(data.result)
-              for(var c = 0,marker;c<data.result.length;c++) {
-                if (data.result.length == 0) {
-                  return;
-                }
-                userData.resultList.push(data.result[c])
-              }
+        for (var i = 0; i < data.points.length; i++) {
+          lineArr.push(data.points[i])
+        }
+        posIndex++;
+        if(posIndex<pointsArray.length){
+          convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
+        }
+        if(posIndex==pointsArray.length){
+          console.log(lineArr);
+          for(var d = 0,marker;d<lineArr.length;d++){
+            if(lineArr.length == 0){
+              return;
             }
-            if(userData.resultList.length==pointLen){
-              localStorage.setItem('resultList',JSON.stringify(userData))
+            if(d==0){
+              var marker = new BMap.Marker(lineArr[d],{icon:myIcon});
+              marker.setLabel('起');
+              marker.setZIndex(99)
+              map.addOverlay(marker);
+            }else if(d<lineArr.length-1){
+              // var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+              var marker = new BMap.Marker(lineArr[d],{icon:myIcon3});
+              map.addOverlay(marker);
+              // points.push(point);
+            }else{
+              var marker = new BMap.Marker(lineArr[d],{icon:myIcon2});
+              map.addOverlay(marker);
+              marker.setZIndex(99)
             }
           }
-        });
+          var view = map.getViewport(lineArr);
+          var mapZoom = view.zoom;
+          var centerPoint = view.center;
+          map.centerAndZoom(centerPoint,mapZoom);
+          // //绘制轨迹
+          polyline = new BMap.Polyline(lineArr, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
+          map.addOverlay(polyline);
+          //调整视野
+        }
       }
-      var getDataJson = setInterval(function () {
-        var resultList2 = JSON.parse(localStorage.getItem('resultList'));
-        if(resultList2){
-          if(resultList2.hasOwnProperty('resultList')){
-            if(resultList2.resultList.length==pointLen){
-              clearInterval(getDataJson);
-              var points=[];
-              for(var d = 0,marker;d<resultList2.resultList.length;d++){
-                if(resultList2.resultList.length == 0){
-                  return;
-                }
-                if(d==0){
-                  var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-                  var marker = new BMap.Marker(point,{icon:myIcon});
-                  marker.setLabel('起');
-                  marker.setZIndex(99)
-                  map.addOverlay(marker);
-                  points.push(point);
-                }else if(d<resultList2.resultList.length-1){
-                  var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-                  var marker = new BMap.Marker(point,{icon:myIcon3});
-                  map.addOverlay(marker);
-                  points.push(point);
-                }else{
-                  var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-                  var marker = new BMap.Marker(point,{icon:myIcon2});
-                  map.addOverlay(marker);
-                  marker.setZIndex(99)
-                  points.push(point);
-                }
-              }
-              var view = map.getViewport(points);
-              var mapZoom = view.zoom;
-              var centerPoint = view.center;
-              map.centerAndZoom(centerPoint,mapZoom);
-              // //绘制轨迹
-              polyline = new BMap.Polyline(points, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
-              map.addOverlay(polyline);
-              //调整视野
-            }
-          }
-        }
-      },200)
-
-      // $.ajax({
-      //   type: "get",
-      //   url: changgeUrl+"&from=1&to=5&ak=nsOyvRLrIMthoLm9M4OUK0nv8aNObxTv",
-      //   dataType: 'jsonp',
-      //   success: function(data){
-      //     if(data.status === 0) {
-      //       console.log(data.result)
-      //       var points=[];
-      //       for(var c = 0,marker;c<data.result.length;c++){
-      //         if(data.result.length == 0){
-      //           return;
-      //         }
-      //         if(c==0){
-      //           var point = new BMap.Point(data.result[c].x, data.result[c].y);
-      //           var marker = new BMap.Marker(point,{icon:myIcon});
-      //           marker.setLabel('起');
-      //           marker.setZIndex(99)
-      //           map.addOverlay(marker);
-      //           points.push(point);
-      //         }else if(c<data.result.length-1){
-      //           var point = new BMap.Point(data.result[c].x, data.result[c].y);
-      //           var marker = new BMap.Marker(point,{icon:myIcon3});
-      //           map.addOverlay(marker);
-      //           points.push(point);
-      //         }else{
-      //           var point = new BMap.Point(data.result[c].x, data.result[c].y);
-      //           var marker = new BMap.Marker(point,{icon:myIcon2});
-      //           map.addOverlay(marker);
-      //           marker.setZIndex(99)
-      //           points.push(point);
-      //         }
-      //       }
-      //       var view = map.getViewport(points);
-      //       var mapZoom = view.zoom;
-      //       var centerPoint = view.center;
-      //       map.centerAndZoom(centerPoint,mapZoom);
-      //       // //绘制轨迹
-      //       polyline = new BMap.Polyline(points, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
-      //       map.addOverlay(polyline);
-      //       //调整视野
-      //     }
-      //   }
-      // });
+      convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
     }
+    //根据时间搜索
+    function changeTime(str){
+      // var str ="2013-01-01 00:00:00";
+      str = str.replace(/-/g,"/");
+      var date = new Date(str);
+      var humanDate = new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(),date.getHours(),date.getMinutes(), date.getSeconds()));
+      var unix_time = humanDate.getTime()/1000 - 8*60*60;
+      return unix_time;
+    }
+    $('#search1').on('click',function () {
+      // polyline.hide( );
+      //  map.remove(markers);
+      map.clearOverlays();
+      init();
+      completeEventHandler();
+    })
+
+
 
     function changeX(){
       var ak = 'PmTFEuep7FmccxTrTn67TxRn';
@@ -374,7 +306,7 @@ export class GaodeMapComponent implements OnInit {
           if (res.status === 0) {
             console.log(res);
             pointList=res.points;
-            startRun();
+            completeEventHandler();
 
             console.log(res.total);
           } else {
@@ -391,29 +323,103 @@ export class GaodeMapComponent implements OnInit {
         // }
       });
     }
-    function changeTime(str){
-      // var str ="2013-01-01 00:00:00";
-      str = str.replace(/-/g,"/");
-      var date = new Date(str);
-      var humanDate = new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(),date.getHours(),date.getMinutes(), date.getSeconds()));
-      var unix_time = humanDate.getTime()/1000 - 8*60*60;
-      return unix_time;
-    }
 
-
-
-    $('#search1').on('click',function () {
-      // polyline.hide( );
-      //  map.remove(markers);
-      map.clearOverlays();
-      init();
-      startRun();
-    })
 
   }
   goBack(): void {
      this.location.back();
   }
+
+//改的循环的，是坏的顺序错乱
+  // var yushu = pointLen % 100;
+  // changeCount = Math.ceil(pointLen / 100);
+  // for (var j = 0; j < changeCount; j++) {
+  //   var changgeUrl = "http://api.map.baidu.com/geoconv/v1/?coords=";
+  //   for(var i = 0,marker;i<100;i++){
+  //     if(pointList[(j * 100) + i]&&pointList[(j * 100) + i]){
+  //       lngX = pointList[(j * 100) + i].locationLongitude;
+  //       latY = pointList[(j * 100) + i].locationLatitude;
+  //       if(i<99){
+  //         if(j<(changeCount-1)){
+  //           changgeUrl+= lngX+","+latY+";"
+  //         }else{
+  //           if(i!=(yushu-1)){
+  //             changgeUrl+= lngX+","+latY+";"
+  //           }
+  //         }
+  //       }
+  //       if (i==99||j==(changeCount-1)&&i==(yushu-1)){
+  //         changgeUrl+= lngX+","+latY
+  //       }
+  //     }
+  //   }
+  //    if(j==0){
+  //      $.ajax({
+  //        type: "get",
+  //        url: changgeUrl+"&from=1&to=5&ak=PeF7fa3g436cNdspCytr4ogR8VdoUsXa",
+  //        dataType: 'jsonp',
+  //        cache: false,
+  //        async: false, //同步请求外面才能获取到*
+  //        success: function(data){
+  //          if(data.status === 0) {
+  //            console.log(data.result)
+  //            for(var c = 0,marker;c<data.result.length;c++) {
+  //              if (data.result.length == 0) {
+  //                return;
+  //              }
+  //              userData.resultList.push(data.result[c])
+  //            }
+  //          }
+  //          // if(userData.resultList.length==pointLen){
+  //          localStorage.setItem('resultList',JSON.stringify(userData))
+  //          // }
+  //        }
+  //      });
+  //    }
+  // }
+  // var getDataJson = setInterval(function () {
+  //   var resultList2 = JSON.parse(localStorage.getItem('resultList'));
+  //   if(resultList2){
+  //     if(resultList2.hasOwnProperty('resultList')){
+  //       if(resultList2.resultList.length==pointLen){
+  //         clearInterval(getDataJson);
+  //         var points=[];
+  //         for(var d = 0,marker;d<resultList2.resultList.length;d++){
+  //           if(resultList2.resultList.length == 0){
+  //             return;
+  //           }
+  //           if(d==0){
+  //             var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+  //             var marker = new BMap.Marker(point,{icon:myIcon});
+  //             marker.setLabel('起');
+  //             marker.setZIndex(99)
+  //             map.addOverlay(marker);
+  //             points.push(point);
+  //           }else if(d<resultList2.resultList.length-1){
+  //             var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+  //             var marker = new BMap.Marker(point,{icon:myIcon3});
+  //             map.addOverlay(marker);
+  //             points.push(point);
+  //           }else{
+  //             var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+  //             var marker = new BMap.Marker(point,{icon:myIcon2});
+  //             map.addOverlay(marker);
+  //             marker.setZIndex(99)
+  //             points.push(point);
+  //           }
+  //         }
+  //         var view = map.getViewport(points);
+  //         var mapZoom = view.zoom;
+  //         var centerPoint = view.center;
+  //         map.centerAndZoom(centerPoint,mapZoom);
+  //         // //绘制轨迹
+  //         polyline = new BMap.Polyline(points, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
+  //         map.addOverlay(polyline);
+  //         //调整视野
+  //       }
+  //     }
+  //   }
+  // },200)
 
 
 //   for(var i = 0,marker;i<pointLen;i++){

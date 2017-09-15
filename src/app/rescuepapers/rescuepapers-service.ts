@@ -27,7 +27,7 @@ export class RescuePapersService {
   getMenuDatas(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menusUrl+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
+      uurl = this.menusUrl+'?pageIndex='+current +'&pageSize=10&tokenId='+this.tokenId;
     }else{
       uurl = this.menusUrl+'?tokenId='+this.tokenId;
     }

@@ -457,16 +457,55 @@ export class GaodeMapComponent implements OnInit {
       }
 
     }
+    //转换代码
+    function getPoints(pointList){
+      var points =[];
+      for(var i=0;i<pointList.length;i++){
+        var pt = new BMap.Point(pointList[i].longitude,pointList[i].latitude);
+        points.push(pt);
+        changeXyList.push(pointList[i]);
+      }
+      return points;
+    }
+    function fengzhuang(gpsPouints){
+      var pointsArray = new Array();
+      var times = Math.floor(gpsPouints.length/10)
+      var k = 0;
+      for(var i=0;i<times;i++){
+        pointsArray[i]=new Array();
+        for(var j=0;j<10;j++,k++){
+          pointsArray[i][j] = gpsPouints[k]
+        }
+      }
+      if(k<gpsPouints.length){
+        var j=0;var i = times;
+        pointsArray[i]=new Array();
+        while (k<gpsPouints.length){
+          pointsArray[i][j] = gpsPouints[k];
+          k++;
+          j++;
+        }
+      }
+      return pointsArray;
+    }
     //地图坐标转换，添加marker
     function completeEventHandler(){
       var lngX ;
       var latY ;
       markers = [];
+      var lineArr=[];
       var devicess = volunteerList.length;
       var volunters = deviceList.length;
       $('#result .devicess').text(volunters);
       $('#result .volunters').text(devicess);
-      var changgeUrl = "http://api.map.baidu.com/geoconv/v1/?coords=";
+      var posIndex = 0;
+      var pointsArray = new Array();
+      var maxCnt = 10;
+      var gpsPouints = getPoints(deviceList);
+      pointsArray = fengzhuang(gpsPouints);
+      console.log(deviceList);
+      console.log(pointsArray);
+      var convertor = new BMap.Convertor();
       for(var i = 0,marker,poiny;i<devicess;i++){
         lngX = volunteerList[i].longitude;
         latY = volunteerList[i].latitude;
@@ -480,18 +519,6 @@ export class GaodeMapComponent implements OnInit {
         '</div>';
         map.addOverlay(marker);
         addClickHandler(content,marker);
-        // if(i<(devicess-1)){
-        //   changgeUrl+= lngX+","+latY+";"
-        // }
-        // if (i==(devicess-1)){
-        //   changgeUrl+= lngX+","+latY
-        // }
-        // lineArr.push(new BMap.Point(lngX,latY));
-        // if(i==(devicess-1)){
-        //   console.log(lineArr)
-        //   var convertor = new BMap.Convertor();
-        //   convertor.translate(lineArr, 1, 5, translateCallback1)
-        // }
       }
       // console.log(changgeUrl);
       // $.ajax({
@@ -531,75 +558,36 @@ export class GaodeMapComponent implements OnInit {
           // }
         // }
       // });
-      var userData={
-        resultList:[]
-      };
-      var yushu = volunters % 100;
-      var changeCount = Math.ceil(volunters / 100);
-      for (var j = 0; j < changeCount; j++) {
-        var changgeUrl = "http://api.map.baidu.com/geoconv/v1/?coords=";
-        for(var i = 0;i<100;i++){
-          if(deviceList[(j * 100) + i]&&deviceList[(j * 100) + i]){
-            lngX = deviceList[(j * 100) + i].longitude;
-            latY = deviceList[(j * 100) + i].latitude;
-            if(i<99){
-              if(j<(changeCount-1)){
-                changgeUrl+= lngX+","+latY+";"
-              }else{
-                if(i!=(yushu-1)){
-                  changgeUrl+= lngX+","+latY+";"
-                }
-              }
-            }
-            if (i==99||j==(changeCount-1)&&i==(yushu-1)){
-              changgeUrl+= lngX+","+latY
-            }
-            changeXyList.push(deviceList[(j * 100) + i]);
-          }
-        }
-
-        $.ajax({
-          type: "get",
-          url: changgeUrl+"&from=1&to=5&ak=PeF7fa3g436cNdspCytr4ogR8VdoUsXa",
-          dataType: 'jsonp',
-          cache: false,
-          async: false, //同步请求外面才能获取到*
-          success: function(data){
-            if(data.status === 0) {
-              for(var c = 0,marker;c<data.result.length;c++) {
-                if (data.result.length == 0) {
-                  return;
-                }
-                userData.resultList.push(data.result[c])
-              }
-            }
-            if(userData.resultList.length==volunters){
-              localStorage.setItem('userDatas',JSON.stringify(userData))
-            }
-          }
-        });
-      }
-
       var points=[];
-      var getDataJson = setInterval(function () {
-        var resultList2 = JSON.parse(localStorage.getItem('userDatas'));
-        if(resultList2){
-          if(resultList2.hasOwnProperty('resultList')){
-            if(resultList2.resultList.length==volunters){
-              clearInterval(getDataJson);
-              for(var d = 0,marker;d<resultList2.resultList.length;d++) {
-                if (resultList2.resultList.length == 0) {
-                  return;
-                }
-                var myIcon = new BMap.Icon("markers.png");
-                var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-                addMarker(point,changeXyList[d].status,changeXyList[d].deviceIMEI,changeXyList[d].NAME);
-                points.push(point)
-              }
-            }
-          }
+      var translateCallback = function (data){
+        if(data.status!=0){
+          alert("转换出错");
+          return
         }
-      },200)
+        for (var i = 0; i < data.points.length; i++) {
+          lineArr.push(data.points[i])
+        }
+        posIndex++;
+        if(posIndex<pointsArray.length){
+          convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
+        }
+        if(posIndex==pointsArray.length){
+          console.log(lineArr);
+          console.log(changeXyList);
+          for(var d = 0,marker;d<lineArr.length;d++){
+            if(lineArr.length == 0){
+              return;
+            }
+            var myIcon = new BMap.Icon("markers.png");
+            var marker = new BMap.Marker(lineArr[d],{icon:myIcon});
+            addMarker(lineArr[d],changeXyList[d].status,changeXyList[d].deviceIMEI,changeXyList[d].NAME);
+            points.push(lineArr[d])
+          }
+
+        }
+      }
+      convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
+
       // for(var b = 0,marker;b<volunters;b++){
       //   if(deviceList[b].longitude){
       //     lngX = deviceList[b].longitude;

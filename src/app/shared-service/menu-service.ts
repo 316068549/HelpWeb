@@ -50,7 +50,7 @@ export class MenuService {
   getMenuList(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menuslistUrl+'?current='+current +'&size=5&tokenId='+this.tokenId;
+      uurl = this.menuslistUrl+'?current='+current +'&size=10&tokenId='+this.tokenId;
     }else{
       uurl = this.menuslistUrl+'?tokenId='+this.tokenId;
     }

@@ -14,6 +14,7 @@ export class HomeComponent implements OnInit {
   @ViewChild(LeftNavComponent)
   private timerComponent2: LeftNavComponent;
   clicke:boolean = true;
+  public currentRoleId = localStorage.getItem("roleId");
 
   constructor() { }
 

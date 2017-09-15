@@ -56,7 +56,7 @@ export class WearerService {
   }
 
   search2(term: string): Promise<Wearer> {
-    return this.http.get(this.menusUrl2+'?deviceIMEI='+term+'&pageIndex=1&pageSize=5&tokenId='+this.tokenId)
+    return this.http.get(this.menusUrl2+'?deviceIMEI='+term+'&pageIndex=1&pageSize=10&tokenId='+this.tokenId)
       .toPromise()
       .then(response => response.json().data.list as Wearer)
       .catch(this.handleError);

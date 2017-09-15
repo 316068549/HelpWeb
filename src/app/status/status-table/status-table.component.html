@@ -60,7 +60,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let status of statuses; let i = index;"  (click)="onSelect(electricity)" >
-          <td>{{i+1}}</td>
+          <td>{{(curPage-1)*5+i+1}}</td>
           <td >{{status.deviceImei}}</td>
           <td >{{status.ownerName}}</td>
           <td >{{status.onlineTime}}</td>

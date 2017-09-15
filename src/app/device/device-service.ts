@@ -31,7 +31,7 @@ export class DeviceService {
   getMenuDatas(current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menusUrl+'?pageIndex='+current +'&pageSize=5&tokenId='+this.tokenId;
+      uurl = this.menusUrl+'?pageIndex='+current +'&pageSize=10&tokenId='+this.tokenId;
     }else{
       uurl = this.menusUrl+'?tokenId='+this.tokenId;
     }
@@ -42,7 +42,7 @@ export class DeviceService {
   }
 
   search2(IMEI: string): Promise<object> {
-    return this.http.get(this.menusUrl+'?deviceImei='+IMEI+'&pageIndex=1&pageSize=5&tokenId='+this.tokenId)
+    return this.http.get(this.menusUrl+'?deviceImei='+IMEI+'&pageIndex=1&pageSize=10&tokenId='+this.tokenId)
       .toPromise()
       .then(response => response.json().data as object)
       .catch(this.handleError);

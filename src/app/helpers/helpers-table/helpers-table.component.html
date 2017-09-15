@@ -59,7 +59,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let helper of helpers; let i = index;"  (click)="onSelect(helper)">
-          <td>{{i+1}}</td>
+          <td>{{(curPage-1)*5+i+1}}</td>
           <td >{{helper.name}}</td>
           <td >{{helper.sex}}</td>
           <td>{{helper.password}}</td>

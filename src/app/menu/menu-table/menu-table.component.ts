@@ -51,7 +51,7 @@ export class MenuTableComponent implements OnInit {
   originalUserName:string;
   public params: any;  // 保存页面url参数
   public totalNum ; // 总数据条数
-  public pageSize = 5;// 每页数据条数
+  public pageSize = 10;// 每页数据条数
   public totalPage;// 总页数
   public totalPages = 7 ;// 分页显示数目
   public curPage = 1;// 当前页码
@@ -213,7 +213,7 @@ export class MenuTableComponent implements OnInit {
   }
 
   changePage(index) {
-    this.menuService.getMenuList(index,5).then( res => {
+    this.menuService.getMenuList(index,10).then( res => {
       if(res['code'] == 0){
         this.menus = res['data']['list'];
         this.curPage = res['data']['pageNum'];

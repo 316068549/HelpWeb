@@ -27,7 +27,7 @@ export class DeviceTableComponent implements OnInit {
   private deletemenu:boolean = false;
   public params; // 保存页面url参数 2012-10-20 11:11:11
   public totalNum ; // 总数据条数
-  public pageSize = 5;// 每页数据条数
+  public pageSize = 10;// 每页数据条数
   public totalPage;// 总页数
   public totalPages = 7 ;// 分页显示数目
   public curPage = 1;// 当前页码
@@ -122,7 +122,7 @@ export class DeviceTableComponent implements OnInit {
   }
 
   changePage(index) {
-    this.userService.getMenuDatas(index,5).then( res => {
+    this.userService.getMenuDatas(index,10).then( res => {
       if(res['code'] == 0){
         this.devices = res['data']['list'];
         this.curPage = res['data']['pageNum'];
@@ -159,7 +159,7 @@ export class DeviceTableComponent implements OnInit {
 
   getElectricities(): void {
     let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
-    this.userService.getMenuDatas(1,5).then( res => {
+    this.userService.getMenuDatas(1,10).then( res => {
       layer.close(index);
       if(res['code'] == 0){
         if(res['data']['list']){

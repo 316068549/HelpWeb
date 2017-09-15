@@ -57,7 +57,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let user of users; let i = index;"  (click)="onSelect(user)">
+        <tr *ngFor="let user of users; let i = index;"  (click)="onSelect(user)" >
           <td>{{user.userId}}</td>
           <td >{{user.userName}}</td>
           <td >{{user.nickName}}</td>

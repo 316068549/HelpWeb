@@ -21,14 +21,10 @@ export class LoginComponent implements OnInit {
 
 
   constructor(
-
-
     public router: Router,
     public activatedRoute: ActivatedRoute,
     public userLoginService: UserLoginService
   ) {
-    this.user.userName ='';
-    this.user.userPassword='';
 
   }
 
@@ -50,9 +46,18 @@ export class LoginComponent implements OnInit {
 
 
   public login():void{
-    console.log(this.user);
+    console.log($('#name').val());
+    console.log($('#userPassword').val());
+    if(this.user.userName==''){
+      this.user.userName=$('#name').val();
+    }
+    if(this.user.userPassword==''){
+      this.user.userPassword=$('#userPassword').val();
+    }
+    console.log(this.user.userName);
+    console.log(this.user.userPassword);
     let index = layer.load(1, {shade: false,offset: '30%'}); //0代表加载的风格，支持0-2
-    this.userLoginService.login(this.user).subscribe(res => {
+    this.userLoginService.login(this.user.userName,this.user.userPassword).subscribe(res => {
       layer.close(index);
       if(res){
         localStorage.setItem("tokenId", res.tokenId);

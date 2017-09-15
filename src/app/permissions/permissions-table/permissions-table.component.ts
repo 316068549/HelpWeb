@@ -39,7 +39,7 @@ export class PermissionTableComponent implements OnInit {
   delIds = [];
   public params; // 保存页面url参数
   public totalNum; // 总数据条数
-  public pageSize = 5;// 每页数据条数
+  public pageSize = 10;// 每页数据条数
   public totalPage ;// 总页数
   public totalPages = 7 ;// 总页数
   public curPage = 1;// 当前页码
@@ -170,7 +170,7 @@ export class PermissionTableComponent implements OnInit {
 
   getElectricities(index:number): void {
     let loadingIcon = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
-    this.userService.getMenuList(index,5).then( res => {
+    this.userService.getMenuList(index,10).then( res => {
       layer.close(loadingIcon);
       if(res['code'] == 0){
         this.curPage = res['data']['pageNum'];
@@ -201,7 +201,7 @@ export class PermissionTableComponent implements OnInit {
   }
 
   changePage(index) {
-    this.userService.getMenuList(index,5).then( res => {
+    this.userService.getMenuList(index,10).then( res => {
       if(res['code'] == 0){
         this.roles = res['data']['list'];
         this.curPage = res['data']['pageNum'];

@@ -119,7 +119,7 @@ export class TrackTableComponent implements OnInit {
 
 
   changePage(index) {
-    this.electricityService.getElectricities(index,5).then( res => {
+    this.electricityService.getElectricities(index,10).then( res => {
       if(res['code'] == 0){
         this.electricities = res['data']['list'];
         this.curPage = res['data']['pageNum'];

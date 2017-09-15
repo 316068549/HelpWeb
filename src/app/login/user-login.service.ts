@@ -17,11 +17,10 @@ export class UserLoginService {
       return this.subject.asObservable();
   }
 
-  public login(user:User){
-    console.log(JSON.stringify(user))
+  public login(userName:string,userPassword:string){
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let headers2 = new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'});
-    const url = this.userLoginURL+"?userName="+user.userName+"&password="+user.userPassword;
+    const url = this.userLoginURL+"?userName="+userName+"&password="+userPassword;
     // const url = this.userLoginURL;
     // let parment = 'username='+user.userName+'&password='+user.userPassword;
     return this.http.post(url,{headers: headers2})
