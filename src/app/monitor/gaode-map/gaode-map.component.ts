@@ -809,6 +809,7 @@ export class GaodeMapComponent implements OnInit {
                     title: '提示'
                     ,content: '接单成功'
                   });
+                  infoWindow.close();
                 }else{
                   layer.open({
                     title: '提示'

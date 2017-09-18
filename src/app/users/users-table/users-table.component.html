@@ -147,7 +147,7 @@
         <div class="operate-group">
           <select #role id="role" required name="role"  class="form-select" >
             <option value="" selected = "selected">请选择</option>
-            <option *ngFor="let role of parentNames" [value]="role.roleId">{{role.roleName}}</option>
+            <option *ngFor="let role of parentNames" [value]="role.roleId" [hidden]="currentRoleId==3&&role.roleId!=3&&role.roleId!=4">{{role.roleName}}</option>
           </select>
           <!--<p style="display: none" class="text-danger must3">-->
             <!--角色为必选项-->

@@ -22,6 +22,7 @@ export class GaodeMapComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    var loading;
     var pointList;
     var points =[];
      var  markers,lineArr = [];
@@ -80,6 +81,7 @@ export class GaodeMapComponent implements OnInit {
           console.log('success')
           if(data.data){
             result=data.data;
+            loading = layer.msg('轨迹加载中...');
           }else {
             layer.open({
               title: '提示'
@@ -131,10 +133,12 @@ export class GaodeMapComponent implements OnInit {
       var latY ;
       markers = [];
       var lineArr=[];
-      var pointLen = pointList.length;
       var posIndex = 0;
       var pointsArray = new Array();
       var maxCnt = 10;
+      if(!pointList){
+        return
+      }
       var gpsPouints = getPoints(pointList);
       pointsArray = fengzhuang(gpsPouints);
       console.log(pointList);
@@ -154,22 +158,23 @@ export class GaodeMapComponent implements OnInit {
         }
         if(posIndex==pointsArray.length){
           console.log(lineArr);
+          layer.close(loading);
           for(var d = 0,marker;d<lineArr.length;d++){
             if(lineArr.length == 0){
               return;
             }
             if(d==0){
-              var marker = new BMap.Marker(lineArr[d],{icon:myIcon});
+              var marker = new BMap.Marker(lineArr[d],{icon:myIcon,title:pointList[d].locationTime});
               marker.setLabel('起');
               marker.setZIndex(99)
               map.addOverlay(marker);
             }else if(d<lineArr.length-1){
               // var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-              var marker = new BMap.Marker(lineArr[d],{icon:myIcon3});
+              var marker = new BMap.Marker(lineArr[d],{icon:myIcon3,title:pointList[d].locationTime});
               map.addOverlay(marker);
               // points.push(point);
             }else{
-              var marker = new BMap.Marker(lineArr[d],{icon:myIcon2});
+              var marker = new BMap.Marker(lineArr[d],{icon:myIcon2,title:pointList[d].locationTime});
               map.addOverlay(marker);
               marker.setZIndex(99)
             }

@@ -17,7 +17,7 @@ declare var layer:any;
 export class LoginComponent implements OnInit {
 
 
-  public user: User = new User();
+  user = new User();
 
 
   constructor(
@@ -42,37 +42,32 @@ export class LoginComponent implements OnInit {
     console.log(routerState);
     console.log(routerStateSnapshot);
     layer.close(index);
+    $('#name').val('');
+    $('#userPassword').val('');
   }
 
 
   public login():void{
-    console.log($('#name').val());
-    console.log($('#userPassword').val());
-    if(this.user.userName==''){
-      this.user.userName=$('#name').val();
-    }
-    if(this.user.userPassword==''){
-      this.user.userPassword=$('#userPassword').val();
-    }
-    console.log(this.user.userName);
-    console.log(this.user.userPassword);
     let index = layer.load(1, {shade: false,offset: '30%'}); //0代表加载的风格，支持0-2
-    this.userLoginService.login(this.user.userName,this.user.userPassword).subscribe(res => {
-      layer.close(index);
-      if(res){
-        localStorage.setItem("tokenId", res.tokenId);
-        localStorage.setItem("roleId", res.roleId);
-        let userid = res.tokenId.split('==')[1]
-        localStorage.setItem("userId", userid);
-        if(res.roleId==3){
-          this.router.navigateByUrl("home/helpers/116");
-        }else{
-          this.router.navigateByUrl("home");
+      this.userLoginService.login(this.user.userName,this.user.userPassword).subscribe(res => {
+        layer.close(index);
+        if(res){
+          localStorage.setItem("tokenId", res.tokenId);
+          localStorage.setItem("roleId", res.roleId);
+          let userid = res.tokenId.split('==')[1]
+          localStorage.setItem("userId", userid);
+          if(res.roleId==3){
+            this.router.navigateByUrl("home/helpers/116");
+          }else{
+            this.router.navigateByUrl("home");
+          }
         }
-      }
-      return false;
+        return false;
 
-    });
+      });
+
+
+
   }
 
 }

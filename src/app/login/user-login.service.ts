@@ -8,14 +8,14 @@ import { User } from '../models/user-model';
 export class UserLoginService {
   // public userLoginURL = 'data/user-login-mock.json';
   public userLoginURL = 'denglu';
-  public subject: Subject<User> = new Subject<User>();
+  // public subject: Subject<User> = new Subject<User>();
 
   constructor(public http:Http
               ){}
 
-  public get currentUser():Observable<User>{
-      return this.subject.asObservable();
-  }
+  // public get currentUser():Observable<User>{
+  //     return this.subject.asObservable();
+  // }
 
   public login(userName:string,userPassword:string){
     let headers = new Headers({ 'Content-Type': 'application/json' });

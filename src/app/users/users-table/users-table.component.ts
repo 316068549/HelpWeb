@@ -37,6 +37,7 @@ export class UsersTableComponent implements OnInit {
   public totalPages = 7 ;// 总页数
   public curPage = 1;// 当前页码
   public isEmpty:boolean = false;
+  public currentRoleId = localStorage.getItem("roleId");
   public usersLength;// 当前页码
   User=new User();
   pages: any;
