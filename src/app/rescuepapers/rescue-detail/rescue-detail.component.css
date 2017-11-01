@@ -314,9 +314,28 @@ img {
 .player-video-wrapper {
   position: relative;
 }
+.loading{
+  position: absolute;
+  left:50%;
+  top:50%;
+  background-image: url('../../../assets/img/fancybox_loading.gif');
+  background-size: 24px 24px;
+  transform:translate(-12px,-12px);
+  -moz-transform:translate(-12px,-12px);
+  -ms-transform:translate(-12px,-12px);
+  -webkit-transform:translate(-12px,-12px);
+  -o-transform:translate(-12px,-12px);
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  z-index:1000;
+}
 video {
   width: 100%!important;
-  height: auto!important;
+  /*height: auto!important;*/
+  /*min-height: 300px !important;*/
+  /*max-height: 640px !important;*/
+  height: 640px !important;
   vertical-align: middle
 }
 .player-controls {
@@ -343,6 +362,56 @@ player-progress {
   width: 100%;
   height: 10px;
   background: rgba(86,93,100,.2);
+}
+.table{
+}
+.table>tbody>tr>td{
+  border-left: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+}
+.borderright{
+  border-right: 1px solid #ddd;
+}
+.borderbottom{
+  border-bottom: 1px solid #ddd;
+}
+.noborder{
+  border-width: 0px !important;
+}
+
+#imgBox a{
+  margin-bottom: 5px;
+  width: 24%;
+  position: relative;
+}
+#imgBox a:before {
+  content: "\2714";
+  display: block;
+  position: absolute;
+  margin: auto;
+  top: 0; left: 0; bottom: 0; right: 0;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  background:  #00c09e;
+  border-radius: 50px;
+  color: #fff;
+  text-align: center;
+  font-size: 16px;
+  z-index: 10;
+  opacity: 0;
+  transition:         0.3s linear;
+  -o-transition:      0.3s linear;
+  -moz-transition:    0.3s linear;
+  -webkit-transition: 0.3s linear;
+  -o-user-select:      none;
+  -moz-user-select:    none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+#imgBox .selected:before{
+  opacity: 1;
 }
 @media (min-width: 768px){
   .player-captions {

@@ -27,7 +27,6 @@ export class HomeComponent implements OnInit {
   }
   countChange($event) {
    this.clicke=$event;
-    console.log(this.clicke)
   }
 
 }

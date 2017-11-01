@@ -52,7 +52,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let electricity of electricities; let i = index;"  (click)="onSelect(electricity)">
-          <td>{{(curPage-1)*5+i+1}}</td>
+          <td>{{(curPage-1)*10+i+1}}</td>
           <td >{{electricity.deviceIMEI}}</td>
           <td >{{electricity.deviceStatus}}</td>
           <td>{{electricity.locationType}}({{electricity.locationLongitude}},{{electricity.locationLatitude}})</td>

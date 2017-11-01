@@ -56,7 +56,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let wearer of wearers; let i = index;"  (click)="onSelect(wearer)">
-          <td>{{(curPage-1)*5+i+1}}</td>
+          <td>{{(curPage-1)*10+i+1}}</td>
           <td >{{wearer.deviceIMEI}}</td>
           <td >{{wearer.surname}}{{wearer.name}}</td>
           <td >{{wearer.sex|sexChange}}</td>

@@ -75,13 +75,17 @@ export class GaodeMapComponent implements OnInit {
           mapaddress=data1.data.rescueTeam.addr;
           console.log(data1.data.rescueTeam.name)
           if(data1.data.rescueTeam.rescueTeamId==0){
-            map.setMinZoom(8);
+                map.setMinZoom(8)
           }else if(data1.data.rescueTeam.name.indexOf('大队')>-1){
-            map.setMinZoom(9);
+            setTimeout(()=>
+              map.setMinZoom(9)
+            , 2000);
             // map.setMaxZoom(9);
           }
           else {
-            map.setMinZoom(11);
+            setTimeout(()=>
+                map.setMinZoom(11)
+              , 2000);
           }
         }
       });
@@ -501,11 +505,42 @@ export class GaodeMapComponent implements OnInit {
       var posIndex = 0;
       var pointsArray = new Array();
       var maxCnt = 10;
-      var gpsPouints = getPoints(deviceList);
-      pointsArray = fengzhuang(gpsPouints);
+      if(volunters>0){
+        var gpsPouints = getPoints(deviceList);
+        pointsArray = fengzhuang(gpsPouints);
+        console.log(pointsArray);
+        var convertor = new BMap.Convertor();
+        var points=[];
+        var translateCallback = function (data){
+          if(data.status!=0){
+            alert("转换出错");
+            return
+          }
+          for (var i = 0; i < data.points.length; i++) {
+            lineArr.push(data.points[i])
+          }
+          posIndex++;
+          if(posIndex<pointsArray.length){
+            convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
+          }
+          if(posIndex==pointsArray.length){
+            console.log(lineArr);
+            console.log(changeXyList);
+            for(var d = 0,marker;d<lineArr.length;d++){
+              if(lineArr.length == 0){
+                return;
+              }
+              var myIcon = new BMap.Icon("markers.png");
+              var marker = new BMap.Marker(lineArr[d],{icon:myIcon});
+              addMarker(lineArr[d],changeXyList[d].status,changeXyList[d].deviceIMEI,changeXyList[d].NAME);
+              points.push(lineArr[d])
+            }
+
+          }
+        }
+        convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
+      }
       console.log(deviceList);
-      console.log(pointsArray);
-      var convertor = new BMap.Convertor();
       for(var i = 0,marker,poiny;i<devicess;i++){
         lngX = volunteerList[i].longitude;
         latY = volunteerList[i].latitude;
@@ -558,35 +593,7 @@ export class GaodeMapComponent implements OnInit {
           // }
         // }
       // });
-      var points=[];
-      var translateCallback = function (data){
-        if(data.status!=0){
-          alert("转换出错");
-          return
-        }
-        for (var i = 0; i < data.points.length; i++) {
-          lineArr.push(data.points[i])
-        }
-        posIndex++;
-        if(posIndex<pointsArray.length){
-          convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
-        }
-        if(posIndex==pointsArray.length){
-          console.log(lineArr);
-          console.log(changeXyList);
-          for(var d = 0,marker;d<lineArr.length;d++){
-            if(lineArr.length == 0){
-              return;
-            }
-            var myIcon = new BMap.Icon("markers.png");
-            var marker = new BMap.Marker(lineArr[d],{icon:myIcon});
-            addMarker(lineArr[d],changeXyList[d].status,changeXyList[d].deviceIMEI,changeXyList[d].NAME);
-            points.push(lineArr[d])
-          }
 
-        }
-      }
-      convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
 
       // for(var b = 0,marker;b<volunters;b++){
       //   if(deviceList[b].longitude){
@@ -797,17 +804,23 @@ export class GaodeMapComponent implements OnInit {
               });
             return
           }
-          var goUrl = 'web/task/receive?mobile='+$('#phoneBox').val()+'&itemId='+$('.panel .'+deviceIMEI+' .warningTask').parent().attr('id');
+          // var goUrl = 'web/task/receive?mobile='+$('#phoneBox').val()+'&itemId='+$('.panel .'+deviceIMEI+' .warningTask').parent().attr('id');
+          var goUrl = 'send/query/task?alias='+$('#phoneBox').val()+'&taskId='+$('.panel .'+deviceIMEI+' .warningTask').parent().attr('id');
             $.ajax({
               type: "get",
               url: goUrl,
               cache: false,
               async: false,
               success: function(data){
+                      // if(data.data){
+                      //     layer.msg('推送成功',{
+                      //       time: 2000, //20s后自动关闭
+                      //     });
+                      //   }
                 if(data.status==1){
                   layer.open({
                     title: '提示'
-                    ,content: '接单成功'
+                    ,content: '推送成功'
                   });
                   infoWindow.close();
                 }else{
@@ -1152,7 +1165,7 @@ export class GaodeMapComponent implements OnInit {
     function loginFull(element) {
       //判断各种浏览器，找到正确的方法
       if (element) {
-        element.href="http://60.205.4.247:9000";
+        element.href="http://47.95.218.144:9000";
       }
     }
 

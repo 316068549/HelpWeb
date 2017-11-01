@@ -55,7 +55,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let device of devices; let i = index;"  (click)="onSelect(device)">
-          <td>{{(curPage-1)*5+i+1}}</td>
+          <td>{{(curPage-1)*10+i+1}}</td>
           <!--<td>{{electricity.locationType}}</td>-->
           <td >{{device.deviceImei}}</td>
           <td >{{device.deviceUserName}}</td>

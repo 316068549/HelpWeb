@@ -8,8 +8,8 @@
   <div class="search-box">
     <span class="xt-search">
                 <select #searchBox id="rescueTeam" required name="rescueTeam"  class="form-select" >
-            <option value="" selected = "selected">所有救援队</option>
-            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId">{{rescue.name}}</option>
+            <!--<option value="" selected = "selected">所有救援队</option>-->
+            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId" [selected]="rescue.rescueTeamId==rescueId" [hidden]="(rescueId==0)?false:(rescue.rescueTeamId!=rescueId)">{{rescue.name}}</option>
           </select>
       <!--<input #searchBox type="text" id="search-box"  class="form-box"-->
       <!--placeholder="请输入名字">-->
@@ -67,7 +67,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let rescue of rescuePapers; let i = index;"  (click)="onSelect(rescue)">
-          <td>{{(curPage-1)*5+i+1}}</td>
+          <td>{{(curPage-1)*10+i+1}}</td>
           <td >{{rescue.sosName}}</td>
           <td >{{rescue.sosTime|timeChange}}</td>
           <td>{{rescue.sosAddress}}</td>
@@ -78,7 +78,7 @@
           <td>{{rescue.dealResult}}</td>
           <td>{{rescue.remark}}</td>
           <td>&nbsp;&nbsp;
-            <a  [routerLink]="['detail', rescue.taskId]" >查看</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a  (click)="gotoDetail(rescue)" >查看</a>&nbsp;&nbsp;
 
           </td>
         </tr>
@@ -90,13 +90,13 @@
     <div class="col-md-12 text-right margin-bottom mt25" *ngIf="rescuePapers">
       <a class="pull-left text-sm wordHei">总计 {{totalNum}} 条，第 {{curPage}} / {{totalPage}} 页</a>
 
-      <button class="btn btn-default next"  (click)="changePage(pageList[curPage-3],curPage-1)"
+      <button class="btn btn-default next"  (click)="changePage(curPage-1)"
               [disabled]="curPage==1">上一页</button>
       <button class="btn btn-default"   [ngClass]="x.isActive?'btn-primary':'btn-oprate'"
-              (click)="changePage(x,x.pageNum)"  *ngFor="let x of pageList;let i = index;">
+              (click)="changePage(x.pageNum)"  *ngFor="let x of pageList;let i = index;">
         {{x.pageNum}}
       </button>
-      <button class="btn btn-default next"  (click)="changePage(pageList[curPage-1],curPage+1)"
+      <button class="btn btn-default next"  (click)="changePage(curPage+1)"
               [disabled]="curPage==totalPage">下一页</button>
     </div>
     <div class="col-md-12 text-center text-sm text-dark-gray mt10" *ngIf="isEmpty">

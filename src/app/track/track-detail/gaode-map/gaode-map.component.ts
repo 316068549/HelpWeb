@@ -158,7 +158,7 @@ export class GaodeMapComponent implements OnInit {
         }
         if(posIndex==pointsArray.length){
           console.log(lineArr);
-          layer.close(loading);
+
           for(var d = 0,marker;d<lineArr.length;d++){
             if(lineArr.length == 0){
               return;
@@ -185,6 +185,7 @@ export class GaodeMapComponent implements OnInit {
           map.centerAndZoom(centerPoint,mapZoom);
           // //绘制轨迹
           polyline = new BMap.Polyline(lineArr, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
+          layer.close(loading);
           map.addOverlay(polyline);
           //调整视野
         }

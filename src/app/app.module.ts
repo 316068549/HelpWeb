@@ -4,6 +4,7 @@ import { HttpModule} from '@angular/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AlertModule } from 'ng2-bootstrap';
+import {EssenceNg2PrintModule} from "essence-ng2-print";
 import {DataTableModule} from "angular2-datatable";
 import {CustomFormsModule} from "ng2-validation";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -39,6 +40,7 @@ import { appRoutes } from './app.routes';
     DataTableModule,
     CustomFormsModule,
     ReactiveFormsModule,
+    EssenceNg2PrintModule,
     // InMemoryWebApiModule.forRoot(InMemoryDataService),
     AlertModule.forRoot(),
     RouterModule.forRoot(appRoutes)

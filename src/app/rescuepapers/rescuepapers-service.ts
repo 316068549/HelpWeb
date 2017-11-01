@@ -24,10 +24,10 @@ export class RescuePapersService {
   constructor(public http:Http
   ){}
 
-  getMenuDatas(current?:number,size?:number): Promise<object> {
+  getMenuDatas(id,current?:number,size?:number): Promise<object> {
     let uurl='';
     if(current){
-      uurl = this.menusUrl+'?pageIndex='+current +'&pageSize=10&tokenId='+this.tokenId;
+      uurl = this.menusUrl+'?rescueTeamId='+id+'&pageIndex='+current +'&pageSize=10&tokenId='+this.tokenId;
     }else{
       uurl = this.menusUrl+'?tokenId='+this.tokenId;
     }
@@ -56,7 +56,7 @@ export class RescuePapersService {
     return Promise.reject(error.message || error);
   }
 
-  getMenuData(taskId: number): Promise<object> {
+  getMenuData(taskId: string): Promise<object> {
     const url = this.menusdetailUrl+'?taskId='+taskId+'&tokenId='+this.tokenId;
     return this.http.get(url)
       .toPromise()

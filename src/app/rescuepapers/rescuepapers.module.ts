@@ -5,6 +5,7 @@ import { PaginationModule, ModalModule } from 'ng2-bootstrap';
 import {DataTableModule} from "angular2-datatable";
 import {CustomFormsModule} from "ng2-validation";
 import { RouterModule } from '@angular/router';
+import {EssenceNg2PrintModule} from "essence-ng2-print";
 
 import { RescuePapersService } from '../rescuepapers/rescuepapers-service';
 import { rescuePaperRoutes } from './rescuepapers.routes';
@@ -18,6 +19,7 @@ import { timeChangePipe } from './rescuepapers-table/time.pipe';
     SharedModule,
     DataTableModule,
     CustomFormsModule,
+    EssenceNg2PrintModule,
     ModalModule.forRoot(),
     RouterModule.forChild(rescuePaperRoutes)
   ],

@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
           localStorage.setItem("roleId", res.roleId);
           let userid = res.tokenId.split('==')[1]
           localStorage.setItem("userId", userid);
-          if(res.roleId==3){
+          if(res.roleId==3||res.roleId==5){
             this.router.navigateByUrl("home/helpers/116");
           }else{
             this.router.navigateByUrl("home");
