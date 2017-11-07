@@ -1,4 +1,4 @@
-<div id="page-wrapper" class="animated marg220">
+<div id="page-wrapper" class="animated marg220 gray-bg">
   <div class="page-t">
     <div class="page-nav">
       <a  href="javascript:;">救援管理</a>
@@ -16,7 +16,7 @@
       <!--<track-map></track-map>-->
       <div class="xt-list">
 
-        <div class="row">
+        <div class="row" >
           <div class="col-sm-12">
             <div class="ibox float-e-margins">
 
@@ -46,28 +46,28 @@
                 <br />
                 <table class="table" *ngIf="code">
                   <tr>
-                    <td width="120">设备使用者</td><td>	{{rescuePaper.sosName}}</td>
+                    <td width="110">设备使用者</td><td>	{{rescuePaper.sosName}}</td>
                   </tr>
                   <tr>
-                    <td width="120">设备报警时间</td><td>{{rescuePaper.sosTime|timeChange}}</td>
+                    <td width="110">设备报警时间</td><td>{{rescuePaper.sosTime|timeChange}}</td>
                   </tr>
                   <tr>
-                    <td width="120">报警地点</td><td>{{rescuePaper.sosAddress}}</td>
+                    <td width="110">报警地点</td><td>{{rescuePaper.sosAddress}}</td>
                   </tr>
                   <tr>
-                    <td width="120">报警原因</td><td>{{rescuePaper.sosReason}}</td>
+                    <td width="110">报警原因</td><td>{{rescuePaper.sosReason}}</td>
                   </tr>
                   <tr>
-                    <td width="120">救援人</td><td>{{rescuePaper.voName}}</td>
+                    <td width="110">救援人</td><td>{{rescuePaper.voName}}</td>
                   </tr>
                   <tr>
-                    <td width="120">完成时间</td><td>{{rescuePaper.receiveTime|timeChange}}</td>
+                    <td width="110">完成时间</td><td>{{rescuePaper.receiveTime|timeChange}}</td>
                   </tr>
                   <tr>
-                    <td width="120">所属救援大队</td><td>{{rescuePaper.rescueTeam}}</td>
+                    <td width="110">所属救援大队</td><td>{{rescuePaper.rescueTeam}}</td>
                   </tr>
                   <tr>
-                    <td width="120">救援结果</td><td>{{rescuePaper.dealResult}}</td>
+                    <td width="110">救援结果</td><td>{{rescuePaper.dealResult}}</td>
                   </tr>
                   <tr>
                     <td>
@@ -93,7 +93,7 @@
                 <!--打印模块end-->
               </div>
 
-              <div class="ml20 mb20 mt20">
+              <div class="ml20 mb20 mt20 centered">
                 <essence-ng2-print
                   [mode]="'popup'"
                   [popTitle]="'陕西省曙光应急救援协会易走失人群紧急救援管理系统'"
@@ -135,10 +135,10 @@
               <div class="ibox-content noborder" *ngIf="code&&imageList.length==0">
                 没有图片
               </div>
-              <div class="ibox-content noborder" id="imgBox" *ngIf="code&&imageList.length>0">
-                <a class="fancybox" href="javascript:;" title="" *ngFor="let image of imageList;let i =index">
+              <div class="mb20 ibox-content noborder" id="imgBox" *ngIf="code&&imageList.length>0">
+                <a class="fancybox"  href="javascript:;" title="" *ngFor="let image of imageList;let i =index">
                   <!--<img alt="image" [src]="'http://47.95.218.144:9005/web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />-->
-                  <img alt="image" [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />
+                  <img alt="image" [ngClass]="{'mr0':i==(imageList.length-1)}" [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />
                 </a>
 
                 <!--<a class="fancybox" href="#" title="图片2">-->

@@ -38,6 +38,7 @@ export class UsersTableComponent implements OnInit {
   public curPage = 1;// 当前页码
   public isEmpty:boolean = false;
   public currentRoleId = localStorage.getItem("roleId");
+  public currentTeamId = localStorage.getItem("rescueTeamId");
   public usersLength;// 当前页码
   User=new User();
   pages: any;

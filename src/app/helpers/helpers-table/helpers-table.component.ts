@@ -308,7 +308,6 @@ export class HelpersTableComponent implements OnInit {
 
   onSelect(helper: Helpers): void {
     this.selectedHelper = helper;
-    console.log(this.selectedHelper)
   }
 
   cancel(){

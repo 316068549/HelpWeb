@@ -51,6 +51,11 @@ a,ins{text-decoration:none}a,a:active,a:hover,ins,ins:active,ins:hover{outline:0
 .arial{font-family:"Arial"}.clear{display: block;overflow: hidden;}
 .gray-bg{background-color: #f3f3f4;}*{box-sizing: border-box;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;}
 a:focus, a:hover{text-decoration: none;}
+.centered{
+  width: 55px;
+  margin: 6px auto;
+  margin-bottom: 4px;
+}
 /*头部*/
 header{
   padding: 15px 80px 15px 10px;
@@ -889,6 +894,13 @@ chart{
   -moz-animation:selected 0.3s cubic-bezier(0.250, 0.100, 0.250, 1.000);;
   -o-animation: selected 0.3s cubic-bezier(0.250, 0.100, 0.250, 1.000);;
 }
+#imgBox img{
+  box-shadow: 0 0 0 4px #fff;
+  animation: unselected 0.3s cubic-bezier(0.250, 0.100, 0.250, 1.000);;
+  -webkit-animation: unselected 0.3s cubic-bezier(0.250, 0.100, 0.250, 1.000);;
+  -moz-animation:unselected 0.3s cubic-bezier(0.250, 0.100, 0.250, 1.000);;
+  -o-animation: unselected 0.3s cubic-bezier(0.250, 0.100, 0.250, 1.000);;
+}
 @keyframes selected {
   0% {box-shadow: 0 0 0 4px #fff;}
   50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #00c09e}
@@ -898,6 +910,36 @@ chart{
   0% {box-shadow: 0 0 0 4px #fff;}
   50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #00c09e}
   100% {width:24%;height:100%;box-shadow:0 0 0 4px #00c09e}
+}
+@-moz-keyframes selected {
+  0% {box-shadow: 0 0 0 4px #fff;}
+  50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #00c09e}
+  100% {width:24%;height:100%;box-shadow:0 0 0 4px #00c09e}
+}
+@-o-keyframes selected {
+  0% {box-shadow: 0 0 0 4px #fff;}
+  50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #00c09e}
+  100% {width:24%;height:100%;box-shadow:0 0 0 4px #00c09e}
+}
+@keyframes unselected {
+  0% {box-shadow: 0 0 0 4px #00c09e;}
+  50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #fff}
+  100% {width:24%;height:100%;box-shadow:0 0 0 4px #fff}
+}
+@-webkit-keyframes unselected {
+  0% {box-shadow: 0 0 0 4px #00c09e;}
+  50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #fff}
+  100% {width:24%;height:100%;box-shadow:0 0 0 4px #fff}
+}
+@-moz-keyframes unselected {
+  0% {box-shadow: 0 0 0 4px #00c09e;}
+  50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #fff}
+  100% {width:24%;height:100%;box-shadow:0 0 0 4px #fff}
+}
+@-o-keyframes unselected {
+  0% {box-shadow: 0 0 0 4px #00c09e;}
+  50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #fff}
+  100% {width:24%;height:100%;box-shadow:0 0 0 4px #fff}
 }
 /* latin-ext */
 @font-face {

@@ -55,7 +55,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let user of users; let i = index;"  (click)="onSelect(user)" [hidden]="currentRoleId==5&&(user.roleList[0].roleId==1||user.roleList[0].roleId==2)" >
+        <tr *ngFor="let user of users; let i = index;"  (click)="onSelect(user)" [hidden]="currentRoleId==3&&user.rescueTeamId!=currentTeamId||currentRoleId==5&&(user.roleList[0].roleId==1||user.roleList[0].roleId==2)" >
           <td>{{user.userId}}</td>
           <td >{{user.userName}}</td>
           <td >{{user.nickName}}</td>
@@ -158,7 +158,7 @@
         <div class="operate-group">
           <select #rescueTeam id="rescueTeam" required name="rescueTeam"  class="form-select" >
             <option value="" selected = "selected">请选择</option>
-            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId">{{rescue.name}}</option>
+            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId" [hidden]="(currentRoleId==3||currentRoleId==4)&&rescue.rescueTeamId!=currentTeamId">{{rescue.name}}</option>
           </select>
           <!--<p style="display: none" class="text-danger must3">-->
           <!--角色为必选项-->

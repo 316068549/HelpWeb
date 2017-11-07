@@ -153,8 +153,11 @@ export class HelperService {
     //   .toPromise()
     //   .then(() => user)
     //   .catch(this.handleError);
+
+    // user.rescueTeamId = id;
+    // console.log(typeof (user.rescueTeamId))
     return this.http
-      .post(this.menusmodifyUrl, JSON.stringify(user), {headers: this.headers})
+      .post(this.menusmodifyUrl,user, {headers: this.headers})
       .toPromise()
       .then(res => res.json() as object)
       .catch(this.handleError);

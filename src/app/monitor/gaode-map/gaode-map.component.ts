@@ -1105,6 +1105,17 @@ export class GaodeMapComponent implements OnInit {
       showMap.style.height = Y;
       exitFull(document);
     })
+    $(document).keyup(function (event) {
+      if(event.keyCode == 27){
+        $('.back').hide()
+        $('.quanping').show();
+        var showMap = document.getElementById("container");
+        $('#page-wrapper').addClass('marg220').removeClass('fullscreen');
+        showMap.style.width = X;
+        showMap.style.height = Y;
+        exitFull(document);
+      }
+    })
     //区域标出
     function getBoundary(ak){
       var bdary = new BMap.Boundary();

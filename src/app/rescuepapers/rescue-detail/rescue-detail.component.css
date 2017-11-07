@@ -274,7 +274,7 @@ img {
 }
 .ibox {
   clear: both;
-  margin-bottom: 25px;
+  /*margin-bottom: 25px;*/
   margin-top: 0;
   padding: 0;
 }
@@ -349,11 +349,6 @@ video {
   text-align: center;
   box-shadow: 0 1px 1px rgba(52,63,74,.2);
 }
-.height100 {
-  width: auto;
-  height: 100%;
-   overflow:inherit;
-}
 player-progress {
   position: absolute;
   bottom: 100%;
@@ -364,6 +359,8 @@ player-progress {
   background: rgba(86,93,100,.2);
 }
 .table{
+  width:642px;
+  margin: 0 auto;
 }
 .table>tbody>tr>td{
   border-left: 1px solid #ddd;
@@ -379,11 +376,17 @@ player-progress {
 .noborder{
   border-width: 0px !important;
 }
+.mr0{
+  margin-right: 0px !important;
+}
 
 #imgBox a{
   margin-bottom: 5px;
   width: 24%;
   position: relative;
+}
+#imgBox a img{
+  margin-right: 4px;
 }
 #imgBox a:before {
   content: "\2714";

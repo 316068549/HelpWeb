@@ -45,17 +45,17 @@ export class RescueDetailComponent implements OnInit {
   text-align: center;
 }
          .table>tbody>tr>td{
-  border-left: 1px solid #ddd;
-  border-top: 1px solid #ddd;
-  border-right: 1px solid #ddd;
+  border-left: 1px solid #333;
+  border-top: 1px solid #333 !important;
+  border-right: 1px solid #333;
       vertical-align: middle;
       text-align: center;
 }
 .borderright{
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #333;
 }
 .borderbottom{
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #333 !important;
 }
 .noborder{
   border-width: 0px !important;
