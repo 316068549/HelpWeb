@@ -505,41 +505,54 @@ export class GaodeMapComponent implements OnInit {
       var posIndex = 0;
       var pointsArray = new Array();
       var maxCnt = 10;
+      //服务器直接返回的百度坐标，不用转百度
       if(volunters>0){
-        var gpsPouints = getPoints(deviceList);
-        pointsArray = fengzhuang(gpsPouints);
-        console.log(pointsArray);
-        var convertor = new BMap.Convertor();
-        var points=[];
-        var translateCallback = function (data){
-          if(data.status!=0){
-            alert("转换出错");
-            return
-          }
-          for (var i = 0; i < data.points.length; i++) {
-            lineArr.push(data.points[i])
-          }
-          posIndex++;
-          if(posIndex<pointsArray.length){
-            convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
-          }
-          if(posIndex==pointsArray.length){
-            console.log(lineArr);
-            console.log(changeXyList);
-            for(var d = 0,marker;d<lineArr.length;d++){
-              if(lineArr.length == 0){
-                return;
-              }
-              var myIcon = new BMap.Icon("markers.png");
-              var marker = new BMap.Marker(lineArr[d],{icon:myIcon});
-              addMarker(lineArr[d],changeXyList[d].status,changeXyList[d].deviceIMEI,changeXyList[d].NAME);
-              points.push(lineArr[d])
-            }
-
-          }
+        for(var a = 0,marker,poiny;a<volunters;a++){
+          lngX = deviceList[a].longitude;
+          latY = deviceList[a].latitude;
+          changeXyList.push(deviceList[a]);
+          var myIcon = new BMap.Icon("markers.png");
+          var point = new BMap.Point(lngX, latY);
+          var marker = new BMap.Marker(point,{icon:myIcon});
+          addMarker(point,changeXyList[a].status,changeXyList[a].deviceIMEI,changeXyList[a].NAME);
         }
-        convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
       }
+      //设备的GPS转百度坐标代码
+      // if(volunters>0){
+      //   var gpsPouints = getPoints(deviceList);
+      //   pointsArray = fengzhuang(gpsPouints);
+      //   console.log(pointsArray);
+      //   var convertor = new BMap.Convertor();
+      //   var points=[];
+      //   var translateCallback = function (data){
+      //     if(data.status!=0){
+      //       alert("转换出错");
+      //       return
+      //     }
+      //     for (var i = 0; i < data.points.length; i++) {
+      //       lineArr.push(data.points[i])
+      //     }
+      //     posIndex++;
+      //     if(posIndex<pointsArray.length){
+      //       convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
+      //     }
+      //     if(posIndex==pointsArray.length){
+      //       console.log(lineArr);
+      //       console.log(changeXyList);
+      //       for(var d = 0,marker;d<lineArr.length;d++){
+      //         if(lineArr.length == 0){
+      //           return;
+      //         }
+      //         var myIcon = new BMap.Icon("markers.png");
+      //         var marker = new BMap.Marker(lineArr[d],{icon:myIcon});
+      //         addMarker(lineArr[d],changeXyList[d].status,changeXyList[d].deviceIMEI,changeXyList[d].NAME);
+      //         points.push(lineArr[d])
+      //       }
+      //
+      //     }
+      //   }
+      //   convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
+      // }
       console.log(deviceList);
       for(var i = 0,marker,poiny;i<devicess;i++){
         lngX = volunteerList[i].longitude;

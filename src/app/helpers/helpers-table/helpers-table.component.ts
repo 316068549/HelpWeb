@@ -312,6 +312,7 @@ export class HelpersTableComponent implements OnInit {
 
   cancel(){
     this.getElectricities2(this.curPage);
+    this.selectedHelper = null;
   }
 
   search2(term: string): void{

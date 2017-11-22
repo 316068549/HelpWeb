@@ -208,8 +208,8 @@
       <div class="operate-item fn-clear">
         <label >性别:</label>
         <div class="operate-radio">
-          <input #menuSelected2   [checked]="selectedWearer.sex==1" (change)="menuSelected2.value=1" required   name="selected"  type="radio" class="form-box" value="1">  男
-          <input #menuSelected2   [checked]="selectedWearer.sex==0" (change)="menuSelected2.value=0" required   name="selected"  type="radio" class="form-box" value="0">  女
+          <input #menuSelected2   [checked]="selectedWearer.sex==1" (click)="menuSelected2.value=1" required   name="selected"  type="radio" class="form-box" value="1">  男
+          <input #menuSelected2   [checked]="selectedWearer.sex==0" (click)="menuSelected2.value=0" required   name="selected"  type="radio" class="form-box" value="0">  女
         </div>
       </div>
       <div class="operate-item fn-clear">

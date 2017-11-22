@@ -240,6 +240,10 @@ export class UsersTableComponent implements OnInit {
     })
   }
 
+  cancel(){
+    this.getElectricities(this.curPage);
+  }
+
   searchParMenu(): void{
     this.parentNames=[];
     this.rescueTeams=[];

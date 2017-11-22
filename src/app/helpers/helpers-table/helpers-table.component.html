@@ -196,7 +196,6 @@
         <label>姓名:</label>
         <div class="operate-group">
           <input required  type="text"  id="helperName2" name="helperName2" class="form-box"  [(ngModel)]="selectedHelper.name" #helperName2="ngModel" disabled>
-          <p *ngIf="deletemenuform.submitted && !helperName2.valid"   class="text-danger">姓名不能为空</p>
         </div>
       </div>
       <div class="operate-item fn-clear">
@@ -234,8 +233,6 @@
         <div class="operate-group">
           <input required  type="text"  id="nationalId2" name="nationalId2" class="form-box" [(ngModel)]="selectedHelper.identityCard" #nationalId2="ngModel"
                  pattern="/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/" disabled>
-          <p *ngIf="deletemenuform.submitted && !nationalId2.value"   class="text-danger">身份证号不能为空</p>
-          <div *ngIf="nationalId2.errors?.pattern && nationalId2.touched"  class="text-danger">身份证格式错误</div>
         </div>
       </div>
       <div class="operate-item fn-clear">

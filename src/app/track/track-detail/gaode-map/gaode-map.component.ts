@@ -95,8 +95,48 @@ export class GaodeMapComponent implements OnInit {
       completeEventHandler();
     }
 
+    function completeEventHandler(){
+      var lngX ;
+      var latY ;
+      markers = [];
+      var lineArr=[];
+      if(!pointList){
+        return
+      }
+      console.log(pointList);
+      var pointLen = pointList.length;
+      for(var d = 0,marker;d<pointLen;d++){
+        var point = new BMap.Point(pointList[d].locationLongitude,pointList[d].locationLatitude);
+        lineArr.push(point);
+        if(d==0){
+          var marker = new BMap.Marker(point,{icon:myIcon,title:pointList[d].locationTime});
+          marker.setLabel('起');
+          marker.setZIndex(99)
+          map.addOverlay(marker);
+        }else if(d<pointLen-1){
+          // var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+          var marker = new BMap.Marker(point,{icon:myIcon3,title:pointList[d].locationTime});
+          map.addOverlay(marker);
+          // points.push(point);
+        }else{
+          var marker = new BMap.Marker(point,{icon:myIcon2,title:pointList[d].locationTime});
+          map.addOverlay(marker);
+          marker.setZIndex(99)
+        }
+      }
+      var view = map.getViewport(lineArr);
+      var mapZoom = view.zoom;
+      var centerPoint = view.center;
+      map.centerAndZoom(centerPoint,mapZoom);
+      // //绘制轨迹
+      polyline = new BMap.Polyline(lineArr, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
+      layer.close(loading);
+      map.addOverlay(polyline);
+      //调整视野
+    }
 
-    //转换代码
+
+    //转换代码，暂时用不到
     function getPoints(pointList){
        var points =[];
        for(var i=0;i<pointList.length;i++){
@@ -127,71 +167,71 @@ export class GaodeMapComponent implements OnInit {
       return pointsArray;
     }
     //转换end
-
-    function completeEventHandler(){
-      var lngX ;
-      var latY ;
-      markers = [];
-      var lineArr=[];
-      var posIndex = 0;
-      var pointsArray = new Array();
-      var maxCnt = 10;
-      if(!pointList){
-        return
-      }
-      var gpsPouints = getPoints(pointList);
-      pointsArray = fengzhuang(gpsPouints);
-      console.log(pointList);
-      console.log(pointsArray);
-      var convertor = new BMap.Convertor();
-      var translateCallback = function (data){
-        if(data.status!=0){
-          alert("转换出错");
-          return
-        }
-        for (var i = 0; i < data.points.length; i++) {
-          lineArr.push(data.points[i])
-        }
-        posIndex++;
-        if(posIndex<pointsArray.length){
-          convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
-        }
-        if(posIndex==pointsArray.length){
-          console.log(lineArr);
-
-          for(var d = 0,marker;d<lineArr.length;d++){
-            if(lineArr.length == 0){
-              return;
-            }
-            if(d==0){
-              var marker = new BMap.Marker(lineArr[d],{icon:myIcon,title:pointList[d].locationTime});
-              marker.setLabel('起');
-              marker.setZIndex(99)
-              map.addOverlay(marker);
-            }else if(d<lineArr.length-1){
-              // var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
-              var marker = new BMap.Marker(lineArr[d],{icon:myIcon3,title:pointList[d].locationTime});
-              map.addOverlay(marker);
-              // points.push(point);
-            }else{
-              var marker = new BMap.Marker(lineArr[d],{icon:myIcon2,title:pointList[d].locationTime});
-              map.addOverlay(marker);
-              marker.setZIndex(99)
-            }
-          }
-          var view = map.getViewport(lineArr);
-          var mapZoom = view.zoom;
-          var centerPoint = view.center;
-          map.centerAndZoom(centerPoint,mapZoom);
-          // //绘制轨迹
-          polyline = new BMap.Polyline(lineArr, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
-          layer.close(loading);
-          map.addOverlay(polyline);
-          //调整视野
-        }
-      }
-      convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
-    }
+    // function completeEventHandler(){
+    //   var lngX ;
+    //   var latY ;
+    //   markers = [];
+    //   var lineArr=[];
+    //   var posIndex = 0;
+    //   var pointsArray = new Array();
+    //   var maxCnt = 10;
+    //   if(!pointList){
+    //     return
+    //   }
+    //   //转换百度坐标代码
+    //   var gpsPouints = getPoints(pointList);
+    //   pointsArray = fengzhuang(gpsPouints);
+    //   console.log(pointList);
+    //   console.log(pointsArray);
+    //   var convertor = new BMap.Convertor();
+    //   var translateCallback = function (data){
+    //     if(data.status!=0){
+    //       alert("转换出错");
+    //       return
+    //     }
+    //     for (var i = 0; i < data.points.length; i++) {
+    //       lineArr.push(data.points[i])
+    //     }
+    //     posIndex++;
+    //     if(posIndex<pointsArray.length){
+    //       convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
+    //     }
+    //     if(posIndex==pointsArray.length){
+    //       console.log(lineArr);
+    //
+    //       for(var d = 0,marker;d<lineArr.length;d++){
+    //         if(lineArr.length == 0){
+    //           return;
+    //         }
+    //         if(d==0){
+    //           var marker = new BMap.Marker(lineArr[d],{icon:myIcon,title:pointList[d].locationTime});
+    //           marker.setLabel('起');
+    //           marker.setZIndex(99)
+    //           map.addOverlay(marker);
+    //         }else if(d<lineArr.length-1){
+    //           // var point = new BMap.Point(resultList2.resultList[d].x, resultList2.resultList[d].y);
+    //           var marker = new BMap.Marker(lineArr[d],{icon:myIcon3,title:pointList[d].locationTime});
+    //           map.addOverlay(marker);
+    //           // points.push(point);
+    //         }else{
+    //           var marker = new BMap.Marker(lineArr[d],{icon:myIcon2,title:pointList[d].locationTime});
+    //           map.addOverlay(marker);
+    //           marker.setZIndex(99)
+    //         }
+    //       }
+    //       var view = map.getViewport(lineArr);
+    //       var mapZoom = view.zoom;
+    //       var centerPoint = view.center;
+    //       map.centerAndZoom(centerPoint,mapZoom);
+    //       // //绘制轨迹
+    //       polyline = new BMap.Polyline(lineArr, {strokeColor:"#5298FF", strokeWeight:3, strokeOpacity:0.9});
+    //       layer.close(loading);
+    //       map.addOverlay(polyline);
+    //       //调整视野
+    //     }
+    //   }
+    //   convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
+    // }
     //根据时间搜索
     function changeTime(str){
       // var str ="2013-01-01 00:00:00";

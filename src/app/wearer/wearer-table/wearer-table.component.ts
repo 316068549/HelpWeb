@@ -307,7 +307,9 @@ export class WearerTableComponent implements OnInit {
   }
 
   cancel(){
+    this.selectedWearer = null;
     this.getElectricities2(this.curPage);
+    console.log(this.selectedWearer)
   }
 
   search2(term: string): void{
