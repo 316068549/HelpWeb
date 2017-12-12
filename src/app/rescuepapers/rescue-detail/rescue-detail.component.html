@@ -120,8 +120,8 @@
               </div>
               <div class="mb20 ibox-content noborder" id="imgBox" *ngIf="code&&imageList.length>0">
                 <a class="fancybox"  href="javascript:;" title="" *ngFor="let image of imageList;let i =index">
-                  <!--<img alt="image" [ngClass]="{'mr0':i==(imageList.length-1)}" [src]="'http://47.95.218.144:9005/web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />-->
-                  <img alt="image" [ngClass]="{'mr0':i==(imageList.length-1)}" [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />
+                  <img alt="image" [ngClass]="{'mr0':i==(imageList.length-1)}" [src]="'web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />
+                  <!--<img alt="image" [ngClass]="{'mr0':i==(imageList.length-1)}" [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />-->
                 </a>
 
                 <!--<a class="fancybox" href="#" title="图片2">-->
@@ -150,7 +150,7 @@
                   <video id="my-video{{i}}" class="video-js" controls preload="auto" width="740" height="400" (canplaythrough)="hideLoad(i)"  (load)="setVideo($event.target,i)" (play)="hideLoad(i)"
                   poster="" >
                     <!--poster="../../../assets/img/fancybox_loading.gif" > -->
-                  <source [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+video.videoUrl"    type="video/mp4">
+                  <source [src]="'web/file/downloadFile/'+video.videoUrl"    type="video/mp4">
                   <p class="vjs-no-js">
                   您的浏览器不支持HTML5视频播放，请下载或更换浏览器
                   <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>

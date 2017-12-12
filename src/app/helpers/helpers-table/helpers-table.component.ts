@@ -338,11 +338,14 @@ export class HelpersTableComponent implements OnInit {
   }
 
   add(helperName: string, sex: string, password: string,phone: string,
-      nationalId: string, personnelForm:string ,rescue: number,file:File ): void {
+      nationalId: string, personnelForm:string ,rescue: number,file:any ): void {
     helperName = helperName.trim();
     phone = phone.trim();
     nationalId = nationalId.trim();
     if (!helperName && !sex  && !password && !phone && !nationalId && rescue ) { return; }
+    if(file==''){
+      return;
+    }
     $("#addWear").attr({"disabled":"disabled"});
     let index = layer.load(1, {shade: false,offset: '30%'});
     this.userService.create(helperName,sex,password,phone,nationalId,personnelForm,rescue,this.imgg)

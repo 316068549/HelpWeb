@@ -340,11 +340,15 @@ export class WearerTableComponent implements OnInit {
   }
 
   add(imei:string,Name: string,lastName:string ,sex: string, age: number,phone: string,
-      address: string,file:File ): void {
+      address: string,file:any ): void {
     Name = Name.trim();
     lastName = lastName.trim();
     phone = phone.trim();
-    if (!imei && !Name && !lastName && !sex  && !age && !phone && !address ) { return; }
+    console.log(file);
+    if (!imei && !Name && !lastName && !sex  && !age && !phone && !address) { return; }
+    if(file==''){
+      return;
+    }
     let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
     $("#addWear").attr({"disabled":"disabled"});
     this.userService.create(imei,Name,lastName,sex,age,phone,address,this.imgg)

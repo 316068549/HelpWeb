@@ -153,6 +153,7 @@
         <div class="operate-group">
           <input required  type="file"  id="imageUrl" name="imageUrl" style="border: none"    (change)="onFileChanged($event.target.files)"
                  accept="image/gif,image/jpeg,image/jpg,image/png,image/svg" #imageUrl>
+          <p *ngIf="tjmenuform.submitted && !imageUrl.value && !submied"   class="text-danger">请上传头像</p>
         </div>
       </div>
       <div class="operate-item fn-clear">
