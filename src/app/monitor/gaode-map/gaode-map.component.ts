@@ -102,6 +102,13 @@ export class GaodeMapComponent implements OnInit {
           +tokenId
         ,
         success: function(data){
+          if(data.status==0){
+            layer.open({
+              title: '提示'
+              , content: '获取数据失败！'
+            });
+            return;
+          }
             resul=data.data;
         }
       });
@@ -213,6 +220,13 @@ export class GaodeMapComponent implements OnInit {
         ,
         success: function(data){
           if (data.code == 0) {
+            if(data.status==0){
+              layer.open({
+                title: '提示'
+                , content: '获取数据失败！'
+              });
+              return;
+            }
 
           } else if (data.code == 5) {
             var ak = layer.open({
@@ -230,6 +244,7 @@ export class GaodeMapComponent implements OnInit {
               , content: data.error
             });
           }
+
            result=data.data;
         }
       });
