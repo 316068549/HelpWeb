@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { Wearer } from '../../models/wearer';
 
 @Pipe({ name: 'timeChange' })
 export class timeChangePipe implements PipeTransform {

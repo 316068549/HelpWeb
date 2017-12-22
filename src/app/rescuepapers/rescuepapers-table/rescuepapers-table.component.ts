@@ -24,6 +24,7 @@ export class RescuepapersTableComponent implements OnInit {
   rescuePapers: Observable<rescuePaper[]>;
   rescuePaper: rescuePaper;
   selectedRescuePaper: rescuePaper;
+  rescueTeamID:number;//总队选择的搜索id
   public params; // 保存页面url参数 2012-10-20 11:11:11
   public totalNum ; // 总数据条数
   public pageSize = 10;// 每页数据条数
@@ -123,7 +124,7 @@ export class RescuepapersTableComponent implements OnInit {
 
   changePage(index) {
     let index2 = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
-    this.userService.getMenuDatas(this.rescueId,index,10).then( res => {
+    this.userService.getMenuDatas(this.rescueTeamID,index,10).then( res => {
       layer.close(index2);
       if(res['code'] == 0){
         this.rescuePapers = res['data']['list'];
@@ -156,6 +157,8 @@ export class RescuepapersTableComponent implements OnInit {
 
   ngOnInit(): void {
     let getId = this.route.snapshot.paramMap.get('cur');
+    let rId = this.route.snapshot.paramMap.get('rescuesId');
+    this.rescueTeamID = rId?parseInt(rId):this.rescueId;
     this.curPage = getId?parseInt(getId):1;
     console.log(getId)
     // this.curPage = this.route.paramMap
@@ -163,7 +166,7 @@ export class RescuepapersTableComponent implements OnInit {
     //     this.selectedId = +params.get('id');
     //     return this.service.getHeroes();
     //   });
-    this.getElectricities(this.rescueId,this.curPage);
+    this.getElectricities(this.rescueTeamID,this.curPage);
   }
 
 
@@ -227,7 +230,7 @@ export class RescuepapersTableComponent implements OnInit {
           });
           return
         }
-        this.rescueId = term;
+        this.rescueTeamID = term;
         this.isEmpty=false;
         this.rescuePapers = res['data']['list'];
         this.curPage = res['data']['pageNum'];
@@ -253,7 +256,7 @@ export class RescuepapersTableComponent implements OnInit {
   }
 
   gotoDetail(rescue:rescuePaper): void {
-    this.router.navigate(['/home/rescuepapers/135/detail',rescue.taskId],{queryParams: { cur: this.curPage },preserveFragment: true});
+    this.router.navigate(['/home/rescuepapers/135/detail',rescue.taskId],{queryParams: { cur: this.curPage,rescueId:this.rescueTeamID },preserveFragment: true});
   }
 
   goBack(): void {

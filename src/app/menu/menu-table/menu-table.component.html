@@ -126,7 +126,7 @@
       <div class="operate-item fn-clear">
         <label class="unmust">父菜单：</label>
         <div class="operate-group">
-          <select #parentName id="parentName" required name="parentName"   class="form-select" (change)="student=$event;setInfo(parentName.value)">
+          <select #parentName id="parentName" required name="parentName"   class="form-select" (change)="setInfo(parentName.value)">
             <option value="1" selected = "selected">顶级菜单</option>
             <option  *ngFor="let c of comIdList" [value]="c.permissionId" >{{c.permissionName}}</option>
           </select>

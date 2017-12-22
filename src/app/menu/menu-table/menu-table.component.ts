@@ -41,13 +41,13 @@ export class MenuTableComponent implements OnInit {
   //  //  this.data = $event;
   //   this.data = this.timerComponent.data;
   // }
-  private tjmenu:boolean;
-  private clicked:boolean;
-  private submied:boolean = false;
-  private deletemenu:boolean = false;
-  private addbtn:boolean = false;
-  private edit:boolean = false;
-  private del:boolean = false;
+   tjmenu:boolean;
+   clicked:boolean;
+   submied:boolean = false;
+   deletemenu:boolean = false;
+   addbtn:boolean = false;
+   edit:boolean = false;
+   del:boolean = false;
   originalUserName:string;
   public params: any;  // 保存页面url参数
   public totalNum ; // 总数据条数

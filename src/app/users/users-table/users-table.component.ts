@@ -23,13 +23,13 @@ export class UsersTableComponent implements OnInit {
   users: User[];
   user: User;
   selectedUser: User;
-  private tjmenu:boolean;
-  private clicked:boolean;
-  private submied:boolean = false;
-  private addbtn:boolean = false;
-  private edit:boolean = false;
-  private del:boolean = false;
-  private deletemenu:boolean = false;
+   tjmenu:boolean;
+   clicked:boolean;
+   submied:boolean = false;
+   addbtn:boolean = false;
+   edit:boolean = false;
+   del:boolean = false;
+   deletemenu:boolean = false;
   public params; // 保存页面url参数
   public totalNum; // 总数据条数
   public pageSize = 10;// 每页数据条数

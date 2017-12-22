@@ -22,9 +22,9 @@ export class DeviceTableComponent implements OnInit {
   devices: Device[];
   device: Device;
   selectedDevice: Device;
-  private tjmenu:boolean;
-  private clicked:boolean;
-  private deletemenu:boolean = false;
+   tjmenu:boolean;
+   clicked:boolean;
+   deletemenu:boolean = false;
   public params; // 保存页面url参数 2012-10-20 11:11:11
   public totalNum ; // 总数据条数
   public pageSize = 10;// 每页数据条数

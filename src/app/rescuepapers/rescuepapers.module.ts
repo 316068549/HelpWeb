@@ -12,7 +12,7 @@ import { rescuePaperRoutes } from './rescuepapers.routes';
 import { RescuepapersComponent } from './rescuepapers.component';
 import { RescuepapersTableComponent } from './rescuepapers-table/rescuepapers-table.component';
 import { RescueDetailComponent } from './rescue-detail/rescue-detail.component';
-import { timeChangePipe } from './rescuepapers-table/time.pipe';
+import { timeChangePipe } from './time.pipe';
 
 @NgModule({
   imports: [

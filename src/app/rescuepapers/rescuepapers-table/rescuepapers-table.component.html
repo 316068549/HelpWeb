@@ -9,7 +9,7 @@
     <span class="xt-search">
                 <select #searchBox id="rescueTeam" required name="rescueTeam"  class="form-select" >
             <!--<option value="" selected = "selected">所有救援队</option>-->
-            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId" [selected]="rescue.rescueTeamId==rescueId" [hidden]="(rescueId==0)?false:(rescue.rescueTeamId!=rescueId)">{{rescue.name}}</option>
+            <option *ngFor="let rescue of rescueTeams" [value]="rescue.rescueTeamId" [selected]="rescue.rescueTeamId==rescueTeamID" [hidden]="(rescueId==0)?false:(rescue.rescueTeamId!=rescueId)">{{rescue.name}}</option>
           </select>
       <!--<input #searchBox type="text" id="search-box"  class="form-box"-->
       <!--placeholder="请输入名字">-->

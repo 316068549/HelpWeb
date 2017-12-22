@@ -33,15 +33,15 @@ export class WearerTableComponent implements OnInit {
   wearers: Wearer[];
   wearer: Wearer;
   selectedWearer: Wearer;
-  private tjmenu:boolean;
-  private clicked:boolean;
-  private deletemenu:boolean = false;
+   tjmenu:boolean;
+   clicked:boolean;
+   deletemenu:boolean = false;
   Wearer=new Wearer();
   parentNames = [];
-  private submied:boolean = false;
-  private addbtn:boolean = false;
-  private edit:boolean = false;
-  private del:boolean = false;
+   submied:boolean = false;
+   addbtn:boolean = false;
+   edit:boolean = false;
+   del:boolean = false;
   public params; // 保存页面url参数
   public totalNum; // 总数据条数
   public pageSize = 10;// 每页数据条数

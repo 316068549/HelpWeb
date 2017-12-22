@@ -30,6 +30,7 @@ export class RescueDetailComponent implements OnInit {
   printStyle: string;
   code:boolean = false;
   private rescuePaperId:number;
+  rescuesId:number;
 
   constructor(
     private elRef: ElementRef,
@@ -78,6 +79,7 @@ export class RescueDetailComponent implements OnInit {
 
   ngOnInit()  {
     this.rescuePaperId = parseInt(this.route.snapshot.queryParamMap.get('cur'));
+    this.rescuesId = parseInt(this.route.snapshot.queryParamMap.get('rescueId'));
     this.code = false;
     this.route.params
       .switchMap((params: Params) => this.rescueCountService.getMenuData(params['id']))
@@ -198,9 +200,10 @@ export class RescueDetailComponent implements OnInit {
   }
 
   goBack(): void {
+    let rId = this.rescuesId ? this.rescuesId:null;
     let heroId = this.rescuePaperId ? this.rescuePaperId: null;
     console.log(heroId);
-    this.router.navigate(['/home/rescuepapers/135', { cur: heroId}]);
+    this.router.navigate(['/home/rescuepapers/135', { cur: heroId,rescuesId:rId}]);
     // this.location.back();
   }
 }
