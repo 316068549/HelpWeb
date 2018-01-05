@@ -106,7 +106,10 @@ export class RescueDetailComponent implements OnInit {
           }
         }
         console.log(this.imageList.length)
+
       });
+    //图片加载
+     setTimeout(()=> $("img.lazy").lazyload({placeholder : "../../../assets/img/timg.gif"}),1000)
 
     //播放视频
     var myPlayer;
@@ -189,18 +192,21 @@ export class RescueDetailComponent implements OnInit {
   }
 
   setImg(obj,i){
-   let box = $('.ibox-content').width()*(24/100)
-    // console.log(obj.width)
-    // console.log(obj.height)
-    // if(obj.width/obj.height>1){
-    //  obj.style.transform = 'rotate(-90deg)';
-    //   $('.img'+i).height(box+'px')
-    // }
+   let box = $('.ibox-content').width()*(24/100);
+   let si = obj.width/obj.height;
+    console.log(obj.width)
+    console.log(obj.height)
+    console.log(si)
+    if(si>1){
+     obj.style.transform = 'rotate(90deg)';
+      // $('#imgBox').height(obj.width+'px')
+       // $('.img'+i).height(box+'px')
+    }
     // console.log(obj.width+','+obj.height)
   }
 
   goBack(): void {
-    let rId = this.rescuesId ? this.rescuesId:null;
+    let rId = this.rescuesId;
     let heroId = this.rescuePaperId ? this.rescuePaperId: null;
     console.log(heroId);
     this.router.navigate(['/home/rescuepapers/135', { cur: heroId,rescuesId:rId}]);

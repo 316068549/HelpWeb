@@ -22,6 +22,7 @@
 
               <div class="ibox-title">
                 <h5>救援报告 <small></small></h5>
+                <!--<img class="lazy" data-original="web/file/downloadFile/d2a3408e-69a2-4ee4-9014-ce36e4b4a161.png" width="765" height="574" alt="Corvette Pitstop">-->
                 <!--<div class="ibox-tools">-->
                   <!--<a class="collapse-link">-->
                     <!--<i class="fa fa-chevron-up"></i>-->
@@ -61,7 +62,7 @@
                     <td width="110">救援人</td><td>{{rescuePaper.voName}}</td>
                   </tr>
                   <tr>
-                    <td width="110">完成时间</td><td>{{rescuePaper.receiveTime|timeChange}}</td>
+                    <td width="110">接单时间</td><td>{{rescuePaper.receiveTime|timeChange}}</td>
                   </tr>
                   <tr>
                     <td width="110">所属救援大队</td><td>{{rescuePaper.rescueTeam}}</td>
@@ -120,7 +121,7 @@
               </div>
               <div class="mb20 ibox-content noborder" id="imgBox" *ngIf="code&&imageList.length>0">
                 <a class="fancybox"  href="javascript:;" title="" *ngFor="let image of imageList;let i =index">
-                  <img alt="image" [ngClass]="{'mr0':i==(imageList.length-1)}" [src]="'web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />
+                  <img id="my-img{{i}}" alt="image" class="lazy" [ngClass]="{'mr0':i==(imageList.length-1)}" [attr.data-original]="'web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />
                   <!--<img alt="image" [ngClass]="{'mr0':i==(imageList.length-1)}" [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />-->
                 </a>
 

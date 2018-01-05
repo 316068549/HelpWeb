@@ -27,7 +27,8 @@
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/bootstrap/dist/js/bootstrap.min.js",
         "../node_modules/layer/layer.js",
-        "../node_modules/highcharts/highcharts.js"
+        "../node_modules/highcharts/highcharts.js",
+        "../node_modules/alazyload/jquery.lazyload.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

@@ -102,24 +102,24 @@ export class GaodeMapComponent implements OnInit {
           +tokenId
         ,
         success: function(data){
-          if(data.status==0){
-            layer.open({
-              title: '提示'
-              , content: '获取数据失败！'
-            });
-            return;
-          }
             resul=data.data;
         }
       });
       // volunteerList=resul.volunteerList;
       // deviceList=resul.deviceList;
       // taskList=resul.taskList;
+      if(!resul){
+        return
+      }
       if(resul.volunteerList){
         volunteerList=resul.volunteerList;
+      }else{
+        volunteerList=[];
       }
       if(resul.deviceList){
         deviceList=resul.deviceList;
+      }else{
+        deviceList=[];
       }
       if(resul.taskList){
         taskList=resul.taskList;
@@ -220,13 +220,7 @@ export class GaodeMapComponent implements OnInit {
         ,
         success: function(data){
           if (data.code == 0) {
-            if(data.status==0){
-              layer.open({
-                title: '提示'
-                , content: '获取数据失败！'
-              });
-              return;
-            }
+
 
           } else if (data.code == 5) {
             var ak = layer.open({
@@ -253,6 +247,8 @@ export class GaodeMapComponent implements OnInit {
       // taskList=result.taskList;
       if(result.volunteerList){
         volunteerList=result.volunteerList;
+      }else{
+        volunteerList=[];
       }
       if(result.deviceList){
         deviceList=result.deviceList;
@@ -513,8 +509,9 @@ export class GaodeMapComponent implements OnInit {
       var latY ;
       markers = [];
       var lineArr=[];
-      var devicess = volunteerList.length;
-      var volunters = deviceList.length;
+      console.log(volunteerList);
+      var devicess = volunteerList?volunteerList.length:0;
+      var volunters = deviceList?deviceList.length:0;
       $('#result .devicess').text(volunters);
       $('#result .volunters').text(devicess);
       var posIndex = 0;
@@ -569,19 +566,21 @@ export class GaodeMapComponent implements OnInit {
       //   convertor.translate(pointsArray[posIndex], 1, 5, translateCallback);
       // }
       console.log(deviceList);
-      for(var i = 0,marker,poiny;i<devicess;i++){
-        lngX = volunteerList[i].longitude;
-        latY = volunteerList[i].latitude;
-        var myIcon = new BMap.Icon("markers.png");
-        var point = new BMap.Point(volunteerList[i].longitude, volunteerList[i].latitude);
-        var marker = new BMap.Marker(point,{title:'志愿者'});
-        var content = '<div class="personIcon">' +
-          '<img src="web/file/downloadFile/'+volunteerList[i]['image_url']+'" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
-          '<p style="margin: 15px 0 15px 0">志愿者:' +volunteerList[i].name+'</p>'+
-          '<div  class="rescuesta">定位时间：'+getLocalTime(volunteerList[i].locationTime)+'</div>'
-        '</div>';
-        map.addOverlay(marker);
-        addClickHandler(content,marker);
+      if(devicess>0) {
+        for (var i = 0, marker, poiny; i < devicess; i++) {
+          lngX = volunteerList[i].longitude;
+          latY = volunteerList[i].latitude;
+          var myIcon = new BMap.Icon("markers.png");
+          var point = new BMap.Point(volunteerList[i].longitude, volunteerList[i].latitude);
+          var marker = new BMap.Marker(point, {title: '志愿者'});
+          var content = '<div class="personIcon">' +
+            '<img src="web/file/downloadFile/' + volunteerList[i]['image_url'] + '" id="imgDemo" alt="暂无头像" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+            '<p style="margin: 15px 0 15px 0">志愿者:' + volunteerList[i].name + '</p>' +
+            '<div  class="rescuesta">定位时间：' + getLocalTime(volunteerList[i].locationTime) + '</div>'
+          '</div>';
+          map.addOverlay(marker);
+          addClickHandler(content, marker);
+        }
       }
       // console.log(changgeUrl);
       // $.ajax({
