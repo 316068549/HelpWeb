@@ -1,1 +1,4 @@
+.form-box:disabled {
+  background-color: #ccc !important;
+}
 

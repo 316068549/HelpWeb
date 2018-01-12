@@ -188,7 +188,7 @@
       <div class="operate-item fn-clear">
         <label>设备号:</label>
         <div class="operate-group">
-          <input required  type="text"  id="deviceIMEI2" name="deviceIMEI2" class="form-box"  [(ngModel)]="selectedWearer.deviceIMEI" #deviceIMEI2="ngModel">
+          <input required  type="text"  id="deviceIMEI2" name="deviceIMEI2" class="form-box"  [(ngModel)]="selectedWearer.deviceIMEI" #deviceIMEI2="ngModel" disabled>
           <p *ngIf="deletemenuform.submitted && !deviceIMEI2.valid"   class="text-danger">设备号不能为空</p>
         </div>
       </div>

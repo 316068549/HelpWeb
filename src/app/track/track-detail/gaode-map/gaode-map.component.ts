@@ -1,5 +1,5 @@
 import { Component, OnInit, DoCheck } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params,Router, ParamMap } from '@angular/router';
 import { ElectricityService } from '../../../electricity/electricity-service';
 import { Electricity } from '../../../models/electricity';
 import { Location }               from '@angular/common';
@@ -14,10 +14,12 @@ declare var layer:any;
 })
 export class GaodeMapComponent implements OnInit {
   electricity: Electricity;
+  rescuePaperId:number;
 
   constructor(
     private electricityService: ElectricityService,
     private route: ActivatedRoute,
+    private router: Router,
     private location: Location
   ) { }
 
@@ -28,6 +30,7 @@ export class GaodeMapComponent implements OnInit {
      var  markers,lineArr = [];
     var polyline;
 
+    this.rescuePaperId = parseInt(this.route.snapshot.queryParamMap.get('cur'));
     var imeicode = this.route.snapshot.params['deviceIMEI'];
     var map = new BMap.Map("container");            // 创建Map实例
     var point = new BMap.Point(108.924295,34.235939); // 创建点坐标  width: 437px; height: 267px; top: -3px; left: -9px;
@@ -373,7 +376,9 @@ export class GaodeMapComponent implements OnInit {
 
   }
   goBack(): void {
-     this.location.back();
+    let heroId = this.rescuePaperId ? this.rescuePaperId: null;
+    this.router.navigate(['/home/track/121', { cur: heroId}]);
+    //  this.location.back();
   }
 
 //改的循环的，是坏的顺序错乱

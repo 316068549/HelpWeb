@@ -59,7 +59,7 @@
           <td >{{electricity.locationPower}}%</td>
           <td >{{electricity.onlineTime}}</td>
           <td>&nbsp;&nbsp;
-            <a [routerLink]="['detail', electricity.deviceIMEI]" >轨迹详情</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a (click)="gotoDetail(electricity)" >轨迹详情</a>&nbsp;&nbsp;&nbsp;&nbsp;
           </td>
         </tr>
         </tbody>

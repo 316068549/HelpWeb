@@ -1,4 +1,4 @@
-import { Component,ElementRef,OnInit } from '@angular/core';
+import { Component,ElementRef,OnChanges,OnInit,AfterContentInit,AfterViewChecked, AfterViewInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Params,Router, ParamMap }   from '@angular/router';
 
@@ -20,7 +20,7 @@ declare var videojs:any;
   templateUrl: './rescue-detail.component.html',
   styleUrls: ['./rescue-detail.component.css']
 })
-export class RescueDetailComponent implements OnInit {
+export class RescueDetailComponent implements OnInit,AfterViewChecked {
   printDiv: any;
   rescue: Rescue;
   rescuePaper: rescuePaper;
@@ -29,6 +29,8 @@ export class RescueDetailComponent implements OnInit {
   printCSS: string[];
   printStyle: string;
   code:boolean = false;
+  imgNum:number;
+  imgShown:boolean = false;
   private rescuePaperId:number;
   rescuesId:number;
 
@@ -96,6 +98,7 @@ export class RescueDetailComponent implements OnInit {
            this.rescuePaper = menus['data']['voRescue'];
         }
         if(menus['data']['imageList'].length>0&&menus['data']['imageList'][0]!=null){
+          this.imgNum = menus['data']['imageList'].length;
           for(let i=0;i<menus['data']['imageList'].length;i++){
             this.imageList.push(menus['data']['imageList'][i])
           }
@@ -109,7 +112,7 @@ export class RescueDetailComponent implements OnInit {
 
       });
     //图片加载
-     setTimeout(()=> $("img.lazy").lazyload({placeholder : "../../../assets/img/timg.gif"}),1000)
+    //  setTimeout(()=> $("img.lazy").lazyload({placeholder : "../../../assets/img/timg.gif"}),1000)
 
     //播放视频
     var myPlayer;
@@ -138,6 +141,15 @@ export class RescueDetailComponent implements OnInit {
     // });
   }
 
+  ngAfterViewChecked(){
+    if(this.imgNum && $("img.lazy").length == this.imgNum && !this.imgShown){
+       console.log('lazyload working!')
+       $("img.lazy").lazyload({placeholder : "../../../assets/img/timg.gif"});
+      this.imgShown = true;
+    }
+
+  }
+
   getPrintDiv () {
     for (let i: number = 0; i < this.elRef.nativeElement.childNodes.length; i++) {
       let node: any = this.elRef.nativeElement.childNodes[i];
@@ -153,6 +165,7 @@ export class RescueDetailComponent implements OnInit {
   beforePrint() {
     this.printBtnBoolean = false;
   }
+
 
   selectImg(obj,i){
     let $img = $('#imgBox .img'+i).parent();
@@ -191,15 +204,16 @@ export class RescueDetailComponent implements OnInit {
     $('#my-video'+i).prev(".loading").hide();
   }
 
-  setImg(obj,i){
+  setImg(obj,i,last){
    let box = $('.ibox-content').width()*(24/100);
    let si = obj.width/obj.height;
-    console.log(obj.width)
-    console.log(obj.height)
+    // console.log(obj.width)
+    // console.log(obj.height)
     console.log(si)
     if(si>1){
+      let tHeight = obj.width-obj.height;
+      $('#imgBox').css({paddingTop:(tHeight/2+20)+'px',paddingBottom:(tHeight/2+15)+'px'})
      obj.style.transform = 'rotate(90deg)';
-      // $('#imgBox').height(obj.width+'px')
        // $('.img'+i).height(box+'px')
     }
     // console.log(obj.width+','+obj.height)
@@ -208,7 +222,7 @@ export class RescueDetailComponent implements OnInit {
   goBack(): void {
     let rId = this.rescuesId;
     let heroId = this.rescuePaperId ? this.rescuePaperId: null;
-    console.log(heroId);
+    // console.log(heroId);
     this.router.navigate(['/home/rescuepapers/135', { cur: heroId,rescuesId:rId}]);
     // this.location.back();
   }

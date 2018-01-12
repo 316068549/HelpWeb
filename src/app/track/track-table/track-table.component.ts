@@ -1,6 +1,6 @@
 import { Component, Input, OnInit,animate } from '@angular/core';
 import { Location } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute,Router } from '@angular/router';
 
 import 'rxjs/add/observable/of';
 // Observable operators
@@ -39,15 +39,16 @@ export class TrackTableComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private electricityService: ElectricityService,
     private location: Location,
   ) {
   }
 
   setPagingArr() {
-    if ( this.totalPage == this.pageList.length) {
-      return
-    }
+    // if ( this.totalPage == this.pageList.length) {
+    //   return
+    // }
     this.pageList = [{
       isActive: true,
       pageNum: '1'
@@ -151,11 +152,14 @@ export class TrackTableComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getElectricities();
+    let getId = this.route.snapshot.paramMap.get('cur');
+    this.curPage = getId?parseInt(getId):1;
+    console.log(getId)
+    this.getElectricities(this.curPage);
   }
-  getElectricities(): void {
+  getElectricities(id:number): void {
     let index = layer.load(1, {shade: false,skin: 'load-box',offset: '30%',area:'30px'});
-    this.electricityService.getElectricities(1).then( res => {
+    this.electricityService.getElectricities(id).then( res => {
       layer.close(index);
       if(res['code'] == 0){
         if(!res['data']){
@@ -221,8 +225,9 @@ export class TrackTableComponent implements OnInit {
   })
   }
 
-  gotoDetail(): void {
-    // this.router.navigate(['/user-detail', this.selectedMenu.id]);
+  gotoDetail(electricity:Electricity): void {
+    // [routerLink]="['detail', electricity.deviceIMEI]"
+     this.router.navigate(['/home/track/121/detail', electricity.deviceIMEI],{queryParams:{cur:this.curPage},preserveFragment: true});
   }
 
   goBack(): void {
