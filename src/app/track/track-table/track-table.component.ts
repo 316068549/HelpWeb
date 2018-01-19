@@ -175,6 +175,14 @@ export class TrackTableComponent implements OnInit {
         this.totalNum   = res['data']['total'];
         this.totalPage   = res['data']['pages'];
         this.setPagingArr();
+        if(this.curPage>1){
+          for (var i = 0; i < this.pageList.length; i++) {
+            this.pageList[i].isActive = false;
+            if(this.pageList[i].pageNum==''+this.curPage){
+              this.pageList[i].isActive = true;
+            }
+          }
+        }
       }else if(res['code'] == 5){
         var ak = layer.open({
           content: res['error']+'请重新登录'
@@ -190,7 +198,6 @@ export class TrackTableComponent implements OnInit {
           ,content: res['error']
         });
       }
-
     });
   }
 

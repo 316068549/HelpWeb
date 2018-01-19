@@ -210,7 +210,8 @@ export class RescueDetailComponent implements OnInit,AfterViewChecked {
     // console.log(obj.width)
     // console.log(obj.height)
     console.log(si)
-    if(si>1){
+    // if(si>1){
+    if((obj.width==1920&&obj.height==1080)||(obj.width==1920&&obj.height==1080)){
       let tHeight = obj.width-obj.height;
       $('#imgBox').css({paddingTop:(tHeight/2+20)+'px',paddingBottom:(tHeight/2+15)+'px'})
      obj.style.transform = 'rotate(90deg)';

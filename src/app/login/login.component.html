@@ -15,8 +15,9 @@
         <!--<label for="userPassword">密码</label>-->
         <input type="text" style="display: none;">
         <input type="password" style="display: none;">
-        <input type="password" autocomplete="off"  class="form-control" placeholder="密码" id="userPassword" [(ngModel)]="user.userPassword" name="userPassword" #userPassword="ngModel"  required/>
-        <div *ngIf="heroForm.submitted && userPassword.invalid " class="alert alert-danger">密码不能为空</div>
+        <input type="password" autocomplete="off"  class="form-control" placeholder="密码" id="userPassword" [(ngModel)]="user.userPassword" [rangeLength]="[6, 18]"  name="userPassword" #userPassword="ngModel"  required/>
+        <div *ngIf="heroForm.submitted && userPassword.invalid && userPassword.errors?.rangeLength " class="alert alert-danger">密码不能为空，长度为6到18位</div>
+        <!--<div class="alert alert-danger" *ngIf="userPassword.errors?.rangeLength && userPassword.touched">密码</div>-->
       </div>
       <button type="submit" class="btn btn-login" style="width: 100%;" >登录</button>
     </form>

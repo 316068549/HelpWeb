@@ -220,6 +220,9 @@ export class WearerTableComponent implements OnInit {
       , yes: () => {
         this.userService.delete(wearer.oldManId).then(res =>{
           if(res['code'] == 0){
+            if(res["status"]==0){
+              alert(res['error']);
+            }
           }else if(res['code'] == 5){
             alert(res['error']);
             this.router.navigate(['login']);

@@ -135,9 +135,9 @@
       <div class="operate-item fn-clear">
         <label >密码：</label>
         <div class="operate-group">
-          <input required  type="text"  id="password" name="password" class="form-box" [rangeLength]="[6, 30]" [(ngModel)]="User.userPassword" #password="ngModel">
-          <p *ngIf="tjmenuform.submitted && !password.value && !submied"   class="text-danger">昵称不能为空</p>
-          <p class="text-danger sbd" *ngIf="password.errors?.rangeLength && password.touched">密码长度至少6位</p>
+          <input required  type="text"  id="password" name="password" class="form-box" [rangeLength]="[6, 18]" [(ngModel)]="User.userPassword" #password="ngModel">
+          <p *ngIf="tjmenuform.submitted && !password.value && !submied"   class="text-danger">密码不能为空</p>
+          <p class="text-danger sbd" *ngIf="password.errors?.rangeLength && password.touched">密码长度为6到18位</p>
         </div>
       </div>
       <div class="operate-item fn-clear">
