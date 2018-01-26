@@ -147,6 +147,13 @@ export class RescueDetailComponent implements OnInit,AfterViewChecked {
        $("img.lazy").lazyload({placeholder : "../../../assets/img/timg.gif"});
       this.imgShown = true;
     }
+    if(this.imgNum && $("img.lazy").length == this.imgNum && this.imgShown){
+      $("img.lazy").each(function () {
+        if($(this).attr('src')!="../../../assets/img/timg.gif"){
+          $(this).next('.turnBtn').show();
+        }
+      })
+    }
 
   }
 
@@ -169,6 +176,7 @@ export class RescueDetailComponent implements OnInit,AfterViewChecked {
 
   selectImg(obj,i){
     let $img = $('#imgBox .img'+i).parent();
+    $img.find('.turnBtn').remove();
     let $obj = $img.clone();
     if( $img.hasClass('selected')){
       $img.removeClass('selected');
@@ -207,17 +215,40 @@ export class RescueDetailComponent implements OnInit,AfterViewChecked {
   setImg(obj,i,last){
    let box = $('.ibox-content').width()*(24/100);
    let si = obj.width/obj.height;
-    // console.log(obj.width)
-    // console.log(obj.height)
+     console.log(obj.width)
+     console.log(obj.height)
     console.log(si)
     // if(si>1){
-    if((obj.width==1920&&obj.height==1080)||(obj.width==1920&&obj.height==1080)){
-      let tHeight = obj.width-obj.height;
-      $('#imgBox').css({paddingTop:(tHeight/2+20)+'px',paddingBottom:(tHeight/2+15)+'px'})
-     obj.style.transform = 'rotate(90deg)';
+    // if(obj.width==247&&obj.height==139){
+    // if((obj.width==1920&&obj.height==1080)||(obj.width==1334&&obj.height==750)||(obj.width==1136&&obj.height==640)||(obj.width==2436&&obj.height==1125)){
+    //   let tHeight = obj.width-obj.height;
+    //   $('#imgBox').css({paddingTop:(tHeight/2+20)+'px',paddingBottom:(tHeight/2+15)+'px'})
+    //  obj.style.transform = 'rotate(90deg)';
        // $('.img'+i).height(box+'px')
-    }
+    // }
     // console.log(obj.width+','+obj.height)
+  }
+
+  turnRound(i){
+    let round = parseInt($('.img'+i).attr('ak'));
+    console.log(round);
+    round+=90;
+    $('.img'+i).attr('ak',round)
+    console.log(round);
+    let si = $('.img'+i).width()/$('.img'+i).height();
+    console.log(si)
+     if(si>1){
+       let tHeight = $('.img'+i).width()-$('.img'+i).height();
+       console.log(round%180)
+       if(round%180!=0){
+         $('#imgBox').css({paddingTop:(tHeight/2+20)+'px',paddingBottom:(tHeight/2+0)+'px'});
+         $('.img'+i).css('marginBottom',tHeight+'px');
+       }else{
+         $('#imgBox').css({paddingTop:(tHeight/2+20)+'px',paddingBottom:0});
+         $('.img'+i).css('marginBottom','20px');
+       }
+     }
+     $('.img'+i).css('transform','rotate('+round+'deg)');
   }
 
   goBack(): void {

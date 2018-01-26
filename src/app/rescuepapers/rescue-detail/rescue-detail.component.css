@@ -380,15 +380,26 @@ player-progress {
   margin-right: 0px !important;
 }
 
-#imgBox a{
+#imgBox{
+  width: 100%;
+}
+#imgBox .fancybox{
   margin-bottom: 5px;
   width: 24%;
+  float: left;
   position: relative;
+  text-align: center;
 }
-#imgBox a img{
+#imgBox .fancybox img{
+  width: 100%;
   margin-right: 4px;
+  margin-bottom: 20px;
 }
-#imgBox a:before {
+#imgBox .fancybox .turnBtn{
+  color: #333;
+  display: none;
+}
+#imgBox .fancybox:before {
   content: "\2714";
   display: block;
   position: absolute;
@@ -412,6 +423,16 @@ player-progress {
   -moz-user-select:    none;
   -webkit-user-select: none;
   cursor: pointer;
+}
+#imgBox .fancybox .rotat{
+  animation-name: rotated;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+}
+@keyframes rotated {
+   0% {transform: rotate(0deg);}
+   50% {transform: rotate(45deg);}
+   100% {transform: rotate(90deg);transition: all 1s;}
 }
 #imgBox .selected:before{
   opacity: 1;

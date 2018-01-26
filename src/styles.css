@@ -901,6 +901,42 @@ chart{
   -moz-animation:unselected 0.3s cubic-bezier(0.250, 0.100, 0.250, 1.000);;
   -o-animation: unselected 0.3s cubic-bezier(0.250, 0.100, 0.250, 1.000);;
 }
+.person_mag{
+  display: inline-block;
+  width:14px;
+  height: 14px;
+  vertical-align: text-top;
+  background-repeat: no-repeat;
+  background-size: 14px;
+  background-image: url("assets/img/renyuan_moren.png");
+}
+.jiuyuan_mag{
+  display: inline-block;
+  width:14px;
+  height: 14px;
+  vertical-align: text-top;
+  background-repeat: no-repeat;
+  background-size: 14px;
+  background-image: url("assets/img/jiuyuan_moren.png");
+}
+.shebei_mag{
+  display: inline-block;
+  width:14px;
+  height: 14px;
+  vertical-align: text-top;
+  background-repeat: no-repeat;
+  background-size: 14px;
+  background-image: url("assets/img/shebei_moren.png");
+}
+.xitong_mag{
+  display: inline-block;
+  width:15px;
+  height: 15px;
+  vertical-align: text-top;
+  background-repeat: no-repeat;
+  background-size: 15px;
+  background-image: url("assets/img/xitong_moren.png");
+}
 @keyframes selected {
   0% {box-shadow: 0 0 0 4px #fff;}
   50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #00c09e}

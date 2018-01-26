@@ -52,7 +52,9 @@
           </template>
           <template ngSwitchDefault>
             <a >
-              <i class="fa" [ngClass]="{'fa-gear':(i==0),'fa-bars':i>0}"></i>
+              <i class="fa" [ngClass]="{'fa-gear':(i==0),'xitong_mag':(menu.permissionUrl=='无'),'person_mag':(menu.permissionUrl=='helpers'),
+              'jiuyuan_mag':(menu.permissionUrl=='rescuecount'),'shebei_mag':(menu.permissionUrl=='device')}"></i>
+              <!--<i class="fa" [ngClass]="{'fa-gear':(i==0),'fa-bars':i>0}"></i>-->
               <span class="nav-label">{{menu.permissionName}}</span>
               <span class="fa arrow" (click)="menu.selected=!menu.selected" ></span>
             </a>

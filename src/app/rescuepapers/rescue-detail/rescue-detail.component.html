@@ -119,11 +119,12 @@
               <div class="ibox-content noborder" *ngIf="code&&imageList.length==0">
                 没有图片
               </div>
-              <div class="mb20 ibox-content noborder" id="imgBox" *ngIf="code&&imageList.length>0">
+              <div class="mb20 ibox-content noborder fn-left" id="imgBox" *ngIf="code&&imageList.length>0">
                 <a class="fancybox"  href="javascript:;" title="" *ngFor="let image of imageList;let i =index;let isLast = last">
-                  <img id="my-img{{i}}" alt="image" class="lazy" [ngClass]="{'mr0':i==(imageList.length-1)}" [attr.data-original]="'web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i,isLast)" class="img{{i}}" (click)="selectImg($event.target,i)" />
+                  <img id="my-img{{i}}" alt="image" [attr.ak] = "0" class="lazy" [ngClass]="{'mr0':i==(imageList.length-1)}" [attr.data-original]="'web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i,isLast)" class="img{{i}}" (click)="selectImg($event.target,i)"/>
                   <!--<span *ngIf="getLast(isLast)"></span>-->
                   <!--<img alt="image" [ngClass]="{'mr0':i==(imageList.length-1)}" [src]="'http://60.205.4.247:9005/web/file/downloadFile/'+image.imageUrl" (load)="setImg($event.target,i)" class="img{{i}}" (click)="selectImg($event.target,i)" />-->
+                  <a  href="javascript:;" (click)="turnRound(i);" class="turnBtn"><span class="glyphicon glyphicon-repeat"></span><br>旋转</a>
                 </a>
 
                 <!--<a class="fancybox" href="#" title="图片2">-->
