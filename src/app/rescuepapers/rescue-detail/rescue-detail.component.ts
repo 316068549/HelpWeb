@@ -248,7 +248,8 @@ export class RescueDetailComponent implements OnInit,AfterViewChecked {
          $('.img'+i).css('marginBottom','20px');
        }
      }
-     $('.img'+i).css('transform','rotate('+round+'deg)');
+     // $('.img'+i).css('transform','rotate('+round+'deg)');
+    $('.img'+i).css({'transform':'rotate('+round+'deg)','-webkit-transform':'rotate('+round+'deg)','-o-transform':'rotate('+round+'deg)','-moz-transform':'rotate('+round+'deg)'});
   }
 
   goBack(): void {

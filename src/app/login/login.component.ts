@@ -1,4 +1,4 @@
-import { Component,Input, OnInit } from '@angular/core';
+import { Component,Input, OnInit,AfterContentInit,AfterViewChecked, AfterViewInit, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, ActivatedRouteSnapshot, RouterState, RouterStateSnapshot } from '@angular/router';
 import { UserLoginService } from './user-login.service';
@@ -14,7 +14,7 @@ declare var layer:any;
   animations: [ fadeIn
   ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit,AfterViewChecked {
 
 
   user = new User();
@@ -28,6 +28,16 @@ export class LoginComponent implements OnInit {
 
   }
 
+  ngAfterViewChecked(){
+    // console.log($('#name').val());
+    // console.log($('#userPassword').val());
+    if(!this.user.userName && $('#name').val()){
+      this.user.userName = $('#name').val();
+    }
+    if(!this.user.userPassword && $('#userPassword').val()){
+      this.user.userPassword = $('#userPassword').val();
+    }
+  }
 
   ngOnInit() {
     let index = layer.load(0, {shade: false,offset: '30%'}); //0代表加载的风格，支持0-2

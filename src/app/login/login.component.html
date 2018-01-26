@@ -2,20 +2,20 @@
   <h1 class="mt40 text-center nav-head">陕西省曙光应急救援协会易走失人群紧急救援管理系统</h1>
 
   <div class="loginbox">
-    <form name="form" (ngSubmit)="heroForm.form.valid && login()" #heroForm="ngForm" novalidate>
+    <form name="form" (ngSubmit)="heroForm.form.valid && login()" #heroForm="ngForm" autocomplete="off" novalidate>
 
       <div class="form-group">
         <!--<label for="name">用户名</label>-->
         <input type="text" style="display: none;">
         <input type="password" style="display: none;">
-        <input type="text" autocomplete="off" class="form-control" placeholder="用户名"   [(ngModel)]="user.userName" name="userName" #userName="ngModel" required />
+        <input type="text" autocomplete="off" class="form-control" placeholder="用户名"  id="name" [(ngModel)]="user.userName" name="userName" #userName="ngModel" required />
         <div *ngIf="heroForm.submitted && userName.invalid "  class="alert alert-danger">用户名不能为空</div>
       </div>
       <div class="form-group" >
         <!--<label for="userPassword">密码</label>-->
         <input type="text" style="display: none;">
         <input type="password" style="display: none;">
-        <input type="password" autocomplete="off"  class="form-control" placeholder="密码" id="userPassword" [(ngModel)]="user.userPassword" [rangeLength]="[6, 18]"  name="userPassword" #userPassword="ngModel"  required/>
+        <input type="password" autocomplete="new-password"  class="form-control" placeholder="密码" id="userPassword" [(ngModel)]="user.userPassword" [rangeLength]="[6, 18]"  name="userPassword" #userPassword="ngModel"  required/>
         <div *ngIf="heroForm.submitted && userPassword.invalid && userPassword.errors?.rangeLength " class="alert alert-danger">密码不能为空，长度为6到18位</div>
         <!--<div class="alert alert-danger" *ngIf="userPassword.errors?.rangeLength && userPassword.touched">密码</div>-->
       </div>
