@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params,Router, ParamMap } from '@angular/router';
 import { GaodeMapComponent } from './gaode-map/gaode-map.component';
 
 @Component({
@@ -7,10 +8,12 @@ import { GaodeMapComponent } from './gaode-map/gaode-map.component';
   styleUrls: ['./track-detail.component.css']
 })
 export class TrackDetailComponent implements OnInit {
+  imeiCode:number;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.imeiCode = this.route.snapshot.params['deviceIMEI'];
   }
 
 }

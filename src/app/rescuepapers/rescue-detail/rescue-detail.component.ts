@@ -154,7 +154,6 @@ export class RescueDetailComponent implements OnInit,AfterViewChecked {
         }
       })
     }
-
   }
 
   getPrintDiv () {
@@ -176,8 +175,8 @@ export class RescueDetailComponent implements OnInit,AfterViewChecked {
 
   selectImg(obj,i){
     let $img = $('#imgBox .img'+i).parent();
-    $img.find('.turnBtn').remove();
     let $obj = $img.clone();
+    $obj.find('.turnBtn').remove();
     if( $img.hasClass('selected')){
       $img.removeClass('selected');
       $('table #printImgBox .img'+i).parent().remove();
@@ -218,6 +217,9 @@ export class RescueDetailComponent implements OnInit,AfterViewChecked {
      console.log(obj.width)
      console.log(obj.height)
     console.log(si)
+    if((i+1)%4==0){
+      $('.img'+i).parent().after('<div class="clearfix" ></div>')
+    }
     // if(si>1){
     // if(obj.width==247&&obj.height==139){
     // if((obj.width==1920&&obj.height==1080)||(obj.width==1334&&obj.height==750)||(obj.width==1136&&obj.height==640)||(obj.width==2436&&obj.height==1125)){

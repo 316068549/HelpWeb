@@ -15,6 +15,7 @@ declare var layer:any;
 export class GaodeMapComponent implements OnInit {
   electricity: Electricity;
   rescuePaperId:number;
+  imei:number;
 
   constructor(
     private electricityService: ElectricityService,
@@ -32,6 +33,7 @@ export class GaodeMapComponent implements OnInit {
 
     this.rescuePaperId = parseInt(this.route.snapshot.queryParamMap.get('cur'));
     var imeicode = this.route.snapshot.params['deviceIMEI'];
+    this.imei = imeicode;
     var map = new BMap.Map("container");            // 创建Map实例
     var point = new BMap.Point(108.924295,34.235939); // 创建点坐标  width: 437px; height: 267px; top: -3px; left: -9px;
     var myIcon = new BMap.Icon("assets/img/poi-marker2.png", new BMap.Size(25,35),{

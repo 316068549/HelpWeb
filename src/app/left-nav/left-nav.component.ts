@@ -53,7 +53,6 @@ export class LeftNavComponent implements OnInit {
       this.url = false;
       this.change.emit(this.url);
     }
-
   }
 
   logout(){
