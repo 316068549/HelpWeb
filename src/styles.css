@@ -937,6 +937,9 @@ chart{
   background-size: 15px;
   background-image: url("assets/img/xitong_moren.png");
 }
+.form-box, .form-select {
+  padding: 0 0 0 10px !important;
+}
 @keyframes selected {
   0% {box-shadow: 0 0 0 4px #fff;}
   50% {-webkit-transform:scale(0.5);opacity: 0.8;box-shadow:0 0 0 4px #00c09e}
