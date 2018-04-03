@@ -95,10 +95,12 @@ export class UserService {
       .catch(this.handleError);
   }
 
-  update(usersId:number,originalRoleId:number,originalUserName:string,userName: string, nickName: string, password: string,  role: number,rescueTeam: string): Promise<object> {
+  update(usersId:number,originalRoleId:number,originalUserName:string,userName: string, nickName: string,  role: number,rescueTeam: string,password?: string): Promise<object> {
+    let pasval = password?('&userPassword='+password):'';
+    //'&originalUserName='+originalUserName+去掉
     console.log(role)
-    let parment = 'addId='+''+'&usersId='+usersId+'&originalRoleId='+originalRoleId+'&originalUserName='+originalUserName+'&userName='+userName+'&nickName='+nickName+
-      '&userPassword='+password+'&roleId='+role+'&rescueTeamId='+rescueTeam+
+    let parment = 'addId='+''+'&usersId='+usersId+'&originalRoleId='+originalRoleId+'&userName='+userName+'&nickName='+nickName+
+      pasval+'&roleId='+role+'&rescueTeamId='+rescueTeam+
       '&userId='+this.userId+'&tokenId='+this.tokenId;
     console.log(parment)
     return this.http

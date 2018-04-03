@@ -11,7 +11,7 @@ import { HelperService } from '../helpers/helpers-service';
 import { helperRoutes } from './helpers.routes';
 import { HelperComponent } from './helpers.component';
 import { HelpersTableComponent } from './helpers-table/helpers-table.component';
-
+import { passWordPipe } from './password.pipe'
 
 @NgModule({
   imports: [
@@ -25,7 +25,8 @@ import { HelpersTableComponent } from './helpers-table/helpers-table.component';
   ],
   declarations: [
     HelpersTableComponent,
-    HelperComponent
+    HelperComponent,
+    passWordPipe
   ],
   providers: [ HelperService ]
 })

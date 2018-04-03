@@ -62,7 +62,7 @@
           <td>{{(curPage-1)*10+i+1}}</td>
           <td >{{helper.name}}</td>
           <td >{{helper.sex}}</td>
-          <td>{{helper.password}}</td>
+          <td>{{helper.password|passWordChange}}</td>
           <td>{{helper.identityCard}}</td>
           <td>{{helper.mobile}}</td>
           <td>{{helper.personnelForm}}</td>
@@ -134,7 +134,7 @@
       <div class="operate-item fn-clear">
         <label>密码:</label>
         <div class="operate-group">
-          <input required  type="text"  id="password" name="password" class="form-box" [rangeLength]="[6, 18]" [(ngModel)]="Helpers.password" #password="ngModel">
+          <input required  type="password"  id="password" name="password" class="form-box" [rangeLength]="[6, 18]" [(ngModel)]="Helpers.password" #password="ngModel">
           <p *ngIf="tjmenuform.submitted && !password.value && !submied"   class="text-danger">密码不能为空</p>
           <p class="text-danger sbd" *ngIf="password.errors?.rangeLength && password.touched">密码长度为6到18位</p>
         </div>
@@ -210,7 +210,7 @@
       <div class="operate-item fn-clear">
         <label>密码:</label>
         <div class="operate-group">
-          <input required  type="text"  id="password2" name="password2" class="form-box"  [(ngModel)]="selectedHelper.password" [rangeLength]="[6, 18]" #password2="ngModel">
+          <input required  type="password"  id="password2" name="password2" class="form-box"  [(ngModel)]="selectedHelper.password" [rangeLength]="[6, 18]" #password2="ngModel">
           <p *ngIf="deletemenuform.submitted && !password2.value"   class="text-danger">密码不能为空</p>
           <p class="text-danger sbd" *ngIf="password2.errors?.rangeLength && password2.touched">密码长度为6到18位</p>
         </div>

@@ -51,6 +51,7 @@ export class UsersTableComponent implements OnInit {
   }];
   originalRoleId:number;
   originalUserName:string;
+  originalUserPassword:string;
   constructor(
     private router: Router,
     private userService: UserService,
@@ -263,12 +264,14 @@ export class UsersTableComponent implements OnInit {
   searchParMenu2(id:number): void{
     this.originalRoleId=null;
     this.originalUserName='';
+    this.originalUserPassword='';
     this.parentNames2=[];
     this.rescueTeams=[];
     this.userService.getMenuDetail(id).then( menus => {
       if(menus['adminUser']){
          this.originalRoleId = this.selectedUser.roleList[0].roleId;
          this.originalUserName = menus['adminUser']['nickName'];
+        this.originalUserPassword = menus['adminUser']['userPassword'];
       }
       if(menus['adminRoleList']){
         for(let i=0;i<menus['adminRoleList'].length;i++){
@@ -318,27 +321,70 @@ export class UsersTableComponent implements OnInit {
   }
 
   save(usersId:number,userName: string, nickName: string, password: string,  role: number,rescueTeam: string): void {
-    console.log(this.selectedUser.roleList[0].roleId)
-    this.userService.update(usersId,this.originalRoleId,this.originalUserName,userName, nickName, password,  role,rescueTeam)
-      .then(res => {
-        if(res['code'] == 0){
-          layer.open({
-            title: '提示'
-            ,content: '修改成功'
-          });
+    if(password==this.originalUserPassword){
+      this.userService.update(usersId,this.originalRoleId,this.originalUserName,userName, nickName,role,rescueTeam)
+        .then(res => {
+          if(res['code'] == 0){
+            layer.open({
+              title: '提示'
+              ,content: '修改成功'
+            });
 
-        }else{
-          layer.open({
-            title: '提示'
-            ,content: res['data']
-          });
-          return
-        }
-        this.selectedUser = null;
-        this.getElectricities(this.curPage);
-        this.deletemenu = false;
-        this.clicked = false;
-    });
+          }else{
+            layer.open({
+              title: '提示'
+              ,content: res['data']
+            });
+            return
+          }
+          this.selectedUser = null;
+          this.getElectricities(this.curPage);
+          this.deletemenu = false;
+          this.clicked = false;
+        });
+    }else {
+      this.userService.update(usersId,this.originalRoleId,this.originalUserName,userName, nickName, role,rescueTeam,password)
+        .then(res => {
+          if(res['code'] == 0){
+            layer.open({
+              title: '提示'
+              ,content: '修改成功'
+            });
+
+          }else{
+            layer.open({
+              title: '提示'
+              ,content: res['data']
+            });
+            return
+          }
+          this.selectedUser = null;
+          this.getElectricities(this.curPage);
+          this.deletemenu = false;
+          this.clicked = false;
+        });
+    }
+    // console.log(this.selectedUser.roleList[0].roleId)
+    // this.userService.update(usersId,this.originalRoleId,this.originalUserName,userName, nickName, password,  role,rescueTeam)
+    //   .then(res => {
+    //     if(res['code'] == 0){
+    //       layer.open({
+    //         title: '提示'
+    //         ,content: '修改成功'
+    //       });
+    //
+    //     }else{
+    //       layer.open({
+    //         title: '提示'
+    //         ,content: res['data']
+    //       });
+    //       return
+    //     }
+    //     this.selectedUser = null;
+    //     this.getElectricities(this.curPage);
+    //     this.deletemenu = false;
+    //     this.clicked = false;
+    // });
   }
 
   ak(a){

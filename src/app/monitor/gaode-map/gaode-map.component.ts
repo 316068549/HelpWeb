@@ -39,7 +39,7 @@ export class GaodeMapComponent implements OnInit {
     //获取下拉数据
     var X = $('#container').width();
     var Y = $('#container').height();
-    var point = new BMap.Point(108.924295,34.235939); // 创建点坐标
+    // var point = new BMap.Point(108.924295,34.235939); // 创建点坐标
     var myIcon = new BMap.Icon("assets/img/baojing.gif", new BMap.Size(30,30));
     var myIcon2 = new BMap.Icon("assets/img/mark_b.png", new BMap.Size(30,30));
     var myIcon3 = new BMap.Icon("assets/img/rescue.png", new BMap.Size(45,45));
@@ -66,36 +66,42 @@ export class GaodeMapComponent implements OnInit {
     };
      //初始化画框
     function drawMap(){
-      $.ajax({
-        type: "get",
-        cache: false,
-        async: false, //同步请求外面才能获取到*
-        url: "admin/query/adminUserId?usersId="+userId+"&tokenId="+tokenId,
-        success: function(data1){
-          mapaddress=data1.data.rescueTeam.addr;
-          console.log(data1.data.rescueTeam.name)
-          if(data1.data.rescueTeam.rescueTeamId==0){
-                map.setMinZoom(8)
-          }else if(data1.data.rescueTeam.name.indexOf('大队')>-1){
-            setTimeout(()=>
-              map.setMinZoom(9)
-            , 2000);
-            // map.setMaxZoom(9);
+      if(tokenId){
+        $.ajax({
+          type: "get",
+          cache: false,
+          async: false, //同步请求外面才能获取到*
+          url: "admin/query/adminUserId?usersId="+userId+"&tokenId="+tokenId,
+          success: function(data1){
+            mapaddress=data1.data.rescueTeam.addr;
+            console.log(data1.data.rescueTeam.name)
+            if(data1.data.rescueTeam.rescueTeamId==0){
+              map.setMinZoom(8)
+            }else if(data1.data.rescueTeam.name.indexOf('大队')>-1){
+              setTimeout(()=>
+                  map.setMinZoom(9)
+                , 2000);
+              // map.setMaxZoom(9);
+            }
+            else {
+              setTimeout(()=>
+                  map.setMinZoom(11)
+                , 2000);
+            }
           }
-          else {
-            setTimeout(()=>
-                map.setMinZoom(11)
-              , 2000);
-          }
-        }
-      });
-      getBoundary(mapaddress);
+        });
+        getBoundary(mapaddress);
+      }else {
+        loginFull(window.location);
+      }
+
     }
     // 地图初始化位置
     function init(){
       var resul;
       $.ajax({
         type: "get",
+        timeout:15000,
         cache: false,
         async: false, //同步请求外面才能获取到*
         url: "indata?tokenId="
@@ -103,11 +109,19 @@ export class GaodeMapComponent implements OnInit {
         ,
         success: function(data){
             resul=data.data;
+        },
+        error:function (XMLHttpRequest, textStatus, errorThrown) {
+          alert(textStatus + '，请重新登录!')
+          loginFull(window.location);
         }
       });
       // volunteerList=resul.volunteerList;
       // deviceList=resul.deviceList;
       // taskList=resul.taskList;
+      if(typeof (resul)=='undefined'){
+        loginFull(window.location);
+        return;
+      }
       if(!resul){
         return
       }
@@ -175,6 +189,7 @@ export class GaodeMapComponent implements OnInit {
                   html+=obj.NAME+"<span class='warningTask'>（等待接单，报警地址："+n.address+")</span></a></li>"
                 }
               })
+              playVoice();
             }else if(n.status==2){
               $.each(deviceList,function (a,obj) {
                 if(obj.deviceIMEI==n.deviceIMEI){
@@ -213,6 +228,7 @@ export class GaodeMapComponent implements OnInit {
       var result;
       $.ajax({
         type: "get",
+        timeout:15000,
         cache: false,
         async: false, //同步请求外面才能获取到*
         url: "indata?tokenId="
@@ -240,11 +256,19 @@ export class GaodeMapComponent implements OnInit {
           }
 
            result=data.data;
+        },
+        error:function (XMLHttpRequest, textStatus, errorThrown) {
+          alert(textStatus + '，请重新登录!')
+          loginFull(window.location);
         }
       });
       // volunteerList=result.volunteerList;
       // deviceList=result.deviceList;
       // taskList=result.taskList;
+      if(typeof (result)=='undefined'){
+        loginFull(window.location);
+        return;
+      }
       if(result.volunteerList){
         volunteerList=result.volunteerList;
       }else{
@@ -337,8 +361,9 @@ export class GaodeMapComponent implements OnInit {
                     deviceImei:sss.deviceIMEI,
                     taskId:sss.task_id
                   })
-                    console.log('结束：报警列表'+warningDeviceList.length)
-                    console.log(warningList)
+                    playVoice();
+                    // console.log('结束：报警列表'+warningDeviceList.length)
+                    // console.log(warningList)
                   $.each(deviceList, function (aa, oobj) {
                     if (oobj.deviceIMEI == sss.deviceIMEI) {
                       html2 += oobj.NAME+"<span class='warningTask'>（等待接单，报警地址：" + sss.address + ")</span></a></li>"
@@ -356,27 +381,72 @@ export class GaodeMapComponent implements OnInit {
                     $.each(warningDeviceList,function (b,devicr) {
                       if(devicr.deviceImei==sss.deviceIMEI){
                         if(!devicr.alerted){
+                          var alertList = sessionStorage.getItem('alertDeviceList');
                           $.each(deviceList, function (aa, oobj) {
                             if (oobj.deviceIMEI == sss.deviceIMEI) {
-                              var ak = layer.open({
-                                content: '求救人'+oobj.NAME+' 救援任务长时间无人接单，请指定人员接单！'
-                                , btn: ['确定']
-                                , yes: () => {
+                                let alertList2 = JSON.parse(alertList);
+                                console.log(alertList2);
+                                if(alertList2){
+                                   if(alertList2.indexOf(sss.deviceIMEI)==-1){
+                                    var ak = layer.open({
+                                      content: '求救人'+oobj.NAME+' 救援任务长时间无人接单，请指定人员接单！'
+                                      , btn: ['确定']
+                                      , yes: () => {
+                                        layer.close(ak);
+                                        if(!alertList){
+                                          var alertImeiList =[];
+                                          alertImeiList.push(sss.deviceIMEI);
+                                          sessionStorage.setItem('alertDeviceList',JSON.stringify(alertImeiList))
+                                        }else{
+                                          let alertList2 = JSON.parse(alertList);
+                                          if(alertList2.indexOf(sss.deviceIMEI)==-1){
+                                            alertList2.push(sss.deviceIMEI);
+                                            sessionStorage.setItem('alertDeviceList',JSON.stringify(alertList2))
+                                          }
+                                        }
+                                        //是否弹窗存储到本地存储
+                                        // 可以放一个json deviceList数组到本地存储，设置alerted属性，从这里获取
+                                      }
+                                    })
+                                    devicr.alerted=true;
+                                    console.log(xuanhuanobj);
+                                    if(xuanhuanobj){
+                                      window.clearInterval(interval);
+                                      xuanhuanobj=false;
+                                      setTimeout(() => {
+                                        interval = setInterval(xunhuan,20000);
+                                        xuanhuanobj=true;
+                                      },10000);
+                                    }
+                                    $('.'+sss.deviceIMEI).click();
+                                   }
+                                }else{
+                                  var ak = layer.open({
+                                    content: '求救人'+oobj.NAME+' 救援任务长时间无人接单，请指定人员接单！'
+                                    , btn: ['确定']
+                                    , yes: () => {
+                                      layer.close(ak);
+                                      if(!alertList){
+                                        var alertImeiList =[];
+                                        alertImeiList.push(sss.deviceIMEI);
+                                        sessionStorage.setItem('alertDeviceList',JSON.stringify(alertImeiList))
+                                      }
+                                    }
+                                  })
+                                  devicr.alerted=true;
+                                  console.log(xuanhuanobj);
+                                  if(xuanhuanobj){
+                                    window.clearInterval(interval);
+                                    xuanhuanobj=false;
+                                    setTimeout(() => {
+                                      interval = setInterval(xunhuan,20000);
+                                      xuanhuanobj=true;
+                                    },10000);
+                                  }
+                                  $('.'+sss.deviceIMEI).click();
 
-                                  layer.close(ak);
                                 }
-                              })
-                              devicr.alerted=true;
-                              console.log(xuanhuanobj);
-                              if(xuanhuanobj){
-                                window.clearInterval(interval);
-                                xuanhuanobj=false;
-                                setTimeout(() => {
-                                  interval = setInterval(xunhuan,20000);
-                                  xuanhuanobj=true;
-                                },10000);
-                              }
-                              $('.'+sss.deviceIMEI).click();
+
                             }
                           })
 
@@ -1085,7 +1155,7 @@ export class GaodeMapComponent implements OnInit {
         // }
         console.log(markers)
         for (var i = 0; i < markers.length; i++) {
-          console.log(markers[i].getTitle())
+          // console.log(markers[i].getTitle())
           if (markers[i].getTitle() == deviceIMEI) {
             markers[i].openInfoWindow(infoWindow);
           }
@@ -1093,7 +1163,11 @@ export class GaodeMapComponent implements OnInit {
       })
     }
 
-
+    //播放声音
+    function playVoice(){
+      let ak = document.getElementsByTagName('audio')[0];
+      ak.play();
+    }
     // 全屏
     $('.video_link').on('click',()=>{
         alert(2)
@@ -1203,7 +1277,8 @@ export class GaodeMapComponent implements OnInit {
     function loginFull(element) {
       //判断各种浏览器，找到正确的方法
       if (element) {
-        element.href="http://47.95.218.144:9000";
+        // element.href="http://47.95.218.144";
+        element.href="http://60.205.4.247:9000";
       }
     }
 

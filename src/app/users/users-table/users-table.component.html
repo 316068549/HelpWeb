@@ -135,7 +135,7 @@
       <div class="operate-item fn-clear">
         <label >密码：</label>
         <div class="operate-group">
-          <input required  type="text"  id="password" name="password" class="form-box" [rangeLength]="[6, 18]" [(ngModel)]="User.userPassword" #password="ngModel">
+          <input required  type="password"  id="password" name="password" class="form-box" [rangeLength]="[6, 18]" [(ngModel)]="User.userPassword" #password="ngModel">
           <p *ngIf="tjmenuform.submitted && !password.value && !submied"   class="text-danger">密码不能为空</p>
           <p class="text-danger sbd" *ngIf="password.errors?.rangeLength && password.touched">密码长度为6到18位</p>
         </div>
@@ -211,9 +211,10 @@
       <div class="operate-item fn-clear">
         <label >密码：</label>
         <div class="operate-group">
-          <input required  type="text"  id="password2" name="password2" class="form-box" [rangeLength]="[6, 30]" [(ngModel)]="selectedUser.userPassword" #password2="ngModel">
-          <p *ngIf="deletemenuform.submitted && !password2.value"   class="text-danger">密码不能为空</p>
-          <p class="text-danger sbd" *ngIf="password2.errors?.rangeLength && password2.touched">密码长度至少6位</p>
+          <input required  type="password"  id="password2" name="password2" class="form-box" minlength="6" [(ngModel)]="selectedUser.userPassword" #password2="ngModel">
+          <!--<p *ngIf="deletemenuform.submitted && !password2.value"   class="text-danger">密码不能为空</p>-->
+          <p *ngIf="deletemenuform.submitted && !password2.valid"   class="text-danger">密码不能为空,且至少6位</p>
+          <!--<p class="text-danger sbd" *ngIf="deletemenuform.submitted && password2.errors?.rangeLength">密码长度至少6位</p>-->
         </div>
       </div>
       <div class="operate-item fn-clear">

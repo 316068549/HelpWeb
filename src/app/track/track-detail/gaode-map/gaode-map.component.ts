@@ -50,6 +50,8 @@ export class GaodeMapComponent implements OnInit {
     });
     map.centerAndZoom(point,15);
     map.addControl(new BMap.NavigationControl());
+    var top_left_control = new BMap.ScaleControl({anchor: 'BMAP_ANCHOR_TOP_LEFT'});
+    map.addControl(top_left_control);
     map.enableScrollWheelZoom();                 //启用滚轮放大缩小
     //初始化
     // 鹰眼获取轨迹
@@ -64,6 +66,13 @@ export class GaodeMapComponent implements OnInit {
     function init(){
       var start= $('#start').val();
       var end = $('#end').val();
+      if(new Date(end.replace(/\-/g,'\/'))<new Date(start.replace(/\-/g,'\/'))){
+        layer.open({
+          title: '提示'
+          ,content: '结束时间不能小于开始时间！'
+        });
+        return;
+      }
       var result;
       var paramms = {deviceImei:imeicode,startTime:start,endTime:end}
 
