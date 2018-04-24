@@ -570,6 +570,11 @@ export class PermissionTableComponent implements OnInit {
   //   this.router.navigate(['/user-detail', this.selectedMenu.id]);
   // }
 
+  cancel(){
+    this.getElectricities(this.curPage);
+    this.selectedRole = null;
+  }
+
   goBack(): void {
     this.location.back();
   }

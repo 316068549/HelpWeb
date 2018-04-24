@@ -111,7 +111,7 @@ export class GaodeMapComponent implements OnInit {
             resul=data.data;
         },
         error:function (XMLHttpRequest, textStatus, errorThrown) {
-          alert(textStatus + '，请重新登录!')
+          alert('请求超时，请重新登录!')
           loginFull(window.location);
         }
       });
@@ -258,7 +258,7 @@ export class GaodeMapComponent implements OnInit {
            result=data.data;
         },
         error:function (XMLHttpRequest, textStatus, errorThrown) {
-          alert(textStatus + '，请重新登录!')
+          alert('请求超时，请重新登录!')
           loginFull(window.location);
         }
       });
@@ -1277,8 +1277,8 @@ export class GaodeMapComponent implements OnInit {
     function loginFull(element) {
       //判断各种浏览器，找到正确的方法
       if (element) {
-        // element.href="http://47.95.218.144";
-        element.href="http://60.205.4.247:9000";
+         element.href="http://47.95.218.144";
+        //element.href="http://60.205.4.247:9000";
       }
     }
 

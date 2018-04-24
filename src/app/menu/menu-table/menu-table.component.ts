@@ -516,6 +516,11 @@ export class MenuTableComponent implements OnInit {
     this.deletemenu = false;
     this.clicked = false;
   }
+
+  cancel(){
+    this.getMenus(this.curPage);
+    this.selectedMenu = null;
+  }
   goBack(): void {
     this.location.back();
   }
